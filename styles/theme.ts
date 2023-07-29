@@ -38,24 +38,39 @@ export const theme = createTheme({
           fontSize: 16,
           fontWeight: 400,
           background: "#fff",
-          ":focus":{
+          ":focus": {
             background: "#fff",
             color: "#000",
-          }
+          },
         },
-        text:{
-         textTransform: "capitalize",
-         fontSize: 16,
-         fontWeight: 400,
-         ":focus":{
-           color: "#fff",
-         }
-        }
+        text: {
+          textTransform: "capitalize",
+          fontSize: 16,
+          fontWeight: 400,
+          ":focus": {
+            color: "#fff",
+          },
+        },
       },
     },
     MuiButtonBase: {
       defaultProps: {
         disableRipple: true,
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {},
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          color: "#fff",
+          fontSize: "1.2rem",
+          borderRadius: "0.8rem",
+          background: "#ffffff0f",
+        },
       },
     },
   },
