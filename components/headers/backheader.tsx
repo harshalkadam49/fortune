@@ -7,8 +7,13 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useRouter } from "next/router";
 
 export default function ButtonAppBar(props: any) {
+  const router = useRouter();
+  const handleBack = () => {
+    history.back();
+  };
   return (
     <Box>
       {props.showBackheader && (
@@ -18,7 +23,7 @@ export default function ButtonAppBar(props: any) {
           elevation={0}
         >
           <Toolbar>
-            <IconButton aria-label="menu" sx={{ mr: 2 }}>
+            <IconButton onClick={handleBack} aria-label="menu" sx={{ mr: 2 }}>
               <ArrowBackIosNewIcon sx={{ fontSize: "1.2rem", color: "#fff" }} />
             </IconButton>
           </Toolbar>

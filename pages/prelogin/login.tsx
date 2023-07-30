@@ -43,7 +43,7 @@ export default function Login(props: Props) {
     window !== undefined ? () => window().document.body : undefined;
 
   const onSignUp = () => {
-    router.push("/prelogin/signUp");
+    router.push("/prelogin/signup");
   };
 
   return (
@@ -117,7 +117,7 @@ export default function Login(props: Props) {
             }}
           >
             <Image src={Mobile} height={24} width={30} alt="GoogleIcon" />
-            <Typography variant="h1">Login with Mobile No</Typography>
+            <Typography variant="h1">Login with Email/Mobile</Typography>
           </Stack>
 
           <Box textAlign="center" pt="4.18rem">
