@@ -1,5 +1,5 @@
 import { Box, Container } from "@mui/material";
-import Loader from "./loader";
+import Loader from "../loader";
 import { Router } from "next/router";
 import { useState } from "react";
 import ButtonAppBar from "../headers/backheader";

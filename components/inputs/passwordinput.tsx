@@ -27,10 +27,11 @@ export default function PasswordInput(props: any) {
   return (
     <>
       <OutlinedInput
+        onChange={props.onChange}
+        onBlur={props.onBlur}
         value={props.value}
         fullWidth
         placeholder={props.placeholder}
-        id="outlined-adornment-password"
         type={showPassword ? "text" : "password"}
         endAdornment={
           <InputAdornment position="end">

@@ -53,7 +53,7 @@ export default function Carrousel() {
   };
 
   const onSignUp = () => {
-    router.push("/prelogin/signUp");
+    router.push("/prelogin/signup");
   };
   return (
     <PreloginLayout>
