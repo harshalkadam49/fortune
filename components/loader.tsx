@@ -13,7 +13,6 @@ export default function Loader(props: any) {
             width: "100%",
             minHeight: "100vh",
             background: "#000",
-            opacity: 1,
             zIndex: 1,
           }}
         >

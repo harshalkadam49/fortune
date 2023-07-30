@@ -17,6 +17,19 @@ import PinInput from "react-pin-input";
 import SMSOTPAnimation from "../../public/animations/SMSOTPAnimation.json";
 import Lottie from "react-lottie";
 import { useRouter } from "next/router";
+import {
+  MaxLength,
+  MinLength,
+  capitalizeFirstLetter,
+  checkDigit,
+  checkSpecialCharacter,
+  isAlphabetsWithSpace,
+  isEmail,
+  isEmpty,
+  isOnlyAlphabets,
+  isOnlyDigits,
+} from "@/utilities/validators";
+import { postuserapi } from "@/apifunctions/createuser";
 
 export default function SignUp() {
   const router = useRouter();
@@ -37,19 +50,84 @@ export default function SignUp() {
     },
   };
 
-  const [isMaleSelected, setIsMaleSelected] = useState(true);
   const [signUpform, setSignUpform] = useState(true);
   const [emailOTPForm, setEmailOTPForm] = useState(false);
   const [smsOTPForm, setsmsOTPForm] = useState(false);
-  const onSelectGender = () => {
+  const [isMaleSelected, setIsMaleSelected] = useState(true);
+
+  // variables to save
+  const [gender, setGender] = useState("M");
+  const [entredName, setEntredName] = useState("");
+  const [entredEmail, setEntredEmail] = useState("");
+  const [entredPhoneNumber, setEntredPhoneNumber] = useState("");
+  const [entredPassword, setEntredPassword] = useState("");
+  const [enterdConfirmPassword, setEnterdConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<any>([]);
+
+  const onSelectGender = (genderType: any) => {
     setIsMaleSelected(!isMaleSelected);
+    setGender(genderType);
+  };
+
+  const signupValidation = () => {
+    let errors = {
+      name: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
+      confirmPassword: "",
+    };
+    // name
+    if (isEmpty(entredName)) {
+      errors.name = "Name cannot be blank";
+    } else if (!isAlphabetsWithSpace(entredName)) {
+      errors.name = "Name should be in alphabets only";
+    } else if (isEmpty(entredEmail)) {
+      errors.email = "Email cannot be blank";
+    } else if (!isEmail(entredEmail)) {
+      errors.email = "Email should be of type abc@abc.com";
+    } else if (isEmpty(entredPhoneNumber)) {
+      errors.phoneNumber = "Phone number cannot be blank";
+    } else if (!isOnlyDigits(entredPhoneNumber)) {
+      errors.phoneNumber = "Enter a valid 10-digit number";
+    } else if (!MinLength(entredPhoneNumber, 10)) {
+      errors.phoneNumber = "Enter a valid 10-digit number";
+    } else if (!MaxLength(entredPhoneNumber, 10)) {
+      errors.phoneNumber = "Enter a valid 10-digit number";
+    } else if (!MinLength(entredPassword, 8)) {
+      errors.password = "Min password lenght should be 8-char";
+    } else if (!MaxLength(entredPassword, 20)) {
+      errors.password = "Min password lenght should be 20-char";
+    } else if (isEmpty(entredPassword)) {
+      errors.password = "Min password lenght should be 20-char";
+    } else if (!checkDigit(entredPassword)) {
+      errors.password = "Password should have at least 1-digit";
+    } else if (!checkSpecialCharacter(entredPassword)) {
+      errors.password = "Password should have at least 1-special char";
+    } else if (isEmpty(enterdConfirmPassword)) {
+      errors.confirmPassword = "Confirm password cannot be blank";
+    } else if (entredPassword != enterdConfirmPassword) {
+      errors.confirmPassword = "Password does not match";
+    }
+    console.log(errors);
+    setErrors(errors);
   };
 
   const onSubmit = () => {
-    setSignUpform(false);
-    setEmailOTPForm(true);
+    signupValidation();
+    let model = {
+      gender: gender,
+      name: capitalizeFirstLetter(entredName),
+      email: entredEmail,
+      phonenumber: entredPhoneNumber,
+      password: entredPassword,
+    };
+    // if (errors.lenght == 0) {
+      postuserapi(model,'/api/auth/signUp','POST');
+      // setSignUpform(false);
+      // setEmailOTPForm(true);
+    // }
   };
-
   const onEmailOTPValidate = (value: any) => {
     setSignUpform(false);
     setEmailOTPForm(false);
@@ -71,7 +149,7 @@ export default function SignUp() {
             <form>
               <Stack spacing="1.875rem" direction="column" pt="2rem">
                 <Stack direction="row" spacing={5}>
-                  <Box onClick={onSelectGender}>
+                  <Box onClick={() => onSelectGender("M")}>
                     {isMaleSelected ? (
                       <Image
                         src={MaleSelected}
@@ -89,7 +167,7 @@ export default function SignUp() {
                     )}
                   </Box>
 
-                  <Box onClick={onSelectGender}>
+                  <Box onClick={() => onSelectGender("F")}>
                     {!isMaleSelected ? (
                       <Image
                         src={FemaleSelected}
@@ -110,42 +188,65 @@ export default function SignUp() {
 
                 <Box>
                   <CustomInput
+                    value={entredName}
+                    errorText={errors.name}
                     type="text"
                     fullWidth={true}
                     placeholder="Name"
-                    errorText="Error text"
+                    onChange={(e: any) => setEntredName(e.target.value)}
+                    onBlur={(e: any) => setEntredName(e.target.value)}
                   />
                 </Box>
 
                 <Box>
                   <CustomInput
+                    value={entredEmail}
+                    id="email"
                     type="text"
                     fullWidth={true}
                     placeholder="Email"
-                    errorText="Error text"
+                    errorText={errors.email}
+                    onChange={(e: any) => setEntredEmail(e.target.value)}
+                    onBlur={(e: any) => setEntredEmail(e.target.value)}
                   />
                 </Box>
 
                 <Box>
                   <CustomInput
+                    value={entredPhoneNumber}
+                    id="phoneNo"
                     type="tel"
                     fullWidth={true}
                     placeholder="Phone No"
-                    errorText="Error text"
+                    errorText={errors.phoneNumber}
+                    onChange={(e: any) => setEntredPhoneNumber(e.target.value)}
+                    onBlur={(e: any) => setEntredPhoneNumber(e.target.value)}
                   />
                 </Box>
 
                 <Box>
                   <PasswordInput
+                    value={entredPassword}
+                    id="password"
                     placeholder="*********"
-                    errorText="Error text"
+                    errorText={errors.password}
+                    onChange={(e: any) => setEntredPassword(e.target.value)}
+                    onBlur={(e: any) => setEntredPassword(e.target.value)}
                   />
                 </Box>
 
                 <Box>
                   <PasswordInput
+                    value={enterdConfirmPassword}
+                    id="confirmPassword"
                     placeholder="*********"
-                    errorText="Error text"
+                    errorText={errors.confirmPassword}
+                    onChange={(e: any) =>
+                      setEnterdConfirmPassword(e.target.value)
+                    }
+                    onBlur={(e: any) =>
+                      setEnterdConfirmPassword(e.target.value)
+                    }
                   />
                 </Box>
               </Stack>

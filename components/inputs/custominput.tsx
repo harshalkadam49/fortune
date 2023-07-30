@@ -11,6 +11,7 @@ export default function CustomInput(props: any) {
         {props.customLabel}
       </Typography>
       <TextField
+        id={props.id}
         value={props.value}
         variant="outlined"
         autoComplete="off"
@@ -18,6 +19,8 @@ export default function CustomInput(props: any) {
         label=""
         fullWidth={props.fullWidth}
         placeholder={props.placeholder}
+        onChange={props.onChange}
+        onBlur={props.onBlur}
       />
 
       <Typography
