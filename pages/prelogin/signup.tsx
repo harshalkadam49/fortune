@@ -54,6 +54,8 @@ export default function SignUp() {
   const [emailOTPForm, setEmailOTPForm] = useState(false);
   const [smsOTPForm, setsmsOTPForm] = useState(false);
   const [isMaleSelected, setIsMaleSelected] = useState(true);
+  const [emailOTPVerified, setEmailOTPVerified] = useState(false);
+  const [SMSOTPVerified, setSMSOTPVerified] = useState(true);
 
   // variables to save
   const [gender, setGender] = useState("M");
@@ -109,7 +111,6 @@ export default function SignUp() {
     } else if (entredPassword != enterdConfirmPassword) {
       errors.confirmPassword = "Password does not match";
     }
-    console.log(errors);
     setErrors(errors);
   };
 
@@ -122,20 +123,28 @@ export default function SignUp() {
       phonenumber: entredPhoneNumber,
       password: entredPassword,
     };
-    // if (errors.lenght == 0) {
-      postuserapi(model,'/api/auth/signUp','POST');
-      // setSignUpform(false);
-      // setEmailOTPForm(true);
-    // }
+    if (
+      errors.name ||
+      errors.email ||
+      errors.phoneNumber ||
+      errors.password ||
+      errors.confirmPassword
+    ) {
+      postuserapi(model, "/api/auth/signUp", "POST");
+      setSignUpform(false);
+      setEmailOTPForm(true);
+    }
   };
   const onEmailOTPValidate = (value: any) => {
     setSignUpform(false);
     setEmailOTPForm(false);
     setsmsOTPForm(true);
+    setEmailOTPVerified(true);
   };
 
   const onSMSOTPValidate = (value: any) => {
     router.replace("/prelogin/registrationdone");
+    setSMSOTPVerified(true);
   };
 
   return (
@@ -304,18 +313,20 @@ export default function SignUp() {
               }}
             />
 
-            <Stack
-              pt="3rem"
-              alignItems="center"
-              direction="row"
-              justifyContent="center"
-              spacing="0.5rem"
-            >
-              <Image src={CheckIcon} height={20} width={20} alt="check" />
-              <Typography variant="subtitle1">Otp Vefified</Typography>
-            </Stack>
+            {emailOTPVerified && (
+              <Stack
+                pt="3rem"
+                alignItems="center"
+                direction="row"
+                justifyContent="center"
+                spacing="0.5rem"
+              >
+                <Image src={CheckIcon} height={20} width={20} alt="check" />
+                <Typography variant="subtitle1">Otp Vefified</Typography>
+              </Stack>
+            )}
 
-            <Stack
+            {/* <Stack
               pt="3rem"
               alignItems="center"
               direction="row"
@@ -324,7 +335,7 @@ export default function SignUp() {
             >
               <Image src={ErrorIcon} height={20} width={20} alt="check" />
               <Typography variant="subtitle1">Unable to verify</Typography>
-            </Stack>
+            </Stack> */}
           </Box>
         )}
 
@@ -360,18 +371,20 @@ export default function SignUp() {
               }}
             />
 
-            <Stack
-              pt="3rem"
-              alignItems="center"
-              direction="row"
-              justifyContent="center"
-              spacing="0.5rem"
-            >
-              <Image src={CheckIcon} height={20} width={20} alt="check" />
-              <Typography variant="subtitle1">Otp Vefified</Typography>
-            </Stack>
+            {SMSOTPVerified && (
+              <Stack
+                pt="3rem"
+                alignItems="center"
+                direction="row"
+                justifyContent="center"
+                spacing="0.5rem"
+              >
+                <Image src={CheckIcon} height={20} width={20} alt="check" />
+                <Typography variant="subtitle1">Otp Vefified</Typography>
+              </Stack>
+            )}
 
-            <Stack
+            {/* <Stack
               pt="3rem"
               alignItems="center"
               direction="row"
@@ -380,7 +393,7 @@ export default function SignUp() {
             >
               <Image src={ErrorIcon} height={20} width={20} alt="check" />
               <Typography variant="subtitle1">Unable to verify</Typography>
-            </Stack>
+            </Stack> */}
           </Box>
         )}
       </PreloginLayout>
