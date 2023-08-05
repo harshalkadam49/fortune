@@ -10,31 +10,42 @@ async function handler(req: any, res: any) {
     if (!name || !email || !password || !phonenumber || !gender) {
       res.status(422).json({
         message: "invalid input entries",
+        errorState: true,
       });
       return;
     } else {
       const db = client.db();
 
-      const existingUser = await db
+      const existingEmail = await db
         .collection("users")
-        .findOne({ email: email, phonenumber: phonenumber });
+        .findOne({ email: email });
 
-      if (existingUser) {
-        res.status(422).json({ message: "user already exists" });
+      const existingMobile = await db
+        .collection("users")
+        .findOne({ phonenumber: phonenumber });
+
+      if (existingEmail && existingMobile) {
+        res.status(422).json({
+          message: "user already exists",
+          errorState: true,
+        });
+        client.close();
+      } else {
+        const hashedPassword = await hashPassword(password);
+        const result = await db.collection("users").insertOne({
+          name: name,
+          email: email,
+          phonenumber: phonenumber,
+          password: hashedPassword,
+          gender: gender,
+        });
+
+        res.status(200).json({
+          message: "succesfull",
+          errorState: false,
+        });
         client.close();
       }
-      const hashedPassword = await hashPassword(password);
-      const result = await db.collection("users").insertOne({
-        name: name,
-        email: email,
-        phonenumber: phonenumber,
-        password: hashedPassword,
-        gender: gender,
-      });
-      console.log(result);
-
-      res.status(201).json({ message: "user created succesfully" });
-      client.close();
     }
   }
 }

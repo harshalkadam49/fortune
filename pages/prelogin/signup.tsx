@@ -29,7 +29,11 @@ import {
   isOnlyAlphabets,
   isOnlyDigits,
 } from "@/utilities/validators";
-import { postuserapi } from "@/apifunctions/createuser";
+import { postSMSOtp } from "@/apifunctions/postsmsotpapi";
+import { postuserapi } from "@/apifunctions/postuserapi";
+import { postEmailOtp } from "@/apifunctions/postemailotpapi";
+import { postValidateOtpapi } from "@/apifunctions/postValidateOtpapi";
+import { hash } from "bcryptjs";
 
 export default function SignUp() {
   const router = useRouter();
@@ -55,7 +59,10 @@ export default function SignUp() {
   const [smsOTPForm, setsmsOTPForm] = useState(false);
   const [isMaleSelected, setIsMaleSelected] = useState(true);
   const [emailOTPVerified, setEmailOTPVerified] = useState(false);
+  const [emailOTPNotVerified, setEmailOTPNotVerified] = useState(false);
+
   const [SMSOTPVerified, setSMSOTPVerified] = useState(true);
+  const [otp, setOtp] = useState("1970");
 
   // variables to save
   const [gender, setGender] = useState("M");
@@ -66,6 +73,11 @@ export default function SignUp() {
   const [enterdConfirmPassword, setEnterdConfirmPassword] = useState("");
   const [errors, setErrors] = useState<any>([]);
 
+  const [encryptedSMSOtp, setEncryptedSMSOtp] = useState<any>("");
+  const [encryptedEmailOtp, setEncryptedEmailOtp] = useState<any>("");
+
+  const [otpMsgEmail, setOtpMsgEmail] = useState<any>("");
+  const [otpMsgSMS, setOtpMsgSMS] = useState<any>("");
   const onSelectGender = (genderType: any) => {
     setIsMaleSelected(!isMaleSelected);
     setGender(genderType);
@@ -78,6 +90,7 @@ export default function SignUp() {
       phoneNumber: "",
       password: "",
       confirmPassword: "",
+      errorState: true,
     };
     // name
     if (isEmpty(entredName)) {
@@ -110,6 +123,8 @@ export default function SignUp() {
       errors.confirmPassword = "Confirm password cannot be blank";
     } else if (entredPassword != enterdConfirmPassword) {
       errors.confirmPassword = "Password does not match";
+    } else {
+      errors.errorState = false;
     }
     setErrors(errors);
   };
@@ -123,28 +138,65 @@ export default function SignUp() {
       phonenumber: entredPhoneNumber,
       password: entredPassword,
     };
-    if (
-      errors.name ||
-      errors.email ||
-      errors.phoneNumber ||
-      errors.password ||
-      errors.confirmPassword
-    ) {
-      postuserapi(model, "/api/auth/signUp", "POST");
-      setSignUpform(false);
-      setEmailOTPForm(true);
-    }
+
+    postuserapi(model, "/api/auth/signup", "POST").then((res) => {
+      if (res.errorState == false) {
+        setSignUpform(false);
+        setEmailOTPForm(true);
+        onGenerateEmailOtp();
+      }
+    });
   };
-  const onEmailOTPValidate = (value: any) => {
-    setSignUpform(false);
-    setEmailOTPForm(false);
-    setsmsOTPForm(true);
-    setEmailOTPVerified(true);
+  const onGenerateSMSOtp = () => {
+    let model = {
+      phonenumber: entredPhoneNumber,
+    };
+    postSMSOtp(model, "/api/auth/sendsmsotp", "POST").then((res) => {
+      setEncryptedSMSOtp(res.otp);
+    });
   };
 
-  const onSMSOTPValidate = (value: any) => {
-    router.replace("/prelogin/registrationdone");
-    setSMSOTPVerified(true);
+  const onGenerateEmailOtp = () => {
+    let model = {
+      email: entredEmail,
+    };
+    postEmailOtp(model, "/api/auth/sendemailotp", "POST").then((res) => {
+      setEncryptedEmailOtp(res.otp);
+    });
+  };
+
+  const onValidateEmailOtp = (otp: any) => {
+    let model = {
+      otp: otp,
+      encryptedOtp: encryptedEmailOtp,
+    };
+    postValidateOtpapi(model, "/api/auth/validateOtp", "POST").then((res) => {
+      if (res.errorState == false) {
+        setOtpMsgEmail(res.message);
+        setEmailOTPForm(false);
+        setsmsOTPForm(true);
+        onGenerateSMSOtp();
+      } else {
+        setOtpMsgEmail(res.message);
+      }
+    });
+  };
+
+  const onValidateSMSOtp = (otp: any) => {
+    let model = {
+      otp: otp,
+      encryptedOtp: encryptedSMSOtp,
+    };
+    postValidateOtpapi(model, "/api/auth/validateOtp", "POST").then((res) => {
+      console.log(res.message);
+      if (res.errorState == false) {
+        setSMSOTPVerified(true);
+        setOtpMsgSMS(res.message);
+        router.replace("/prelogin/registrationdone");
+      } else {
+        setOtpMsgSMS(res.message);
+      }
+    });
   };
 
   return (
@@ -287,7 +339,6 @@ export default function SignUp() {
             <Typography variant="h1" pb="5rem">
               Enter 4-digit OTP sent to <br></br> abc@abc.com
             </Typography>
-
             <PinInput
               length={4}
               initialValue=""
@@ -308,34 +359,19 @@ export default function SignUp() {
               regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
               onComplete={(value, index) => {
                 if (value.length == 4) {
-                  onEmailOTPValidate(value);
+                  onValidateEmailOtp(value);
                 }
               }}
             />
-
-            {emailOTPVerified && (
-              <Stack
-                pt="3rem"
-                alignItems="center"
-                direction="row"
-                justifyContent="center"
-                spacing="0.5rem"
-              >
-                <Image src={CheckIcon} height={20} width={20} alt="check" />
-                <Typography variant="subtitle1">Otp Vefified</Typography>
-              </Stack>
-            )}
-
-            {/* <Stack
+            <Stack
               pt="3rem"
               alignItems="center"
               direction="row"
               justifyContent="center"
               spacing="0.5rem"
             >
-              <Image src={ErrorIcon} height={20} width={20} alt="check" />
-              <Typography variant="subtitle1">Unable to verify</Typography>
-            </Stack> */}
+              <Typography variant="subtitle1">{otpMsgEmail}</Typography>
+            </Stack>
           </Box>
         )}
 
@@ -366,34 +402,20 @@ export default function SignUp() {
               regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
               onComplete={(value, index) => {
                 if (value.length == 4) {
-                  onSMSOTPValidate(value);
+                  onValidateSMSOtp(value);
                 }
               }}
             />
 
-            {SMSOTPVerified && (
-              <Stack
-                pt="3rem"
-                alignItems="center"
-                direction="row"
-                justifyContent="center"
-                spacing="0.5rem"
-              >
-                <Image src={CheckIcon} height={20} width={20} alt="check" />
-                <Typography variant="subtitle1">Otp Vefified</Typography>
-              </Stack>
-            )}
-
-            {/* <Stack
+            <Stack
               pt="3rem"
               alignItems="center"
               direction="row"
               justifyContent="center"
               spacing="0.5rem"
             >
-              <Image src={ErrorIcon} height={20} width={20} alt="check" />
-              <Typography variant="subtitle1">Unable to verify</Typography>
-            </Stack> */}
+              <Typography variant="subtitle1">{otpMsgSMS}</Typography>
+            </Stack>
           </Box>
         )}
       </PreloginLayout>
