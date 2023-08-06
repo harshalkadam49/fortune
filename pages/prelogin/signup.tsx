@@ -257,7 +257,7 @@ export default function SignUp() {
 
     postUserapi(model, "/api/auth/signUp", "POST").then((res) => {
       if (!res.errorState) {
-        return res
+        router.replace("/prelogin/registrationDone")
       }
     });
   };
