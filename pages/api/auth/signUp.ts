@@ -5,7 +5,15 @@ async function handler(req: any, res: any) {
   if (req.method == "POST") {
     const data = req.body;
     const client = await connectToDataBase();
-    const { name, email, password, phonenumber, gender } = data;
+    const {
+      name,
+      email,
+      password,
+      phonenumber,
+      gender,
+      isEmailVerified,
+      isPhoneVerified,
+    } = data;
 
     if (!name || !email || !password || !phonenumber || !gender) {
       res.status(422).json({
@@ -32,12 +40,14 @@ async function handler(req: any, res: any) {
         client.close();
       } else {
         const hashedPassword = await hashPassword(password);
-        const result = await db.collection("users").insertOne({
+        const result = await db.collection("Users").insertOne({
           name: name,
           email: email,
           phonenumber: phonenumber,
           password: hashedPassword,
           gender: gender,
+          isEmailVerified: isEmailVerified == null ? false : isEmailVerified,
+          isPhoneVerified: isPhoneVerified == null ? false : isPhoneVerified,
         });
 
         res.status(200).json({

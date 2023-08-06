@@ -17,9 +17,9 @@ export default function RegistrationDone() {
     },
   };
 
-  const onRedirectToRiskProfile = () =>{
-   // routre.replace("")
-  }
+  const onRedirectToRiskProfile = () => {
+    // routre.replace("")
+  };
 
   return (
     <PreloginLayout>
@@ -49,7 +49,7 @@ export default function RegistrationDone() {
               }}
               endIcon={<TrendingFlatIcon />}
             >
-              Proceed to risk profile
+              Continue
             </Button>
           </Box>
         </Tap>

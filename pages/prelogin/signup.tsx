@@ -31,7 +31,7 @@ import {
 } from "@/utilities/validators";
 import { postSmsOtpapi } from "@/apifunctions/postSmsOtp";
 import { postUserapi } from "@/apifunctions/postUser";
-import { postEmailOtpapi } from "@/apifunctions/postemailotp";
+import { postEmailOtpapi } from "@/apifunctions/postEmailOtp";
 import { postValidateOtpapi } from "@/apifunctions/postValidateOtp";
 import { hash } from "bcryptjs";
 import { postCheckExistingEmailapi } from "@/apifunctions/postCheckExistingEmail";
@@ -131,13 +131,64 @@ export default function SignUp() {
     setErrors(errors);
   };
 
-  const onGenerateSMSOtp = () => {
-    let model = {
-      phonenumber: entredPhoneNumber,
-    };
-    postSmsOtpapi(model, "/api/auth/sendSmsOtp", "POST").then((res) => {
-      setEncryptedSMSOtp(res.otp);
-    });
+  const handleChange = (value: any, type: any) => {
+    signupValidation();
+    if (type == "Name") {
+      setEntredName(value);
+    } else if (type == "Email") {
+      setEntredEmail(value);
+      // onCheckExistingEmail(value);
+    } else if (type == "PhoneNo") {
+      setEntredPhoneNumber(value);
+      // onCheckExistingPhone(value);
+    } else if (type == "Password") {
+      setEntredPassword(value);
+    } else if (type == "ConfirmPassword") {
+      setEnterdConfirmPassword(value);
+    }
+  };
+
+  // api flow
+  const onCheckExistingEmail = () => {
+    if (isEmail(entredEmail)) {
+      let model = {
+        email: entredEmail,
+      };
+      postCheckExistingEmailapi(
+        model,
+        "/api/auth/checkExistingEmail",
+        "POST"
+      ).then((res) => {
+        errors.email = res.message;
+        errors.errorState = res.errorState;
+        setErrors(errors);
+
+        if (!res.errorState) {
+          onCheckExistingPhone();
+        }
+      });
+    }
+  };
+
+  const onCheckExistingPhone = () => {
+    if (entredPhoneNumber.length == 10) {
+      let model = {
+        phonenumber: entredPhoneNumber,
+      };
+      postCheckExistingPhoneapi(
+        model,
+        "/api/auth/checkExistingPhone",
+        "POST"
+      ).then((res) => {
+        errors.phoneNumber = res.message;
+        errors.errorState = res.errorState;
+        setErrors(errors);
+
+        if (!res.errorState) {
+          onGenerateEmailOtp();
+        }
+      });
+    }
   };
 
   const onGenerateEmailOtp = () => {
@@ -145,7 +196,11 @@ export default function SignUp() {
       email: entredEmail,
     };
     postEmailOtpapi(model, "/api/auth/sendEmailOtp", "POST").then((res) => {
-      setEncryptedEmailOtp(res.otp);
+      if (!res.errorState) {
+        setEncryptedEmailOtp(res.otp);
+        setSignUpform(false);
+        setEmailOTPForm(true);
+      }
     });
   };
 
@@ -155,13 +210,23 @@ export default function SignUp() {
       encryptedOtp: encryptedEmailOtp,
     };
     postValidateOtpapi(model, "/api/auth/validateOtp", "POST").then((res) => {
-      if (res.errorState == false) {
-        setOtpMsgEmail(res.message);
+      setOtpMsgEmail(res.message);
+      if (!res.errorState) {
+        onGenerateSMSOtp();
         setEmailOTPForm(false);
         setsmsOTPForm(true);
-        onGenerateSMSOtp();
-      } else {
-        setOtpMsgEmail(res.message);
+      }
+    });
+  };
+
+  const onGenerateSMSOtp = () => {
+    let model = {
+      phonenumber: entredPhoneNumber,
+    };
+    postSmsOtpapi(model, "/api/auth/sendSmsOtp", "POST").then((res) => {
+      setOtpMsgSMS(res.message);
+      if (!res.errorState) {
+        setEncryptedSMSOtp(res.otp);
       }
     });
   };
@@ -172,82 +237,35 @@ export default function SignUp() {
       encryptedOtp: encryptedSMSOtp,
     };
     postValidateOtpapi(model, "/api/auth/validateOtp", "POST").then((res) => {
-      console.log(res.message);
-      if (res.errorState == false) {
-        setSMSOTPVerified(true);
-        setOtpMsgSMS(res.message);
-        router.replace("/prelogin/registrationdone");
-      } else {
-        setOtpMsgSMS(res.message);
+      setOtpMsgSMS(res.message);
+      if (!res.errorState) {
+        onCreateUser();
       }
     });
   };
 
-  const handleChange = (value: any, type: any) => {
-    signupValidation();
-    if (type == "Name") {
-      setEntredName(value);
-    } else if (type == "Email") {
-      setEntredEmail(value);
-      onCheckExistingEmail(value);
-    } else if (type == "PhoneNo") {
-      setEntredPhoneNumber(value);
-      onCheckExistingPhone(value);
-    } else if (type == "Password") {
-      setEntredPassword(value);
-    } else if (type == "ConfirmPassword") {
-      setEnterdConfirmPassword(value);
-    }
-  };
-
-  const onCheckExistingEmail = (value: any) => {
-    if (isEmail(value)) {
-      let model = {
-        email: value,
-      };
-      postCheckExistingEmailapi(
-        model,
-        "/api/auth/checkExistingEmail",
-        "POST"
-      ).then((res) => {
-        errors.email = res.message;
-        setErrors(errors);
-      });
-    }
-  };
-
-  const onCheckExistingPhone = (value: any) => {
-    if (value.length == 10) {
-      let model = {
-        phonenumber: value,
-      };
-      postCheckExistingPhoneapi(
-        model,
-        "/api/auth/checkExistingPhone",
-        "POST"
-      ).then((res) => {
-        errors.phoneNumber = res.message;
-        setErrors(errors);
-      });
-    }
-  };
-
-  const onSubmit = () => {
+  const onCreateUser = () => {
     let model = {
       gender: gender,
       name: capitalizeFirstLetter(entredName),
       email: entredEmail,
       phonenumber: entredPhoneNumber,
       password: entredPassword,
+      isEmailVerified: true,
+      isPhoneVerified: true,
     };
 
     postUserapi(model, "/api/auth/signUp", "POST").then((res) => {
-      if (res.errorState == false) {
-        setSignUpform(false);
-        setEmailOTPForm(true);
-        onGenerateEmailOtp();
+      if (!res.errorState) {
+        return res
       }
     });
+  };
+
+  const onSubmit = () => {
+    if (!errors.errorState) {
+      onCheckExistingEmail();
+    }
   };
 
   return (
