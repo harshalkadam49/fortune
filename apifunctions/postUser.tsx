@@ -7,10 +7,5 @@ export async function postUserapi(model: any, url: any, method: any) {
   });
 
   const data = await response.json();
-
-  if (response.ok) {
-    return data;
-  } else {
-    return response;
-  }
+  return data;
 }
