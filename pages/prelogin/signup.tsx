@@ -29,10 +29,10 @@ import {
   isOnlyAlphabets,
   isOnlyDigits,
 } from "@/utilities/validators";
-import { postSMSOtp } from "@/apifunctions/postsmsotpapi";
-import { postuserapi } from "@/apifunctions/postuserapi";
-import { postEmailOtp } from "@/apifunctions/postemailotpapi";
-import { postValidateOtpapi } from "@/apifunctions/postValidateOtpapi";
+import { postSmsOtpapi } from "@/apifunctions/postSmsOtp";
+import { postUserapi } from "@/apifunctions/postUser";
+import { postEmailOtpapi } from "@/apifunctions/postemailotp";
+import { postValidateOtpapi } from "@/apifunctions/postValidateOtp";
 import { hash } from "bcryptjs";
 
 export default function SignUp() {
@@ -139,7 +139,7 @@ export default function SignUp() {
       password: entredPassword,
     };
 
-    postuserapi(model, "/api/auth/signup", "POST").then((res) => {
+    postUserapi(model, "/api/auth/signUp", "POST").then((res) => {
       if (res.errorState == false) {
         setSignUpform(false);
         setEmailOTPForm(true);
@@ -151,7 +151,7 @@ export default function SignUp() {
     let model = {
       phonenumber: entredPhoneNumber,
     };
-    postSMSOtp(model, "/api/auth/sendsmsotp", "POST").then((res) => {
+    postSmsOtpapi(model, "/api/auth/sendSmsOtp", "POST").then((res) => {
       setEncryptedSMSOtp(res.otp);
     });
   };
@@ -160,7 +160,7 @@ export default function SignUp() {
     let model = {
       email: entredEmail,
     };
-    postEmailOtp(model, "/api/auth/sendemailotp", "POST").then((res) => {
+    postEmailOtpapi(model, "/api/auth/sendEmailOtp", "POST").then((res) => {
       setEncryptedEmailOtp(res.otp);
     });
   };
@@ -197,6 +197,21 @@ export default function SignUp() {
         setOtpMsgSMS(res.message);
       }
     });
+  };
+
+  const handleChange = (value: any, type: any) => {
+    signupValidation();
+    if (type == "Name") {
+      setEntredName(value);
+    } else if (type == "Email") {
+      setEntredEmail(value);
+    } else if (type == "PhoneNo") {
+      setEntredPhoneNumber(value);
+    } else if (type == "Password") {
+      setEntredPassword(value);
+    } else if (type == "ConfirmPassword") {
+      setEnterdConfirmPassword(value);
+    }
   };
 
   return (
@@ -254,8 +269,8 @@ export default function SignUp() {
                     type="text"
                     fullWidth={true}
                     placeholder="Name"
-                    onChange={(e: any) => setEntredName(e.target.value)}
-                    onBlur={(e: any) => setEntredName(e.target.value)}
+                    onChange={(e: any) => handleChange(e.target.value, "Name")}
+                    onBlur={(e: any) => handleChange(e.target.value, "Name")}
                   />
                 </Box>
 
@@ -267,8 +282,8 @@ export default function SignUp() {
                     fullWidth={true}
                     placeholder="Email"
                     errorText={errors.email}
-                    onChange={(e: any) => setEntredEmail(e.target.value)}
-                    onBlur={(e: any) => setEntredEmail(e.target.value)}
+                    onChange={(e: any) => handleChange(e.target.value, "Email")}
+                    onBlur={(e: any) => handleChange(e.target.value, "Email")}
                   />
                 </Box>
 
@@ -280,8 +295,10 @@ export default function SignUp() {
                     fullWidth={true}
                     placeholder="Phone No"
                     errorText={errors.phoneNumber}
-                    onChange={(e: any) => setEntredPhoneNumber(e.target.value)}
-                    onBlur={(e: any) => setEntredPhoneNumber(e.target.value)}
+                    onChange={(e: any) =>
+                      handleChange(e.target.value, "PhoneNo")
+                    }
+                    onBlur={(e: any) => handleChange(e.target.value, "PhoneNo")}
                   />
                 </Box>
 
@@ -291,8 +308,12 @@ export default function SignUp() {
                     id="password"
                     placeholder="*********"
                     errorText={errors.password}
-                    onChange={(e: any) => setEntredPassword(e.target.value)}
-                    onBlur={(e: any) => setEntredPassword(e.target.value)}
+                    onChange={(e: any) =>
+                      handleChange(e.target.value, "Password")
+                    }
+                    onBlur={(e: any) =>
+                      handleChange(e.target.value, "Password")
+                    }
                   />
                 </Box>
 
@@ -303,10 +324,10 @@ export default function SignUp() {
                     placeholder="*********"
                     errorText={errors.confirmPassword}
                     onChange={(e: any) =>
-                      setEnterdConfirmPassword(e.target.value)
+                      handleChange(e.target.value, "ConfirmPassword")
                     }
                     onBlur={(e: any) =>
-                      setEnterdConfirmPassword(e.target.value)
+                      handleChange(e.target.value, "ConfirmPassword")
                     }
                   />
                 </Box>
