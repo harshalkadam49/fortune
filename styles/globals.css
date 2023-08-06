@@ -68,15 +68,13 @@ a {
   }
 }
 
-.introCarrousel,
-.adsBanner .swiper-pagination-bullet-active {
+.introCarrousel .swiper-pagination-bullet-active {
   background-color: #ff426f !important;
   height: 0.625rem;
   width: 0.625rem;
 }
 
-.introCarrousel,
-.adsBanner .swiper-pagination-bullet {
+.introCarrousel .swiper-pagination-bullet {
   background-color: #f2ff9f;
   opacity: 1;
   height: 0.625rem;
@@ -85,4 +83,17 @@ a {
 
 .adsBanner .swiper-wrapper {
   height: 13rem;
+}
+
+.adsBanner .swiper-pagination-bullet-active {
+  background-color: #ff426f !important;
+  height: 0.625rem;
+  width: 0.625rem;
+}
+
+.adsBanner .swiper-pagination-bullet {
+  background-color: #f2ff9f;
+  opacity: 1;
+  height: 0.625rem;
+  width: 0.625rem;
 }
