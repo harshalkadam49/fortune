@@ -68,15 +68,21 @@ a {
   }
 }
 
-.introCarrousel .swiper-pagination-bullet-active {
+.introCarrousel,
+.adsBanner .swiper-pagination-bullet-active {
   background-color: #ff426f !important;
   height: 0.625rem;
   width: 0.625rem;
 }
 
-.introCarrousel .swiper-pagination-bullet {
+.introCarrousel,
+.adsBanner .swiper-pagination-bullet {
   background-color: #f2ff9f;
   opacity: 1;
   height: 0.625rem;
   width: 0.625rem;
+}
+
+.adsBanner .swiper-wrapper {
+  height: 13rem;
 }
