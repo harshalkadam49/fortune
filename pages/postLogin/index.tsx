@@ -1,26 +1,71 @@
 import PostloginLayout from "@/components/layouts/postLogin";
-import { Box, Tab, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  FormControl,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  Tab,
+  Typography,
+} from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 // import required modules
-import { Pagination } from "swiper/modules";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import { Pagination, FreeMode } from "swiper/modules";
 
 // images
 import DummyImgSlider from "../../public/dummyImg.svg";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getEquityMasterapi } from "@/apifunctions/getEquityMaster";
+import { add3Dots } from "@/utilities/commonfunctions";
+import { getEquityLoosersapi } from "@/apifunctions/getEquityLoosers";
 
 export default function Home() {
   const [type, setType] = useState("1");
+  const [stocksType, setStocksType] = useState("Gainers");
+  const [indianEquityDetails, setIndianEquityDetails] = useState([]);
+  const [indianEquityGainers, setIndianEquityGainers] = useState([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setType(newValue);
   };
+
+  const handleChangeStockType = (event: SelectChangeEvent) => {
+    setStocksType(event.target.value as string);
+    if (event.target.value == "Gainers") {
+      onGetEquityGainers();
+    } else {
+      onGetEquityLoosers();
+    }
+  };
+
+  const onGetEquityGainers = () => {
+    getEquityMasterapi("/api/auth/equityGainers", "GET").then((res) => {
+      if (!res.errorState) {
+        setIndianEquityGainers(res);
+      }
+    });
+  };
+
+  const onGetEquityLoosers = () => {
+    getEquityLoosersapi("/api/auth/equityLoosers", "GET").then((res) => {
+      if (!res.errorState) {
+        setIndianEquityGainers(res);
+      }
+    });
+  };
+
+  useEffect(() => {
+    onGetEquityGainers();
+  }, []);
 
   return (
     <PostloginLayout>
@@ -123,7 +168,68 @@ export default function Home() {
               </TabList>
             </Box>
             <TabPanel value="1" sx={{ pt: "2rem" }}>
-              <Typography variant="h2">Item One</Typography>
+              <FormControl
+                sx={{ width: "40%", pb: "1.5rem" }}
+                variant="standard"
+              >
+                <Select
+                  value={stocksType}
+                  onChange={handleChangeStockType}
+                  disableUnderline
+                  sx={{
+                    background: "#000",
+                    color: "#fff",
+                    "& .MuiSvgIcon-root": {
+                      color: "white",
+                      fontSize: "2rem",
+                    },
+                  }}
+                >
+                  <MenuItem value="Gainers">
+                    <Typography variant="h1">Top Gainers</Typography>
+                  </MenuItem>
+                  <MenuItem value="Loosers">
+                    <Typography variant="h1">Top Loosers</Typography>
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              <Swiper
+                slidesPerView={3}
+                spaceBetween={10}
+                freeMode={true}
+                modules={[Pagination, FreeMode]}
+              >
+                {indianEquityGainers.map((item: any, index: any) => (
+                  <SwiperSlide>
+                    <Box
+                      sx={{
+                        height: "10rem",
+                        background: "#343434",
+                        borderRadius: "0.5rem",
+                        p: "0.7rem",
+                      }}
+                    >
+                      <Stack spacing={2}>
+                        <Avatar></Avatar>
+                        <Typography variant="h2" pt="1rem">
+                          {add3Dots(item.CompanyName, 10)}
+                        </Typography>
+                        <Stack direction="row" spacing={2} alignItems="center">
+                          <Typography variant="subtitle1">
+                            ₹ {item.LastPrice}
+                          </Typography>
+                          <Typography
+                            variant="h3"
+                            color={item.Change < 0 ? "#EE4D37" : "#76FFC6"}
+                          >
+                            ({item.Change})
+                          </Typography>
+                        </Stack>
+                      </Stack>
+                    </Box>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </TabPanel>
 
             <TabPanel value="2" sx={{ pt: "2rem" }}>
