@@ -25,6 +25,7 @@ import Loader from "../loader";
 import { Router, useRouter } from "next/router";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import ListIcon from "@mui/icons-material/List";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -96,12 +97,17 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
       pathname: "/postLogin/stocks/stockLists",
     });
   };
+  const redirectToOrders = () => {
+    router.push({
+      pathname: "/postLogin/stocks/equityOrders",
+    });
+  };
 
   return (
     <div>
       {(["left"] as const).map((anchor) => (
         <React.Fragment key={anchor}>
-          <AppBar position="static" sx={{ background: "#000" }}>
+          <AppBar position="fixed" sx={{ background: "#000" }}>
             <Stack
               direction="row"
               justifyContent="space-between"
@@ -132,7 +138,10 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                   onClick={onRedirectToStocksLists}
                 />
                 <Badge variant="dot" color="error">
-                  <NotificationsIcon sx={{ fontSize: "1.8rem" }} />
+                  <ListIcon
+                    onClick={redirectToOrders}
+                    sx={{ fontSize: "1.8rem" }}
+                  />
                 </Badge>
                 <Avatar sx={{ width: 26, height: 26, color: "" }} />
               </Stack>
@@ -146,7 +155,7 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
           >
             {/* List to be added here */}
           </SwipeableDrawer>
-          <Container sx={{ p: "0" }}>
+          <Container sx={{ p: "0", pt: "5rem" }}>
             <Loader isLoading={isLoading} />
             {children}
           </Container>

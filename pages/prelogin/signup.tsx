@@ -268,6 +268,10 @@ export default function SignUp() {
     }
   };
 
+  const onLogin = () => {
+    router.push("/prelogin/login");
+  };
+
   return (
     <>
       <PreloginLayout showBackheader={true}>
@@ -388,23 +392,40 @@ export default function SignUp() {
               </Stack>
             </form>
 
-            <BottomStay>
-              <Tap>
-                <Box>
-                  <Button
-                    onClick={onSubmit}
-                    fullWidth
-                    variant="contained"
-                    sx={{
-                      borderRadius: "5rem",
-                    }}
-                    endIcon={<TrendingFlatIcon />}
-                  >
-                    Sign Up
-                  </Button>
+            <Box
+              sx={{
+                position: "fixed",
+                bottom: 10,
+                left: 0,
+                right: 0,
+                background: "#000",
+                height: "7rem",
+              }}
+            >
+              <Stack sx={{ width: "90%", mx: "auto" }}>
+                <Tap>
+                  <Box>
+                    <Button
+                      onClick={onSubmit}
+                      fullWidth
+                      variant="contained"
+                      sx={{
+                        borderRadius: "5rem",
+                      }}
+                      endIcon={<TrendingFlatIcon />}
+                    >
+                      Sign Up
+                    </Button>
+                  </Box>
+                </Tap>
+
+                <Box textAlign="center" pt="1rem" onClick={onLogin}>
+                  <Typography variant="h2" color="#fff">
+                    Sign In
+                  </Typography>
                 </Box>
-              </Tap>
-            </BottomStay>
+              </Stack>
+            </Box>
           </Box>
         )}
 

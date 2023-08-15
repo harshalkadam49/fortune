@@ -2,6 +2,7 @@ import { getEquityDetailsapi } from "@/apifunctions/getEquityDetails";
 import { postEquityOrdersapi } from "@/apifunctions/postEquityOrders";
 import CustomInput from "@/components/inputs/custominput";
 import LayoutWithBackheader from "@/components/layouts/withbackheader";
+import Toast from "@/components/toasts/loginToast";
 import {
   Avatar,
   BottomNavigation,
@@ -22,9 +23,12 @@ export default function OrderExecution() {
   const [quantity, setQuantity] = useState<any>(0);
   const [error, setError] = useState<any>("");
   const [orderType, setOrderType] = useState<any>("");
+  const [open, setOpen] = useState(false);
 
   const onPlaceOrder = () => {
     if (error == " ") {
+      setOpen(false);
+      setError(" ");
       let model = {
         stockname: stockDetails.CompanyName,
         price: stockDetails.LastPrice,
@@ -34,10 +38,13 @@ export default function OrderExecution() {
       postEquityOrdersapi(model, "/api/auth/equityOrders", "POST").then(
         (res) => {
           if (!res.errorState) {
-            router.push("/postLogin/stocks/equityOrders")
+            router.push("/postLogin/stocks/equityOrders");
           }
         }
       );
+    } else {
+      setOpen(true);
+      setError("Invalid Quantity");
     }
   };
 
@@ -52,12 +59,25 @@ export default function OrderExecution() {
     });
   };
 
+  const handleClose = (event: any, reason: any) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const handleQuantityChange = (value: any) => {
     setQuantity(value);
     if (value > 0) {
+      setOpen(false);
       setError(" ");
+    } else if (value == 0) {
+      setError("Invalid Quantity");
+      setOpen(true);
     } else {
       setError("Invalid Quantity");
+      setOpen(true);
     }
   };
 
@@ -72,6 +92,12 @@ export default function OrderExecution() {
   return (
     <>
       <LayoutWithBackheader showHeader={true} pageTitle="Place Order">
+        <Toast
+          open={open}
+          handleClose={handleClose}
+          message={error}
+          severity="error"
+        />
         <Box px="1rem" pt="5rem" pb="50%">
           <Stack
             direction="row"

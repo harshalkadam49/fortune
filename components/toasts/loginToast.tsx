@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { Typography } from "@mui/material";
+import { Alert, Typography } from "@mui/material";
 
 export default function Toast(props: any) {
   const action = (
@@ -25,9 +25,17 @@ export default function Toast(props: any) {
         open={props.open}
         autoHideDuration={3000}
         onClose={props.handleClose}
-        message={<Typography variant="h2" >{props.message}</Typography>}
+        message={<Typography variant="h2"></Typography>}
         action={action}
-      />
+      >
+        <Alert
+          onClose={props.handleClose}
+          severity={props.severity}
+          sx={{ width: "100%" }}
+        >
+          <Typography variant="h2">{props.message}</Typography>
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

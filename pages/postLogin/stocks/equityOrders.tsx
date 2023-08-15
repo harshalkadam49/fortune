@@ -1,4 +1,5 @@
 import { getEquityOrdersPlacedapi } from "@/apifunctions/getEquityOrdersPlaced";
+import EmptyOrderList from "@/components/emptystates/orderLists";
 import LayoutWithBackheader from "@/components/layouts/withbackheader";
 import { Box, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -22,31 +23,33 @@ export default function EquityOrders() {
   return (
     <LayoutWithBackheader showHeader={true} pageTitle="Place Order">
       <Box px="1rem" pt="5rem" pb="50%">
-        <Typography variant="h1"> All Orders</Typography>
+        <Typography variant="h1" pb="1rem"> All Orders</Typography>
 
-        <Grid
-          container
-          pb="1rem"
-          pt="2rem"
-          sx={{
-            borderRadius: "0.5rem",
-            p: "1rem 0.688rem",
-          }}
-        >
-          <Grid item xs={3}>
-            <Typography variant="h2">Stock</Typography>
-          </Grid>
-          <Grid item xs={3}>
-            <Typography variant="h2">Price</Typography>
-          </Grid>
-          <Grid item xs={3}>
-            <Typography variant="h2">Qty</Typography>
-          </Grid>
+        {orderLists.length > 0 && (
+          <Grid
+            container
+            pb="1rem"
+            pt="2rem"
+            sx={{
+              borderRadius: "0.5rem",
+              p: "1rem 0.688rem",
+            }}
+          >
+            <Grid item xs={3}>
+              <Typography variant="h2">Stock</Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography variant="h2">Price</Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography variant="h2">Qty</Typography>
+            </Grid>
 
-          <Grid item xs={3}>
-            <Typography variant="h2">Type</Typography>
+            <Grid item xs={3}>
+              <Typography variant="h2">Type</Typography>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
 
         {orderLists.map((item: any) => (
           <Grid
@@ -63,8 +66,7 @@ export default function EquityOrders() {
               <Typography variant="h3">{item.stockname}</Typography>
             </Grid>
             <Grid item xs={3}>
-              <Typography variant="h3"
-              >{item.price}</Typography>
+              <Typography variant="h3">{item.price}</Typography>
             </Grid>
             <Grid item xs={3}>
               <Typography
@@ -85,6 +87,8 @@ export default function EquityOrders() {
             </Grid>
           </Grid>
         ))}
+
+        {orderLists.length == 0 && <EmptyOrderList />}
       </Box>
     </LayoutWithBackheader>
   );

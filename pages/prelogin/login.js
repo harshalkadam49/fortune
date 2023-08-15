@@ -76,9 +76,13 @@ export default function SignUp() {
     }
   }
 
+  const onSignUp = () => {
+    router.push("/prelogin/signup");
+  };
+
   return (
     <>
-      <Toast open={open} handleClose={handleClose} message={errors} />
+      <Toast open={open} handleClose={handleClose} message={error} severity="error"/>
       <Box>
         <Paper
           sx={{
@@ -117,11 +121,11 @@ export default function SignUp() {
             <Box
               sx={{
                 position: "fixed",
-                bottom: 0,
+                bottom: 10,
                 left: 0,
                 right: 0,
                 background: "#000",
-                height: "6rem",
+                height: "7rem",
               }}
             >
               <Stack sx={{ width: "90%", mx: "auto" }}>
@@ -135,6 +139,12 @@ export default function SignUp() {
                   Sign In
                 </Button>
               </Stack>
+
+              <Box textAlign="center" pt="1rem" onClick={onSignUp}>
+                <Typography variant="h2" color="#fff">
+                  Sign Up
+                </Typography>
+              </Box>
             </Box>
           </form>
         </Paper>
