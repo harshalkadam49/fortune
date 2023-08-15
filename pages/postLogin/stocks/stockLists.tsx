@@ -18,11 +18,17 @@ import { useRouter } from "next/router";
 export default function StocksLists() {
   const router = useRouter();
   const [equityLists, setEquityLists] = useState<any>([]);
+  const [filteredEquityLists, setFilteredEquityLists] = useState<any>([]);
+
+  const getData = (res: any) => {
+    setFilteredEquityLists(res);
+  };
 
   const onGetEquityLists = () => {
     getEquityMasterapi("/api/auth/equityMaster", "GET").then((res) => {
       if (!res.errorState) {
         setEquityLists(res);
+        getData(res);
       }
     });
   };
@@ -34,6 +40,13 @@ export default function StocksLists() {
     });
   };
 
+  const onSearch = (searchValue: any) => {
+    var filteredEquityLists = equityLists.filter((c: any) =>
+      c.CompanyName.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredEquityLists(filteredEquityLists);
+  };
+
   useEffect(() => {
     onGetEquityLists();
   }, []);
@@ -43,6 +56,7 @@ export default function StocksLists() {
       <Box px="1rem" pt="5rem" pb="50%">
         <Box>
           <TextField
+            autoComplete="off"
             variant="outlined"
             fullWidth
             placeholder="Search..."
@@ -59,11 +73,13 @@ export default function StocksLists() {
                 </InputAdornment>
               ),
             }}
+            onChange={(e: any) => onSearch(e.target.value)}
           />
         </Box>
 
-        {equityLists.map((item: any) => (
+        {filteredEquityLists.map((item: any, index: any) => (
           <Grid
+            key={index}
             mt="1rem"
             container
             alignItems="center"
@@ -72,9 +88,12 @@ export default function StocksLists() {
               borderRadius: "0.5rem",
               p: "1.2rem 0.688rem",
             }}
-            onClick={() => onRedirectToDetails(item.CompanyName)}
           >
-            <Grid item xs={2}>
+            <Grid
+              item
+              xs={2}
+              onClick={() => onRedirectToDetails(item.CompanyName)}
+            >
               <Avatar
                 sx={{ background: "#F3FFBD", height: "2rem", width: "2rem" }}
               >
@@ -87,7 +106,11 @@ export default function StocksLists() {
               </Avatar>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid
+              item
+              xs={5}
+              onClick={() => onRedirectToDetails(item.CompanyName)}
+            >
               <Typography variant="h2">{item.CompanyName}</Typography>
               <Stack direction="row" alignItems="center" pt={1} spacing={1}>
                 <Typography variant="h3">₹ {item.PrevClose}</Typography>
@@ -100,7 +123,7 @@ export default function StocksLists() {
               </Stack>
             </Grid>
 
-            <Grid item xs={4}>
+            <Grid item xs={5}>
               <Stack spacing={2} direction="row" alignItems="center">
                 <Chip
                   label={
@@ -111,7 +134,7 @@ export default function StocksLists() {
                   sx={{
                     background: "#76FFC6",
                     width: "55%",
-                    height: "1.5rem",
+                    height: "1.8rem",
                   }}
                 />
 
@@ -124,7 +147,7 @@ export default function StocksLists() {
                   sx={{
                     background: "#EE4D37",
                     width: "55%",
-                    height: "1.5rem",
+                    height: "1.8rem",
                   }}
                 />
               </Stack>

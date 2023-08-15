@@ -22,13 +22,14 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Loader from "../loader";
-import { Router } from "next/router";
+import { Router, useRouter } from "next/router";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
 export default function SwipeableTemporaryDrawer({ children, props }: any) {
+  const router = useRouter();
   const [state, setState] = React.useState({
     top: false,
     left: false,
@@ -90,6 +91,12 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
     </Box>
   );
 
+  const onRedirectToStocksLists = () => {
+    router.push({
+      pathname: "/postLogin/stocks/stockLists",
+    });
+  };
+
   return (
     <div>
       {(["left"] as const).map((anchor) => (
@@ -120,7 +127,10 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                 justifyContent="space-evenly"
                 spacing={5}
               >
-                <SearchIcon sx={{ fontSize: "1.8rem" }} />
+                <SearchIcon
+                  sx={{ fontSize: "1.8rem" }}
+                  onClick={onRedirectToStocksLists}
+                />
                 <Badge variant="dot" color="error">
                   <NotificationsIcon sx={{ fontSize: "1.8rem" }} />
                 </Badge>

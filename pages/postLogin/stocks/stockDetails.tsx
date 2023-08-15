@@ -25,8 +25,10 @@ import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { getEquityDetailsapi } from "@/apifunctions/getEquityDetails";
 import { useRouter } from "next/router";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
-const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 5,
   borderRadius: 5,
   [`&.${linearProgressClasses.colorPrimary}`]: {
@@ -42,11 +44,16 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 export default function StockDetails() {
   const router = useRouter();
   const [saveToWatchList, setSaveToWatchList] = useState(false);
+  const [addToCart, setAddToCart] = useState(false);
   const [CompanyName, setCompanyName] = useState<any>("");
   const [stockDetails, setStockDetails] = useState<any>([]);
 
-  const onToggleWatchList = () => {
-    setSaveToWatchList(!saveToWatchList);
+  const onAddToWatchList = () => {
+    setSaveToWatchList(true);
+  };
+
+  const onAddToCart = () => {
+    setAddToCart(true);
   };
 
   const onGetStockDetails = (CompanyName: any) => {
@@ -116,21 +123,37 @@ export default function StockDetails() {
                       p: "0.1rem 0.5rem",
                     }}
                   >
-                    <Typography variant="h3" >{stockDetails.SectorName}</Typography>
+                    <Typography variant="h3">
+                      {stockDetails.SectorName}
+                    </Typography>
                   </Box>
                 </Stack>
 
-                <IconButton onClick={onToggleWatchList}>
-                  {saveToWatchList ? (
-                    <BookmarkAddedIcon
-                      sx={{ fontSize: "1.8rem", color: "#F0882D" }}
-                    />
-                  ) : (
-                    <BookmarkBorderOutlinedIcon
-                      sx={{ fontSize: "1.8rem", color: "#fff" }}
-                    />
-                  )}
-                </IconButton>
+                <Stack direction="row" alignItems="center">
+                  <IconButton onClick={onAddToWatchList}>
+                    {saveToWatchList ? (
+                      <ShoppingCartIcon
+                        sx={{ fontSize: "1.8rem", color: "#F0882D" }}
+                      />
+                    ) : (
+                      <ShoppingCartOutlinedIcon
+                        sx={{ fontSize: "1.8rem", color: "#fff" }}
+                      />
+                    )}
+                  </IconButton>
+
+                  <IconButton onClick={onAddToCart}>
+                    {addToCart ? (
+                      <BookmarkAddedIcon
+                        sx={{ fontSize: "1.8rem", color: "#F0882D" }}
+                      />
+                    ) : (
+                      <BookmarkBorderOutlinedIcon
+                        sx={{ fontSize: "1.8rem", color: "#fff" }}
+                      />
+                    )}
+                  </IconButton>
+                </Stack>
               </Stack>
 
               <Stack direction="row" alignItems="center" spacing={2}>
