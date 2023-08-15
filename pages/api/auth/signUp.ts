@@ -29,7 +29,7 @@ async function handler(req: any, res: any) {
         .findOne({ email: email });
 
       const existingMobile = await db
-        .collection("users")
+        .collection("Users")
         .findOne({ phonenumber: phonenumber });
 
       if (existingEmail && existingMobile) {

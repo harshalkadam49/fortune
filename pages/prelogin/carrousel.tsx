@@ -61,7 +61,7 @@ export default function Carrousel() {
         <Box sx={{ float: "right" }}>
           <Tap>
             <Button
-              onClick={onSignUp}
+              onClick={onLogin}
               variant="text"
               sx={{
                 textTransform: "capitalize",
