@@ -193,7 +193,7 @@ export default function OrderExecution() {
           >
             <Stack
               sx={{
-                width: "95%",
+                width: { lg: "25%", xs: "95%" },
                 mx: "auto",
               }}
               justifyContent="center"

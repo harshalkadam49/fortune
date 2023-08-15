@@ -115,3 +115,12 @@ a {
   border-radius: 0.5rem;
   padding: 0.5rem 4rem;
 }
+
+::-webkit-scrollbar {
+  width: 0;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #FF0000;
+}

@@ -320,10 +320,11 @@ export default function StockDetails() {
             background: "#000",
             height: "6rem",
           }}
+
         >
           <Stack
             sx={{
-              width: "95%",
+              width: { lg: "25%", xs: "95%" },
               mx: "auto",
             }}
             justifyContent="center"
