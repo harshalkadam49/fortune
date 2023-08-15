@@ -6,6 +6,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function EquityOrders() {
+  // dummy
   const [orderLists, setOrderLists] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<any>(false);
   const onGetEquityOrders = () => {
