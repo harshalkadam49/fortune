@@ -10,6 +10,7 @@ async function handler(req: any, res: any) {
     const collection = db.collection("IndianEquity");
     const data = await collection.findOne({ CompanyName: CompanyName });
     res.status(200).json(data);
+    client.close();
   }
 }
 

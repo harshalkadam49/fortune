@@ -17,11 +17,13 @@ async function handler(req: any, res: any) {
         message: "otp verified",
         errorState: false,
       });
+      client.close();
     } else {
       res.status(422).json({
         message: "not verified",
         errorState: true,
       });
+      client.close();
     }
   }
 }

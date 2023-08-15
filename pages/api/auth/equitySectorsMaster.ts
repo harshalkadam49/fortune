@@ -8,6 +8,7 @@ async function handler(req: any, res: any) {
     const collection = db.collection("IndianEquitySectors");
     const data = await collection.find({}).limit(10).toArray();
     res.status(200).json(data);
+    client.close();
   }
 }
 
