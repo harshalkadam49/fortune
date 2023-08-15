@@ -1,16 +1,20 @@
 import { getEquityOrdersPlacedapi } from "@/apifunctions/getEquityOrdersPlaced";
 import EmptyOrderList from "@/components/emptystates/orderLists";
 import LayoutWithBackheader from "@/components/layouts/withbackheader";
+import Loader from "@/components/loader";
 import { Box, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function EquityOrders() {
   const [orderLists, setOrderLists] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<any>(false);
   const onGetEquityOrders = () => {
+    setIsLoading(true);
     getEquityOrdersPlacedapi("/api/auth/equityOrdersPlaced", "GET").then(
       (res) => {
         if (!res.errorState) {
           setOrderLists(res);
+          setIsLoading(false);
         }
       }
     );
@@ -22,8 +26,12 @@ export default function EquityOrders() {
 
   return (
     <LayoutWithBackheader showHeader={true} pageTitle="Place Order">
+      <Loader isLoading={isLoading} />
       <Box px="1rem" pt="5rem" pb="50%">
-        <Typography variant="h1" pb="1rem"> All Orders</Typography>
+        <Typography variant="h1" pb="1rem">
+          {" "}
+          All Orders
+        </Typography>
 
         {orderLists.length > 0 && (
           <Grid

@@ -27,6 +27,7 @@ import { getEquityDetailsapi } from "@/apifunctions/getEquityDetails";
 import { useRouter } from "next/router";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Loader from "@/components/loader";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 5,
@@ -47,6 +48,7 @@ export default function StockDetails() {
   const [addToCart, setAddToCart] = useState(false);
   const [CompanyName, setCompanyName] = useState<any>("");
   const [stockDetails, setStockDetails] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<any>(false);
 
   const onAddToWatchList = () => {
     setSaveToWatchList(true);
@@ -57,12 +59,14 @@ export default function StockDetails() {
   };
 
   const onGetStockDetails = (CompanyName: any) => {
+    setIsLoading(true);
     getEquityDetailsapi(
       `/api/auth/equityDetails?CompanyName=${CompanyName}`,
       "GET"
     ).then((res) => {
       if (!res.errorState) {
         setStockDetails(res);
+        setIsLoading(false);
       }
     });
   };
@@ -84,6 +88,7 @@ export default function StockDetails() {
   return (
     <>
       <LayoutWithBackheader showHeader={true} pageTitle="Stock Details">
+        <Loader isLoading={isLoading} />
         {stockDetails && (
           <Box px="1rem" pt="5rem" pb="50%">
             <Stack direction="column" spacing={2}>
@@ -320,7 +325,6 @@ export default function StockDetails() {
             background: "#000",
             height: "6rem",
           }}
-
         >
           <Stack
             sx={{
@@ -333,14 +337,24 @@ export default function StockDetails() {
             alignItems="center"
           >
             <Button
-            onClick={() =>onRedirectToOrders(stockDetails.CompanyName,"Buy")} 
-            variant="contained" fullWidth={true} className="buyButton">
+              onClick={() =>
+                onRedirectToOrders(stockDetails.CompanyName, "Buy")
+              }
+              variant="contained"
+              fullWidth={true}
+              className="buyButton"
+            >
               Buy
             </Button>
 
             <Button
-            onClick={() =>onRedirectToOrders(stockDetails.CompanyName,"Sell")} 
-            variant="contained" fullWidth={true} className="sellButton">
+              onClick={() =>
+                onRedirectToOrders(stockDetails.CompanyName, "Sell")
+              }
+              variant="contained"
+              fullWidth={true}
+              className="sellButton"
+            >
               Sell
             </Button>
           </Stack>
