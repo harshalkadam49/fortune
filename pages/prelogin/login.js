@@ -12,6 +12,7 @@ import { signIn, signin } from "next-auth/client";
 import LoginImg from "../../public/prelogin/login.svg";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import Loader from "@/components/loader";
 
 export default function SignUp() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function SignUp() {
   const [passwordInput, setPasswordInput] = useState("");
   const [errors, setErrors] = useState("");
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -31,31 +33,8 @@ export default function SignUp() {
   };
 
   //  hitting the api
-  async function createUser(name, email, password) {
-    const response = await fetch("/api/auth/signUp", {
-      method: "POST",
-      body: JSON.stringify({ name, email, password }),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      setErrors(data.message);
-      setOpen(true);
-      throw new Error(data.message || "something went wrong");
-    } else {
-      setErrors(data.message);
-      setOpen(true);
-      return data;
-    }
-  }
-
-  const onToggleFormType = () => {
-    setIsSignIn(!isSignIn);
-  };
-
   async function submithandler(event) {
+    setIsLoading(true);
     event.preventDefault();
 
     const entredName = nameInput;
@@ -68,9 +47,12 @@ export default function SignUp() {
       password: entredPassword,
     });
     setOpen(true);
+
     if (result.error) {
+      setIsLoading(false);
       setErrors(result.error);
     } else {
+      setIsLoading(false);
       setErrors("Logged in succesfully");
       router.replace("/postLogin/");
     }
@@ -82,8 +64,14 @@ export default function SignUp() {
 
   return (
     <>
-      <Toast open={open} handleClose={handleClose} message={errors} severity="error"/>
+      <Toast
+        open={open}
+        handleClose={handleClose}
+        message={errors}
+        severity="error"
+      />
       <Box>
+        <Loader isLoading={isLoading} />
         <Paper
           sx={{
             width: { lg: "50%", xs: "100%" },
@@ -102,6 +90,7 @@ export default function SignUp() {
           <form onSubmit={submithandler}>
             <Stack spacing="3rem">
               <TextField
+                autoComplete="off"
                 required
                 value={emailInput}
                 id="email"
@@ -110,6 +99,7 @@ export default function SignUp() {
                 onChange={(e) => setEmailInput(e.target.value)}
               />
               <TextField
+                autoComplete="off"
                 required
                 value={passwordInput}
                 id="password"

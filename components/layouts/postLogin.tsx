@@ -10,6 +10,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import {
   AppBar,
   Avatar,
@@ -26,6 +28,7 @@ import { Router, useRouter } from "next/router";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListIcon from "@mui/icons-material/List";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -37,6 +40,7 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
     bottom: false,
     right: false,
   });
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const [isLoading, setIsLoading] = React.useState(false);
   Router.events.on("routeChangeStart", () => setIsLoading(true));
@@ -103,6 +107,14 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
     });
   };
 
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    router.replace("/prelogin/login");
+  };
 
   const styles = {
     bgContainer: {
@@ -172,7 +184,31 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                     sx={{ fontSize: "1.8rem" }}
                   />
                 </Badge>
-                <Avatar sx={{ width: 26, height: 26, color: "" }} />
+
+                <IconButton
+                  id="basic-button"
+                  aria-controls={open ? "basic-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  onClick={handleClick}
+                >
+                  <AccountCircleIcon
+                    sx={{ fontSize: "1.8rem", color: "#fff" }}
+                  />
+                </IconButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <Typography variant="h3">Logout</Typography>
+                  </MenuItem>
+                </Menu>
               </Stack>
             </Stack>
           </AppBar>

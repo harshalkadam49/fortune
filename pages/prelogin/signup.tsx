@@ -36,36 +36,12 @@ import { postValidateOtpapi } from "@/apifunctions/postValidateOtp";
 import { hash } from "bcryptjs";
 import { postCheckExistingEmailapi } from "@/apifunctions/postCheckExistingEmail";
 import { postCheckExistingPhoneapi } from "@/apifunctions/postCheckExistingPhone";
+import Loader from "@/components/loader";
 
 export default function SignUp() {
   const router = useRouter();
-  const defaultOptionsSMS = {
-    loop: false,
-    autoplay: true,
-    animationData: SMSOTPAnimation,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-  const defaultOptionsEmail = {
-    loop: false,
-    autoplay: true,
-    animationData: SMSOTPAnimation,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-
-  const [signUpform, setSignUpform] = useState(true);
-  const [emailOTPForm, setEmailOTPForm] = useState(false);
-  const [smsOTPForm, setsmsOTPForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isMaleSelected, setIsMaleSelected] = useState(true);
-  const [emailOTPVerified, setEmailOTPVerified] = useState(false);
-  const [emailOTPNotVerified, setEmailOTPNotVerified] = useState(false);
-
-  const [SMSOTPVerified, setSMSOTPVerified] = useState(true);
-  const [otp, setOtp] = useState("1970");
-
   // variables to save
   const [gender, setGender] = useState("M");
   const [entredName, setEntredName] = useState("");
@@ -75,11 +51,6 @@ export default function SignUp() {
   const [enterdConfirmPassword, setEnterdConfirmPassword] = useState("");
   const [errors, setErrors] = useState<any>([]);
 
-  const [encryptedSMSOtp, setEncryptedSMSOtp] = useState<any>("");
-  const [encryptedEmailOtp, setEncryptedEmailOtp] = useState<any>("");
-
-  const [otpMsgEmail, setOtpMsgEmail] = useState<any>("");
-  const [otpMsgSMS, setOtpMsgSMS] = useState<any>("");
   const onSelectGender = (genderType: any) => {
     setIsMaleSelected(!isMaleSelected);
     setGender(genderType);
@@ -149,102 +120,9 @@ export default function SignUp() {
   };
 
   // api flow
-  const onCheckExistingEmail = () => {
-    if (isEmail(entredEmail)) {
-      let model = {
-        email: entredEmail,
-      };
-      postCheckExistingEmailapi(
-        model,
-        "/api/auth/checkExistingEmail",
-        "POST"
-      ).then((res) => {
-        errors.email = res.message;
-        errors.errorState = res.errorState;
-        setErrors(errors);
-
-        if (!res.errorState) {
-          onCheckExistingPhone();
-        }
-      });
-    }
-  };
-
-  const onCheckExistingPhone = () => {
-    if (entredPhoneNumber.length == 10) {
-      let model = {
-        phonenumber: entredPhoneNumber,
-      };
-      postCheckExistingPhoneapi(
-        model,
-        "/api/auth/checkExistingPhone",
-        "POST"
-      ).then((res) => {
-        errors.phoneNumber = res.message;
-        errors.errorState = res.errorState;
-        setErrors(errors);
-
-        if (!res.errorState) {
-          onGenerateEmailOtp();
-        }
-      });
-    }
-  };
-
-  const onGenerateEmailOtp = () => {
-    let model = {
-      email: entredEmail,
-    };
-    postEmailOtpapi(model, "/api/auth/sendEmailOtp", "POST").then((res) => {
-      if (!res.errorState) {
-        setEncryptedEmailOtp(res.otp);
-        setSignUpform(false);
-        setEmailOTPForm(true);
-      }
-    });
-  };
-
-  const onValidateEmailOtp = (otp: any) => {
-    let model = {
-      otp: otp,
-      encryptedOtp: encryptedEmailOtp,
-    };
-    postValidateOtpapi(model, "/api/auth/validateOtp", "POST").then((res) => {
-      setOtpMsgEmail(res.message);
-      if (!res.errorState) {
-        onGenerateSMSOtp();
-        setEmailOTPForm(false);
-        setsmsOTPForm(true);
-      }
-    });
-  };
-
-  const onGenerateSMSOtp = () => {
-    let model = {
-      phonenumber: entredPhoneNumber,
-    };
-    postSmsOtpapi(model, "/api/auth/sendSmsOtp", "POST").then((res) => {
-      setOtpMsgSMS(res.message);
-      if (!res.errorState) {
-        setEncryptedSMSOtp(res.otp);
-      }
-    });
-  };
-
-  const onValidateSMSOtp = (otp: any) => {
-    let model = {
-      otp: otp,
-      encryptedOtp: encryptedSMSOtp,
-    };
-    postValidateOtpapi(model, "/api/auth/validateOtp", "POST").then((res) => {
-      setOtpMsgSMS(res.message);
-      if (!res.errorState) {
-        onCreateUser();
-      }
-    });
-  };
 
   const onCreateUser = () => {
+    setIsLoading(true);
     let model = {
       gender: gender,
       name: capitalizeFirstLetter(entredName),
@@ -257,14 +135,15 @@ export default function SignUp() {
 
     postUserapi(model, "/api/auth/signUp", "POST").then((res) => {
       if (!res.errorState) {
-        router.replace("/prelogin/registrationDone");
+        router.replace("/prelogin/registrationdone");
+        setIsLoading(false);
       }
     });
   };
 
   const onSubmit = () => {
     if (!errors.errorState) {
-      onCheckExistingEmail();
+      onCreateUser();
     }
   };
 
@@ -275,245 +154,154 @@ export default function SignUp() {
   return (
     <>
       <PreloginLayout showBackheader={true}>
-        {signUpform && (
-          <Box px="1.25rem">
-            <Typography variant="h1" pt="2rem">
-              Sign Up
-            </Typography>
-            <form>
-              <Stack spacing="1.875rem" direction="column" pt="2rem">
-                <Stack direction="row" spacing={5}>
-                  <Box onClick={() => onSelectGender("M")}>
-                    {isMaleSelected ? (
-                      <Image
-                        src={MaleSelected}
-                        height={50}
-                        width={50}
-                        alt="gender"
-                      />
-                    ) : (
-                      <Image
-                        src={MaleUnSelected}
-                        height={50}
-                        width={50}
-                        alt="gender"
-                      />
-                    )}
-                  </Box>
-
-                  <Box onClick={() => onSelectGender("F")}>
-                    {!isMaleSelected ? (
-                      <Image
-                        src={FemaleSelected}
-                        height={50}
-                        width={50}
-                        alt="gender"
-                      />
-                    ) : (
-                      <Image
-                        src={FemaleUnSelected}
-                        height={50}
-                        width={50}
-                        alt="gender"
-                      />
-                    )}
-                  </Box>
-                </Stack>
-
-                <Box>
-                  <CustomInput
-                    value={entredName}
-                    errorText={errors.name}
-                    type="text"
-                    fullWidth={true}
-                    placeholder="Name"
-                    onChange={(e: any) => handleChange(e.target.value, "Name")}
-                    onBlur={(e: any) => handleChange(e.target.value, "Name")}
-                  />
+        <Loader isLoading={isLoading} />
+        <Box px="1.25rem">
+          <Typography variant="h1" pt="2rem">
+            Sign Up
+          </Typography>
+          <form>
+            <Stack spacing="1.875rem" direction="column" pt="2rem">
+              <Stack direction="row" spacing={5}>
+                <Box onClick={() => onSelectGender("M")}>
+                  {isMaleSelected ? (
+                    <Image
+                      src={MaleSelected}
+                      height={50}
+                      width={50}
+                      alt="gender"
+                    />
+                  ) : (
+                    <Image
+                      src={MaleUnSelected}
+                      height={50}
+                      width={50}
+                      alt="gender"
+                    />
+                  )}
                 </Box>
 
-                <Box>
-                  <CustomInput
-                    value={entredEmail}
-                    id="email"
-                    type="text"
-                    fullWidth={true}
-                    placeholder="Email"
-                    errorText={errors.email}
-                    onChange={(e: any) => handleChange(e.target.value, "Email")}
-                    onBlur={(e: any) => handleChange(e.target.value, "Email")}
-                  />
-                </Box>
-
-                <Box>
-                  <CustomInput
-                    value={entredPhoneNumber}
-                    id="phoneNo"
-                    type="tel"
-                    fullWidth={true}
-                    placeholder="Phone No"
-                    errorText={errors.phoneNumber}
-                    onChange={(e: any) =>
-                      handleChange(e.target.value, "PhoneNo")
-                    }
-                    onBlur={(e: any) => handleChange(e.target.value, "PhoneNo")}
-                  />
-                </Box>
-
-                <Box>
-                  <PasswordInput
-                    value={entredPassword}
-                    id="password"
-                    placeholder="*********"
-                    errorText={errors.password}
-                    onChange={(e: any) =>
-                      handleChange(e.target.value, "Password")
-                    }
-                    onBlur={(e: any) =>
-                      handleChange(e.target.value, "Password")
-                    }
-                  />
-                </Box>
-
-                <Box>
-                  <PasswordInput
-                    value={enterdConfirmPassword}
-                    id="confirmPassword"
-                    placeholder="*********"
-                    errorText={errors.confirmPassword}
-                    onChange={(e: any) =>
-                      handleChange(e.target.value, "ConfirmPassword")
-                    }
-                    onBlur={(e: any) =>
-                      handleChange(e.target.value, "ConfirmPassword")
-                    }
-                  />
+                <Box onClick={() => onSelectGender("F")}>
+                  {!isMaleSelected ? (
+                    <Image
+                      src={FemaleSelected}
+                      height={50}
+                      width={50}
+                      alt="gender"
+                    />
+                  ) : (
+                    <Image
+                      src={FemaleUnSelected}
+                      height={50}
+                      width={50}
+                      alt="gender"
+                    />
+                  )}
                 </Box>
               </Stack>
-            </form>
 
-            <Box
-              sx={{
-                position: "fixed",
-                bottom: 10,
-                left: 0,
-                right: 0,
-                background: "#000",
-                height: "7rem",
-              }}
-            >
-              <Stack sx={{ width: "90%", mx: "auto" }}>
-                <Tap>
-                  <Box>
-                    <Button
-                      onClick={onSubmit}
-                      fullWidth
-                      variant="contained"
-                      sx={{
-                        borderRadius: "5rem",
-                      }}
-                      endIcon={<TrendingFlatIcon />}
-                    >
-                      Sign Up
-                    </Button>
-                  </Box>
-                </Tap>
+              <Box>
+                <CustomInput
+                  value={entredName}
+                  errorText={errors.name}
+                  type="text"
+                  fullWidth={true}
+                  placeholder="Name"
+                  onChange={(e: any) => handleChange(e.target.value, "Name")}
+                  onBlur={(e: any) => handleChange(e.target.value, "Name")}
+                />
+              </Box>
 
-                <Box textAlign="center" pt="1rem" onClick={onLogin}>
-                  <Typography variant="h2" color="#fff">
-                    Sign In
-                  </Typography>
+              <Box>
+                <CustomInput
+                  value={entredEmail}
+                  id="email"
+                  type="text"
+                  fullWidth={true}
+                  placeholder="Email"
+                  errorText={errors.email}
+                  onChange={(e: any) => handleChange(e.target.value, "Email")}
+                  onBlur={(e: any) => handleChange(e.target.value, "Email")}
+                />
+              </Box>
+
+              <Box>
+                <CustomInput
+                  value={entredPhoneNumber}
+                  id="phoneNo"
+                  type="tel"
+                  fullWidth={true}
+                  placeholder="Phone No"
+                  errorText={errors.phoneNumber}
+                  onChange={(e: any) => handleChange(e.target.value, "PhoneNo")}
+                  onBlur={(e: any) => handleChange(e.target.value, "PhoneNo")}
+                />
+              </Box>
+
+              <Box>
+                <PasswordInput
+                  value={entredPassword}
+                  id="password"
+                  placeholder="*********"
+                  errorText={errors.password}
+                  onChange={(e: any) =>
+                    handleChange(e.target.value, "Password")
+                  }
+                  onBlur={(e: any) => handleChange(e.target.value, "Password")}
+                />
+              </Box>
+
+              <Box>
+                <PasswordInput
+                  value={enterdConfirmPassword}
+                  id="confirmPassword"
+                  placeholder="*********"
+                  errorText={errors.confirmPassword}
+                  onChange={(e: any) =>
+                    handleChange(e.target.value, "ConfirmPassword")
+                  }
+                  onBlur={(e: any) =>
+                    handleChange(e.target.value, "ConfirmPassword")
+                  }
+                />
+              </Box>
+            </Stack>
+          </form>
+
+          <Box
+            sx={{
+              position: "fixed",
+              bottom: 10,
+              left: 0,
+              right: 0,
+              background: "#000",
+              height: "7rem",
+            }}
+          >
+            <Stack sx={{ width: "90%", mx: "auto" }}>
+              <Tap>
+                <Box>
+                  <Button
+                    onClick={onSubmit}
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      borderRadius: "5rem",
+                    }}
+                    endIcon={<TrendingFlatIcon />}
+                  >
+                    Sign Up
+                  </Button>
                 </Box>
-              </Stack>
-            </Box>
-          </Box>
-        )}
+              </Tap>
 
-        {emailOTPForm && (
-          <Box textAlign="center">
-            <Lottie options={defaultOptionsEmail} height={300} width={300} />
-            <Typography variant="h1" pb="5rem">
-              Enter 4-digit OTP sent to <br></br> abc@abc.com
-            </Typography>
-            <PinInput
-              length={4}
-              initialValue=""
-              secret
-              type="numeric"
-              focus={true}
-              autoSelect={false}
-              inputMode="number"
-              style={{ padding: "5px" }}
-              inputStyle={{
-                borderBottom: "1px solid grey",
-                border: "none",
-                width: "22%",
-                fontSize: "2rem",
-                color: "#fff",
-              }}
-              inputFocusStyle={{ borderBottom: "2px solid #9DFFCE" }}
-              regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
-              onComplete={(value, index) => {
-                if (value.length == 4) {
-                  onValidateEmailOtp(value);
-                }
-              }}
-            />
-            <Stack
-              pt="3rem"
-              alignItems="center"
-              direction="row"
-              justifyContent="center"
-              spacing="0.5rem"
-            >
-              <Typography variant="subtitle1">{otpMsgEmail}</Typography>
+              <Box textAlign="center" pt="1rem" onClick={onLogin}>
+                <Typography variant="h2" color="#fff">
+                  Sign In
+                </Typography>
+              </Box>
             </Stack>
           </Box>
-        )}
-
-        {smsOTPForm && (
-          <Box textAlign="center">
-            <Lottie options={defaultOptionsSMS} height={300} width={300} />
-            <Typography variant="h1" pb="5rem">
-              Enter 4-digit OTP sent to <br></br> 9999999999
-            </Typography>
-
-            <PinInput
-              length={4}
-              initialValue=""
-              secret
-              type="numeric"
-              focus={true}
-              autoSelect={false}
-              inputMode="number"
-              style={{ padding: "5px" }}
-              inputStyle={{
-                borderBottom: "1px solid grey",
-                border: "none",
-                width: "22%",
-                fontSize: "2rem",
-                color: "#fff",
-              }}
-              inputFocusStyle={{ borderBottom: "2px solid #9DFFCE" }}
-              regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
-              onComplete={(value, index) => {
-                if (value.length == 4) {
-                  onValidateSMSOtp(value);
-                }
-              }}
-            />
-
-            <Stack
-              pt="3rem"
-              alignItems="center"
-              direction="row"
-              justifyContent="center"
-              spacing="0.5rem"
-            >
-              <Typography variant="subtitle1">{otpMsgSMS}</Typography>
-            </Stack>
-          </Box>
-        )}
+        </Box>
       </PreloginLayout>
     </>
   );
