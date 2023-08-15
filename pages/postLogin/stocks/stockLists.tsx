@@ -40,6 +40,13 @@ export default function StocksLists() {
     });
   };
 
+  const onRedirectToOrders = (CompanyName: any, orderType: any) => {
+    router.push({
+      pathname: "/postLogin/stocks/orderExecution",
+      query: { CompanyName: CompanyName, orderType: orderType },
+    });
+  };
+
   const onSearch = (searchValue: any) => {
     var filteredEquityLists = equityLists.filter((c: any) =>
       c.CompanyName.toLowerCase().includes(searchValue.toLowerCase())
@@ -126,6 +133,7 @@ export default function StocksLists() {
             <Grid item xs={5}>
               <Stack spacing={2} direction="row" alignItems="center">
                 <Chip
+                  onClick={() => onRedirectToOrders(item.CompanyName, "Buy")}
                   label={
                     <Typography variant="h3" color="#fff">
                       Buy
@@ -139,6 +147,7 @@ export default function StocksLists() {
                 />
 
                 <Chip
+                  onClick={() => onRedirectToOrders(item.CompanyName, "Sell")}
                   label={
                     <Typography variant="h3" color="#fff">
                       Sell

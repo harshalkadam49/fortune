@@ -67,9 +67,18 @@ export default function StockDetails() {
     });
   };
 
+  const onRedirectToOrders = (CompanyName: any, orderType: any) => {
+    router.push({
+      pathname: "/postLogin/stocks/orderExecution",
+      query: { CompanyName: CompanyName, orderType: orderType },
+    });
+  };
+
   useEffect(() => {
-    if (router.isReady) onGetStockDetails(router.query.CompanyName);
-    setCompanyName(router.query.CompanyName);
+    if (router.isReady) {
+      onGetStockDetails(router.query.CompanyName);
+      setCompanyName(router.query.CompanyName);
+    }
   }, [router.query]);
 
   return (
@@ -302,7 +311,7 @@ export default function StockDetails() {
             {/* share hoilding pattern */}
           </Box>
         )}
-        <BottomNavigation
+        <Box
           sx={{
             position: "fixed",
             bottom: 0,
@@ -312,22 +321,29 @@ export default function StockDetails() {
             height: "6rem",
           }}
         >
-          <Stack spacing={2} direction="row" alignItems="center">
-            <Box>
-              <Button
-                variant="contained"
-                fullWidth={true}
-                className="buyButton"
-              >
-                Buy
-              </Button>
-            </Box>
+          <Stack
+            sx={{
+              width: "95%",
+              mx: "auto",
+            }}
+            justifyContent="center"
+            spacing={2}
+            direction="row"
+            alignItems="center"
+          >
+            <Button
+            onClick={() =>onRedirectToOrders(stockDetails.CompanyName,"Buy")} 
+            variant="contained" fullWidth={true} className="buyButton">
+              Buy
+            </Button>
 
-            <Button variant="contained" fullWidth={true} className="sellButton">
+            <Button
+            onClick={() =>onRedirectToOrders(stockDetails.CompanyName,"Sell")} 
+            variant="contained" fullWidth={true} className="sellButton">
               Sell
             </Button>
           </Stack>
-        </BottomNavigation>
+        </Box>
       </LayoutWithBackheader>
     </>
   );

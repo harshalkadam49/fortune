@@ -11,10 +11,11 @@ export default function CustomInput(props: any) {
         {props.customLabel}
       </Typography>
       <TextField
+        defaultValue={props.defaultValue}
         id={props.id}
         value={props.value}
         variant="outlined"
-        autoComplete='off'
+        autoComplete="off"
         type={props.type}
         label=""
         fullWidth={props.fullWidth}
