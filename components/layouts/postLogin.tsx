@@ -103,12 +103,41 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
     });
   };
 
+
+  const styles = {
+    bgContainer: {
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center center",
+      backgroundSize: "cover",
+      height: "100%",
+      overflow: "hidden",
+      width: "100%",
+      p: "0rem",
+      pt: "5rem",
+      pb: "6rem",
+    },
+    mainContainer: {
+      background: "#000 !important",
+      width: { lg: "25%", xs: "100%" },
+      height: "100vh",
+      overflowX: "hidden",
+      overflowY: "Scroll",
+      p: "0rem",
+    },
+  };
+
   return (
-    <div>
+    <Box>
       {(["left"] as const).map((anchor) => (
         <React.Fragment key={anchor}>
-          <AppBar position="fixed" sx={{ background: "#000" }}>
+          <AppBar
+            position="fixed"
+            sx={{
+              background: "#000",
+            }}
+          >
             <Stack
+              sx={{ width: { lg: "25%", xs: "100%" }, mx: "auto" }}
               direction="row"
               justifyContent="space-between"
               p="1.5rem 1rem"
@@ -155,12 +184,14 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
           >
             {/* List to be added here */}
           </SwipeableDrawer>
-          <Container sx={{ p: "0", pt: "5rem" }}>
-            <Loader isLoading={isLoading} />
-            {children}
-          </Container>
+          <Box sx={styles.bgContainer}>
+            <Container sx={styles.mainContainer} className="main_wrapper">
+              <Loader isLoading={isLoading} />
+              {children}
+            </Container>
+          </Box>
         </React.Fragment>
       ))}
-    </div>
+    </Box>
   );
 }

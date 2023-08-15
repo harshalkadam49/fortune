@@ -82,7 +82,7 @@ export default function SignUp() {
 
   return (
     <>
-      <Toast open={open} handleClose={handleClose} message={error} severity="error"/>
+      <Toast open={open} handleClose={handleClose} message={errors} severity="error"/>
       <Box>
         <Paper
           sx={{

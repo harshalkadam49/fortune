@@ -32,10 +32,12 @@ import { getEquityLoosersapi } from "@/apifunctions/getEquityLoosers";
 import { getIndianIndicesMasterapi } from "@/apifunctions/getIndianIndicesMaster";
 import { color } from "framer-motion";
 import { useRouter } from "next/router";
+import Loader from "@/components/loader";
 
 export default function Home() {
   const router = useRouter();
   const [type, setType] = useState("1");
+  const [isLoading, setIsLoading] = useState(false);
   const [stocksType, setStocksType] = useState("Gainers");
   const [indianEquityDetails, setIndianEquityDetails] = useState([]);
   const [indianEquityGainers, setIndianEquityGainers] = useState([]);
@@ -56,6 +58,7 @@ export default function Home() {
   };
 
   const onGetEquityGainers = () => {
+    setIsLoading(true);
     getEquityMasterapi("/api/auth/equityGainers", "GET").then((res) => {
       if (!res.errorState) {
         setIndianEquityGainers(res);
@@ -86,6 +89,7 @@ export default function Home() {
       (res) => {
         if (!res.errorState) {
           setIndianSectors(res);
+          setIsLoading(false);
         }
       }
     );
@@ -106,6 +110,7 @@ export default function Home() {
 
   return (
     <PostloginLayout>
+      <Loader isLoading={isLoading} />
       <Box>
         <Swiper pagination={true} modules={[Pagination]} className="adsBanner">
           <SwiperSlide>
@@ -293,7 +298,7 @@ export default function Home() {
                         <Typography variant="h2" pt="0.5rem">
                           {add3Dots(item.CompanyName, 8)}
                         </Typography>
-                        <Stack direction="column" >
+                        <Stack direction="column">
                           <Typography variant="subtitle1">
                             ₹ {item.LastPrice}
                           </Typography>

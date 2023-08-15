@@ -13,7 +13,7 @@ export default function Loader(props: any) {
             width: "100%",
             minHeight: "100vh",
             background: "#000",
-            zIndex: 1,
+            zIndex: 55,
           }}
         >
           <Box
