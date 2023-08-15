@@ -97,3 +97,21 @@ a {
   height: 0.625rem;
   width: 0.625rem;
 }
+
+.maxWidth {
+  width: max-content;
+}
+
+.buyButton {
+  background: #76ffc6;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem 4rem;
+}
+
+.sellButton {
+  background: #EE4D37;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem 4rem;
+}

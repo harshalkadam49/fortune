@@ -31,8 +31,10 @@ import { add3Dots } from "@/utilities/commonfunctions";
 import { getEquityLoosersapi } from "@/apifunctions/getEquityLoosers";
 import { getIndianIndicesMasterapi } from "@/apifunctions/getIndianIndicesMaster";
 import { color } from "framer-motion";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
   const [type, setType] = useState("1");
   const [stocksType, setStocksType] = useState("Gainers");
   const [indianEquityDetails, setIndianEquityDetails] = useState([]);
@@ -89,6 +91,13 @@ export default function Home() {
     );
   };
 
+  const onRedirectToDetails = (CompanyName: any) => {
+    router.push({
+      pathname: "/postLogin/stocks/stockDetails",
+      query: { CompanyName: CompanyName },
+    });
+  };
+
   useEffect(() => {
     onGetEquityGainers();
     onGetIndianIndicesMaster();
@@ -105,8 +114,8 @@ export default function Home() {
                 background: "#343434",
                 height: "11rem",
                 textAlign: "center",
-                mx:"1rem",
-                borderRadius:"0.5rem"
+                mx: "1rem",
+                borderRadius: "0.5rem",
               }}
             >
               <Image
@@ -124,8 +133,8 @@ export default function Home() {
                 background: "#343434",
                 height: "11rem",
                 textAlign: "center",
-                mx:"1rem",
-                borderRadius:"0.5rem"
+                mx: "1rem",
+                borderRadius: "0.5rem",
               }}
             >
               <Image
@@ -143,8 +152,8 @@ export default function Home() {
                 background: "#343434",
                 height: "11rem",
                 textAlign: "center",
-                mx:"1rem",
-                borderRadius:"0.5rem"
+                mx: "1rem",
+                borderRadius: "0.5rem",
               }}
             >
               <Image
@@ -162,8 +171,8 @@ export default function Home() {
                 background: "#343434",
                 height: "11rem",
                 textAlign: "center",
-                mx:"1rem",
-                borderRadius:"0.5rem"
+                mx: "1rem",
+                borderRadius: "0.5rem",
               }}
             >
               <Image
@@ -270,6 +279,7 @@ export default function Home() {
                         borderRadius: "0.5rem",
                         p: "0.7rem",
                       }}
+                      onClick={() => onRedirectToDetails(item.CompanyName)}
                     >
                       <Stack spacing={2}>
                         <Avatar sx={{ background: "#F3FFBD" }}>

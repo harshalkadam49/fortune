@@ -7,3 +7,15 @@ export const add3Dots = (string: any, limit: any) => {
 
   return string;
 };
+
+
+export function getInitials(input: string): string {
+  const words = input.split(' ');
+
+  const initials = words
+    .filter(word => word.length > 0)
+    .map(word => word[0].toUpperCase())
+    .join('');
+
+  return initials;
+}
