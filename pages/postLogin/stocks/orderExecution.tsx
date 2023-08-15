@@ -24,17 +24,21 @@ export default function OrderExecution() {
   const [orderType, setOrderType] = useState<any>("");
 
   const onPlaceOrder = () => {
-    let model = {
-      stockname: "test",
-      price: 542,
-      quantity: 5,
-      type: "Test",
-    };
-    postEquityOrdersapi(model, "/api/auth/equityOrders", "POST").then((res) => {
-      if (!res.errorState) {
-        alert("Order Placed");
-      }
-    });
+    if (error == " ") {
+      let model = {
+        stockname: stockDetails.CompanyName,
+        price: stockDetails.LastPrice,
+        quantity: quantity,
+        type: orderType,
+      };
+      postEquityOrdersapi(model, "/api/auth/equityOrders", "POST").then(
+        (res) => {
+          if (!res.errorState) {
+            router.push("/postLogin/stocks/equityOrders")
+          }
+        }
+      );
+    }
   };
 
   const onGetStockDetails = (CompanyName: any) => {
@@ -51,7 +55,7 @@ export default function OrderExecution() {
   const handleQuantityChange = (value: any) => {
     setQuantity(value);
     if (value > 0) {
-      setError("");
+      setError(" ");
     } else {
       setError("Invalid Quantity");
     }
@@ -173,6 +177,7 @@ export default function OrderExecution() {
             >
               {orderType == "Buy" && (
                 <Button
+                  onClick={onPlaceOrder}
                   variant="contained"
                   fullWidth={true}
                   className="buyButton"
@@ -183,6 +188,7 @@ export default function OrderExecution() {
 
               {orderType == "Sell" && (
                 <Button
+                  onClick={onPlaceOrder}
                   variant="contained"
                   fullWidth={true}
                   className="sellButton"
