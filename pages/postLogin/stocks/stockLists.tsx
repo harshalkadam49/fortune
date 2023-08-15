@@ -14,21 +14,25 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
 import { getEquityMasterapi } from "@/apifunctions/getEquityMaster";
 import { useRouter } from "next/router";
+import Loader from "@/components/loader";
 
 export default function StocksLists() {
   const router = useRouter();
   const [equityLists, setEquityLists] = useState<any>([]);
   const [filteredEquityLists, setFilteredEquityLists] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getData = (res: any) => {
     setFilteredEquityLists(res);
   };
 
   const onGetEquityLists = () => {
+    setIsLoading(true);
     getEquityMasterapi("/api/auth/equityMaster", "GET").then((res) => {
       if (!res.errorState) {
         setEquityLists(res);
         getData(res);
+        setIsLoading(false);
       }
     });
   };
@@ -60,6 +64,7 @@ export default function StocksLists() {
 
   return (
     <LayoutWithBackheader showHeader={true} pageTitle="Stock List">
+      <Loader isLoading={isLoading} />
       <Box px="1rem" pt="5rem" pb="50%">
         <Box>
           <TextField

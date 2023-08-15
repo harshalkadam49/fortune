@@ -125,7 +125,7 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
       overflow: "hidden",
       width: "100%",
       p: "0rem",
-      pt: "5rem",
+      pt: "6rem",
       pb: "6rem",
     },
     mainContainer: {
@@ -152,7 +152,7 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
               sx={{ width: { lg: "25%", xs: "100%" }, mx: "auto" }}
               direction="row"
               justifyContent="space-between"
-              p="1.5rem 1rem"
+              p="0.5rem 1rem"
             >
               <Stack direction="row" spacing={2} alignItems="center">
                 <IconButton
