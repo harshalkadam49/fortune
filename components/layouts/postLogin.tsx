@@ -13,6 +13,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import {
   AppBar,
   Avatar,
+  Badge,
   Container,
   IconButton,
   Stack,
@@ -22,6 +23,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Loader from "../loader";
 import { Router } from "next/router";
+import SearchIcon from "@mui/icons-material/Search";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -92,25 +95,37 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
       {(["left"] as const).map((anchor) => (
         <React.Fragment key={anchor}>
           <AppBar position="static" sx={{ background: "#000" }}>
-            <Stack direction="row" justifyContent="space-between" p="1.5rem">
-              <IconButton
-                color="inherit"
-                aria-label="menu"
-                // onClick={toggleDrawer(anchor, true)}
-                sx={{ p: "0rem" }}
-              >
-                <MenuIcon sx={{ fontSize: "1.5rem" }} />
-              </IconButton>
-              <Typography
-                textAlign="center"
-                variant="h1"
-                color="inherit"
-                component="div"
-              >
-                Fortune
-              </Typography>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              p="1.5rem 1rem"
+            >
+              <Stack direction="row" spacing={2} alignItems="center">
+                <IconButton
+                  color="inherit"
+                  aria-label="menu"
+                  // onClick={toggleDrawer(anchor, true)}
+                  sx={{ p: "0rem" }}
+                >
+                  <MenuIcon sx={{ fontSize: "1.8rem" }} />
+                </IconButton>
+                <Typography variant="h1" color="inherit" component="div">
+                  Fortune
+                </Typography>
+              </Stack>
 
-              <Avatar sx={{ width: 20, height: 20, color: "" }} />
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-evenly"
+                spacing={5}
+              >
+                <SearchIcon sx={{ fontSize: "1.8rem" }} />
+                <Badge variant="dot" color="error">
+                  <NotificationsIcon sx={{ fontSize: "1.8rem" }} />
+                </Badge>
+                <Avatar sx={{ width: 26, height: 26, color: "" }} />
+              </Stack>
             </Stack>
           </AppBar>
           <SwipeableDrawer

@@ -290,10 +290,10 @@ export default function Home() {
                               : ""}
                           </Typography>
                         </Avatar>
-                        <Typography variant="h2" pt="1rem">
-                          {add3Dots(item.CompanyName, 10)}
+                        <Typography variant="h2" pt="0.5rem">
+                          {add3Dots(item.CompanyName, 8)}
                         </Typography>
-                        <Stack direction="row" spacing={2} alignItems="center">
+                        <Stack direction="column" >
                           <Typography variant="subtitle1">
                             ₹ {item.LastPrice}
                           </Typography>
