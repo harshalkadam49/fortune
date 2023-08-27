@@ -29,10 +29,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListIcon from "@mui/icons-material/List";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { getUserDataapi } from "@/apifunctions/getUserData";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
 export default function SwipeableTemporaryDrawer({ children, props }: any) {
+  if (typeof window !== "undefined") {
+    var storedUser: any = localStorage.getItem("userData");
+    var userObject: any = JSON.parse(storedUser);
+  }
   const router = useRouter();
   const [state, setState] = React.useState({
     top: false,
@@ -113,7 +118,13 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const OnLogout = () => {
+    setAnchorEl(null);
     router.replace("/prelogin/login");
+    localStorage.clear();
+    sessionStorage.clear();
   };
 
   const styles = {
@@ -137,6 +148,20 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
       p: "0rem",
     },
   };
+
+  const getUserData = () => {
+    getUserDataapi(`/api/auth/userDetails?id=${userObject._id}`, "GET").then(
+      (res: any) => {
+        if(!res.errorState){
+          localStorage.setItem("userData", JSON.stringify(res.data));
+        }
+      }
+    );
+  };
+
+  React.useEffect(() => {
+    getUserData();
+  }, []);
 
   return (
     <Box>
@@ -205,7 +230,7 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                     "aria-labelledby": "basic-button",
                   }}
                 >
-                  <MenuItem onClick={handleClose}>
+                  <MenuItem onClick={OnLogout}>
                     <Typography variant="h3">Logout</Typography>
                   </MenuItem>
                 </Menu>
