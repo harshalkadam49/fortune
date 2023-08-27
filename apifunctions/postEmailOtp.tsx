@@ -1,4 +1,4 @@
-export async function postuserapi(model: any, url: any, method: any) {
+export async function postEmailOtpapi(model: any, url: any, method: any) {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const response = await fetch(BASE_URL + url, {
     method: method,
@@ -7,10 +7,5 @@ export async function postuserapi(model: any, url: any, method: any) {
   });
 
   const data = await response.json();
-
-  if (response.ok) {
-    return data;
-  } else {
-    return response;
-  }
+  return data;
 }

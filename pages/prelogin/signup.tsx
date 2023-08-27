@@ -8,7 +8,7 @@ import FemaleUnSelected from "../../public/prelogin/femaleUnSelected.svg";
 import CheckIcon from "../../public/prelogin/checkIcon.svg";
 import ErrorIcon from "../../public/prelogin/errorIcon.svg";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BottomStay from "@/components/bottomNavigation";
 import Tap from "@/components/animations/tap";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
@@ -29,34 +29,19 @@ import {
   isOnlyAlphabets,
   isOnlyDigits,
 } from "@/utilities/validators";
-import { postuserapi } from "@/apifunctions/createuser";
+import { postSmsOtpapi } from "@/apifunctions/postSmsOtp";
+import { postUserapi } from "@/apifunctions/postUser";
+import { postEmailOtpapi } from "@/apifunctions/postEmailOtp";
+import { postValidateOtpapi } from "@/apifunctions/postValidateOtp";
+import { hash } from "bcryptjs";
+import { postCheckExistingEmailapi } from "@/apifunctions/postCheckExistingEmail";
+import { postCheckExistingPhoneapi } from "@/apifunctions/postCheckExistingPhone";
+import Loader from "@/components/loader";
 
 export default function SignUp() {
   const router = useRouter();
-  const defaultOptionsSMS = {
-    loop: false,
-    autoplay: true,
-    animationData: SMSOTPAnimation,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-  const defaultOptionsEmail = {
-    loop: false,
-    autoplay: true,
-    animationData: SMSOTPAnimation,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-
-  const [signUpform, setSignUpform] = useState(true);
-  const [emailOTPForm, setEmailOTPForm] = useState(false);
-  const [smsOTPForm, setsmsOTPForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isMaleSelected, setIsMaleSelected] = useState(true);
-  const [emailOTPVerified, setEmailOTPVerified] = useState(false);
-  const [SMSOTPVerified, setSMSOTPVerified] = useState(true);
-
   // variables to save
   const [gender, setGender] = useState("M");
   const [entredName, setEntredName] = useState("");
@@ -78,6 +63,7 @@ export default function SignUp() {
       phoneNumber: "",
       password: "",
       confirmPassword: "",
+      errorState: true,
     };
     // name
     if (isEmpty(entredName)) {
@@ -110,158 +96,189 @@ export default function SignUp() {
       errors.confirmPassword = "Confirm password cannot be blank";
     } else if (entredPassword != enterdConfirmPassword) {
       errors.confirmPassword = "Password does not match";
+    } else {
+      errors.errorState = false;
     }
     setErrors(errors);
   };
 
-  const onSubmit = () => {
+  const handleChange = (value: any, type: any) => {
     signupValidation();
-    let model = {
-      gender: gender,
-      name: capitalizeFirstLetter(entredName),
-      email: entredEmail,
-      phonenumber: entredPhoneNumber,
-      password: entredPassword,
-    };
-    if (
-      errors.name ||
-      errors.email ||
-      errors.phoneNumber ||
-      errors.password ||
-      errors.confirmPassword
-    ) {
-      postuserapi(model, "/api/auth/signUp", "POST");
-      setSignUpform(false);
-      setEmailOTPForm(true);
+    if (type == "Name") {
+      setEntredName(value);
+    } else if (type == "Email") {
+      setEntredEmail(value);
+      // onCheckExistingEmail(value);
+    } else if (type == "PhoneNo") {
+      setEntredPhoneNumber(value);
+      // onCheckExistingPhone(value);
+    } else if (type == "Password") {
+      setEntredPassword(value);
+    } else if (type == "ConfirmPassword") {
+      setEnterdConfirmPassword(value);
     }
   };
-  const onEmailOTPValidate = (value: any) => {
-    setSignUpform(false);
-    setEmailOTPForm(false);
-    setsmsOTPForm(true);
-    setEmailOTPVerified(true);
+
+  // api flow
+
+  const onCreateUser = () => {
+    setIsLoading(true);
+    let model: any = {
+      gender: gender,
+      name: capitalizeFirstLetter(entredName),
+      email: entredEmail.toLowerCase(),
+      phonenumber: entredPhoneNumber,
+      password: entredPassword,
+      isEmailVerified: true,
+      isPhoneVerified: true,
+    };
+
+    postUserapi(model, "/api/auth/signUp", "POST").then((res) => {
+      if (!res.errorState) {
+        router.replace("/prelogin/registrationdone");
+        localStorage.setItem("userData", JSON.stringify(res.data));
+        setIsLoading(false);
+      }
+    });
   };
 
-  const onSMSOTPValidate = (value: any) => {
-    router.replace("/prelogin/registrationdone");
-    setSMSOTPVerified(true);
+  const onSubmit = () => {
+    if (!errors.errorState) {
+      onCreateUser();
+    }
+  };
+
+  const onLogin = () => {
+    router.push("/prelogin/login");
   };
 
   return (
     <>
       <PreloginLayout showBackheader={true}>
-        {signUpform && (
-          <Box px="1.25rem">
-            <Typography variant="h1" pt="2rem">
-              Sign Up
-            </Typography>
-            <form>
-              <Stack spacing="1.875rem" direction="column" pt="2rem">
-                <Stack direction="row" spacing={5}>
-                  <Box onClick={() => onSelectGender("M")}>
-                    {isMaleSelected ? (
-                      <Image
-                        src={MaleSelected}
-                        height={50}
-                        width={50}
-                        alt="gender"
-                      />
-                    ) : (
-                      <Image
-                        src={MaleUnSelected}
-                        height={50}
-                        width={50}
-                        alt="gender"
-                      />
-                    )}
-                  </Box>
-
-                  <Box onClick={() => onSelectGender("F")}>
-                    {!isMaleSelected ? (
-                      <Image
-                        src={FemaleSelected}
-                        height={50}
-                        width={50}
-                        alt="gender"
-                      />
-                    ) : (
-                      <Image
-                        src={FemaleUnSelected}
-                        height={50}
-                        width={50}
-                        alt="gender"
-                      />
-                    )}
-                  </Box>
-                </Stack>
-
-                <Box>
-                  <CustomInput
-                    value={entredName}
-                    errorText={errors.name}
-                    type="text"
-                    fullWidth={true}
-                    placeholder="Name"
-                    onChange={(e: any) => setEntredName(e.target.value)}
-                    onBlur={(e: any) => setEntredName(e.target.value)}
-                  />
+        <Loader isLoading={isLoading} />
+        <Box px="1.25rem">
+          <Typography variant="h1" pt="2rem">
+            Sign Up
+          </Typography>
+          <form>
+            <Stack spacing="1.875rem" direction="column" pt="2rem">
+              <Stack direction="row" spacing={5}>
+                <Box onClick={() => onSelectGender("M")}>
+                  {isMaleSelected ? (
+                    <Image
+                      src={MaleSelected}
+                      height={50}
+                      width={50}
+                      alt="gender"
+                    />
+                  ) : (
+                    <Image
+                      src={MaleUnSelected}
+                      height={50}
+                      width={50}
+                      alt="gender"
+                    />
+                  )}
                 </Box>
 
-                <Box>
-                  <CustomInput
-                    value={entredEmail}
-                    id="email"
-                    type="text"
-                    fullWidth={true}
-                    placeholder="Email"
-                    errorText={errors.email}
-                    onChange={(e: any) => setEntredEmail(e.target.value)}
-                    onBlur={(e: any) => setEntredEmail(e.target.value)}
-                  />
-                </Box>
-
-                <Box>
-                  <CustomInput
-                    value={entredPhoneNumber}
-                    id="phoneNo"
-                    type="tel"
-                    fullWidth={true}
-                    placeholder="Phone No"
-                    errorText={errors.phoneNumber}
-                    onChange={(e: any) => setEntredPhoneNumber(e.target.value)}
-                    onBlur={(e: any) => setEntredPhoneNumber(e.target.value)}
-                  />
-                </Box>
-
-                <Box>
-                  <PasswordInput
-                    value={entredPassword}
-                    id="password"
-                    placeholder="*********"
-                    errorText={errors.password}
-                    onChange={(e: any) => setEntredPassword(e.target.value)}
-                    onBlur={(e: any) => setEntredPassword(e.target.value)}
-                  />
-                </Box>
-
-                <Box>
-                  <PasswordInput
-                    value={enterdConfirmPassword}
-                    id="confirmPassword"
-                    placeholder="*********"
-                    errorText={errors.confirmPassword}
-                    onChange={(e: any) =>
-                      setEnterdConfirmPassword(e.target.value)
-                    }
-                    onBlur={(e: any) =>
-                      setEnterdConfirmPassword(e.target.value)
-                    }
-                  />
+                <Box onClick={() => onSelectGender("F")}>
+                  {!isMaleSelected ? (
+                    <Image
+                      src={FemaleSelected}
+                      height={50}
+                      width={50}
+                      alt="gender"
+                    />
+                  ) : (
+                    <Image
+                      src={FemaleUnSelected}
+                      height={50}
+                      width={50}
+                      alt="gender"
+                    />
+                  )}
                 </Box>
               </Stack>
-            </form>
 
-            <BottomStay>
+              <Box>
+                <CustomInput
+                  value={entredName}
+                  errorText={errors.name}
+                  type="text"
+                  fullWidth={true}
+                  placeholder="Name"
+                  onChange={(e: any) => handleChange(e.target.value, "Name")}
+                  onBlur={(e: any) => handleChange(e.target.value, "Name")}
+                />
+              </Box>
+
+              <Box>
+                <CustomInput
+                  value={entredEmail}
+                  id="email"
+                  type="text"
+                  fullWidth={true}
+                  placeholder="Email"
+                  errorText={errors.email}
+                  onChange={(e: any) => handleChange(e.target.value, "Email")}
+                  onBlur={(e: any) => handleChange(e.target.value, "Email")}
+                />
+              </Box>
+
+              <Box>
+                <CustomInput
+                  value={entredPhoneNumber}
+                  id="phoneNo"
+                  type="tel"
+                  fullWidth={true}
+                  placeholder="Phone No"
+                  errorText={errors.phoneNumber}
+                  onChange={(e: any) => handleChange(e.target.value, "PhoneNo")}
+                  onBlur={(e: any) => handleChange(e.target.value, "PhoneNo")}
+                />
+              </Box>
+
+              <Box>
+                <PasswordInput
+                  value={entredPassword}
+                  id="password"
+                  placeholder="*********"
+                  errorText={errors.password}
+                  onChange={(e: any) =>
+                    handleChange(e.target.value, "Password")
+                  }
+                  onBlur={(e: any) => handleChange(e.target.value, "Password")}
+                />
+              </Box>
+
+              <Box>
+                <PasswordInput
+                  value={enterdConfirmPassword}
+                  id="confirmPassword"
+                  placeholder="*********"
+                  errorText={errors.confirmPassword}
+                  onChange={(e: any) =>
+                    handleChange(e.target.value, "ConfirmPassword")
+                  }
+                  onBlur={(e: any) =>
+                    handleChange(e.target.value, "ConfirmPassword")
+                  }
+                />
+              </Box>
+            </Stack>
+          </form>
+
+          <Box
+            sx={{
+              position: "fixed",
+              bottom: 10,
+              left: 0,
+              right: 0,
+              background: "#000",
+              height: "7rem",
+            }}
+          >
+            <Stack sx={{ width: "90%", mx: "auto" }}>
               <Tap>
                 <Box>
                   <Button
@@ -277,125 +294,15 @@ export default function SignUp() {
                   </Button>
                 </Box>
               </Tap>
-            </BottomStay>
+
+              <Box textAlign="center" pt="1rem" onClick={onLogin}>
+                <Typography variant="h2" color="#fff">
+                  Sign In
+                </Typography>
+              </Box>
+            </Stack>
           </Box>
-        )}
-
-        {emailOTPForm && (
-          <Box textAlign="center">
-            <Lottie options={defaultOptionsEmail} height={300} width={300} />
-            <Typography variant="h1" pb="5rem">
-              Enter 4-digit OTP sent to <br></br> abc@abc.com
-            </Typography>
-
-            <PinInput
-              length={4}
-              initialValue=""
-              secret
-              type="numeric"
-              focus={true}
-              autoSelect={false}
-              inputMode="number"
-              style={{ padding: "5px" }}
-              inputStyle={{
-                borderBottom: "1px solid grey",
-                border: "none",
-                width: "22%",
-                fontSize: "2rem",
-                color: "#fff",
-              }}
-              inputFocusStyle={{ borderBottom: "2px solid #9DFFCE" }}
-              regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
-              onComplete={(value, index) => {
-                if (value.length == 4) {
-                  onEmailOTPValidate(value);
-                }
-              }}
-            />
-
-            {emailOTPVerified && (
-              <Stack
-                pt="3rem"
-                alignItems="center"
-                direction="row"
-                justifyContent="center"
-                spacing="0.5rem"
-              >
-                <Image src={CheckIcon} height={20} width={20} alt="check" />
-                <Typography variant="subtitle1">Otp Vefified</Typography>
-              </Stack>
-            )}
-
-            {/* <Stack
-              pt="3rem"
-              alignItems="center"
-              direction="row"
-              justifyContent="center"
-              spacing="0.5rem"
-            >
-              <Image src={ErrorIcon} height={20} width={20} alt="check" />
-              <Typography variant="subtitle1">Unable to verify</Typography>
-            </Stack> */}
-          </Box>
-        )}
-
-        {smsOTPForm && (
-          <Box textAlign="center">
-            <Lottie options={defaultOptionsSMS} height={300} width={300} />
-            <Typography variant="h1" pb="5rem">
-              Enter 4-digit OTP sent to <br></br> 9999999999
-            </Typography>
-
-            <PinInput
-              length={4}
-              initialValue=""
-              secret
-              type="numeric"
-              focus={true}
-              autoSelect={false}
-              inputMode="number"
-              style={{ padding: "5px" }}
-              inputStyle={{
-                borderBottom: "1px solid grey",
-                border: "none",
-                width: "22%",
-                fontSize: "2rem",
-                color: "#fff",
-              }}
-              inputFocusStyle={{ borderBottom: "2px solid #9DFFCE" }}
-              regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
-              onComplete={(value, index) => {
-                if (value.length == 4) {
-                  onSMSOTPValidate(value);
-                }
-              }}
-            />
-
-            {SMSOTPVerified && (
-              <Stack
-                pt="3rem"
-                alignItems="center"
-                direction="row"
-                justifyContent="center"
-                spacing="0.5rem"
-              >
-                <Image src={CheckIcon} height={20} width={20} alt="check" />
-                <Typography variant="subtitle1">Otp Vefified</Typography>
-              </Stack>
-            )}
-
-            {/* <Stack
-              pt="3rem"
-              alignItems="center"
-              direction="row"
-              justifyContent="center"
-              spacing="0.5rem"
-            >
-              <Image src={ErrorIcon} height={20} width={20} alt="check" />
-              <Typography variant="subtitle1">Unable to verify</Typography>
-            </Stack> */}
-          </Box>
-        )}
+        </Box>
       </PreloginLayout>
     </>
   );

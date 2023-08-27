@@ -11,6 +11,7 @@ export default function CustomInput(props: any) {
         {props.customLabel}
       </Typography>
       <TextField
+        defaultValue={props.defaultValue}
         id={props.id}
         value={props.value}
         variant="outlined"

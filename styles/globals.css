@@ -80,3 +80,47 @@ a {
   height: 0.625rem;
   width: 0.625rem;
 }
+
+.adsBanner .swiper-wrapper {
+  height: 13rem;
+}
+
+.adsBanner .swiper-pagination-bullet-active {
+  background-color: #ff426f !important;
+  height: 0.625rem;
+  width: 0.625rem;
+}
+
+.adsBanner .swiper-pagination-bullet {
+  background-color: #f2ff9f;
+  opacity: 1;
+  height: 0.625rem;
+  width: 0.625rem;
+}
+
+.maxWidth {
+  width: max-content;
+}
+
+.buyButton {
+  background: #76ffc6;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem 4rem;
+}
+
+.sellButton {
+  background: #EE4D37;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem 4rem;
+}
+
+::-webkit-scrollbar {
+  width: 0;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #FF0000;
+}

@@ -6,8 +6,10 @@ import ShowAfterLoad from "@/components/animations/showAfterLoad";
 import BottomStay from "@/components/bottomNavigation";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import Tap from "@/components/animations/tap";
+import { useRouter } from "next/router";
 
 export default function RegistrationDone() {
+  const router = useRouter();
   const defaultOptionsRegistrationDone = {
     loop: false,
     autoplay: true,
@@ -17,9 +19,13 @@ export default function RegistrationDone() {
     },
   };
 
-  const onRedirectToRiskProfile = () =>{
-   // routre.replace("")
-  }
+  const onRedirectToRiskProfile = () => {
+    // routre.replace("")
+  };
+
+  const onRedirectToHome = () => {
+    router.replace("/postLogin");
+  };
 
   return (
     <PreloginLayout>
@@ -41,7 +47,7 @@ export default function RegistrationDone() {
         <Tap>
           <Box>
             <Button
-              onClick={onRedirectToRiskProfile}
+              onClick={onRedirectToHome}
               fullWidth
               variant="contained"
               sx={{
@@ -49,7 +55,7 @@ export default function RegistrationDone() {
               }}
               endIcon={<TrendingFlatIcon />}
             >
-              Proceed to risk profile
+              Continue
             </Button>
           </Box>
         </Tap>

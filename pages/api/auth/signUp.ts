@@ -5,36 +5,67 @@ async function handler(req: any, res: any) {
   if (req.method == "POST") {
     const data = req.body;
     const client = await connectToDataBase();
-    const { name, email, password, phonenumber, gender } = data;
+    const {
+      name,
+      email,
+      password,
+      phonenumber,
+      gender,
+      isEmailVerified,
+      isPhoneVerified,
+      saveList,
+      addToCartList,
+    } = data;
 
     if (!name || !email || !password || !phonenumber || !gender) {
       res.status(422).json({
         message: "invalid input entries",
+        errorState: true,
       });
       return;
     } else {
       const db = client.db();
 
-      const existingUser = await db
+      const existingEmail = await db
         .collection("users")
-        .findOne({ email: email, phonenumber: phonenumber });
+        .findOne({ email: email });
 
-      if (existingUser) {
-        res.status(422).json({ message: "user already exists" });
+      const existingMobile = await db
+        .collection("Users")
+        .findOne({ phonenumber: phonenumber });
+
+      if (existingEmail && existingMobile) {
+        res.status(422).json({
+          message: "user already exists",
+          errorState: true,
+        });
+        client.close();
+      } else {
+        const hashedPassword = await hashPassword(password);
+        const result = await db.collection("Users").insertOne({
+          name: name,
+          email: email,
+          phonenumber: phonenumber,
+          password: hashedPassword,
+          gender: gender,
+          isEmailVerified: isEmailVerified == null ? false : isEmailVerified,
+          isPhoneVerified: isPhoneVerified == null ? false : isPhoneVerified,
+          saveList: saveList == null ? [] : saveList,
+          addToCartList: addToCartList == null ? [] : addToCartList,
+        });
+
+        const collection = db.collection("Users");
+        const data = await collection.findOne({ email: email });
+        // localStorage.setItem("userData", JSON.stringify(data));
+
+        res.status(200).json({
+          message: "Registration Done",
+          errorState: false,
+          data: data,
+        });
+
         client.close();
       }
-      const hashedPassword = await hashPassword(password);
-      const result = await db.collection("users").insertOne({
-        name: name,
-        email: email,
-        phonenumber: phonenumber,
-        password: hashedPassword,
-        gender: gender,
-      });
-      console.log(result);
-
-      res.status(201).json({ message: "user created succesfully" });
-      client.close();
     }
   }
 }

@@ -8,7 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useRouter } from "next/router";
 
-export default function ButtonAppBar(props: any) {
+export default function Backheader(props: any) {
   const router = useRouter();
   const handleBack = () => {
     history.back();
