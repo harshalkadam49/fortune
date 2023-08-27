@@ -54,8 +54,10 @@ export default function StockDetails() {
   const [stockDetails, setStockDetails] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<any>(false);
 
-  var storedUser: any = localStorage.getItem("userData");
-  var userObject = JSON.parse(storedUser);
+  if (typeof window !== "undefined") {
+    var storedUser: any = localStorage.getItem("userData");
+    var userObject: any = JSON.parse(storedUser);
+  }
 
   const onAddToCart = (UserID: any, EquityID: any) => {
     setAddToCart(!addToCart);
