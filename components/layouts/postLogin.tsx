@@ -113,7 +113,13 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const OnLogout = () => {
+    setAnchorEl(null);
     router.replace("/prelogin/login");
+    localStorage.clear();
+    sessionStorage.clear()
   };
 
   const styles = {
@@ -205,7 +211,7 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                     "aria-labelledby": "basic-button",
                   }}
                 >
-                  <MenuItem onClick={handleClose}>
+                  <MenuItem onClick={OnLogout}>
                     <Typography variant="h3">Logout</Typography>
                   </MenuItem>
                 </Menu>

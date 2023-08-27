@@ -123,10 +123,10 @@ export default function SignUp() {
 
   const onCreateUser = () => {
     setIsLoading(true);
-    let model = {
+    let model: any = {
       gender: gender,
       name: capitalizeFirstLetter(entredName),
-      email: entredEmail,
+      email: entredEmail.toLowerCase(),
       phonenumber: entredPhoneNumber,
       password: entredPassword,
       isEmailVerified: true,
@@ -136,7 +136,9 @@ export default function SignUp() {
     postUserapi(model, "/api/auth/signUp", "POST").then((res) => {
       if (!res.errorState) {
         router.replace("/prelogin/registrationdone");
+        console.log(res.data);
         setIsLoading(false);
+        localStorage.setItem("userData", JSON.stringify(model));
       }
     });
   };

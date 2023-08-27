@@ -28,7 +28,6 @@ export default function SignUp() {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
@@ -37,13 +36,12 @@ export default function SignUp() {
     setIsLoading(true);
     event.preventDefault();
 
-    const entredName = nameInput;
     const entredEmail = emailInput;
     const entredPassword = passwordInput;
     // for log in user
     const result = await signIn("credentials", {
       redirect: false,
-      email: entredEmail,
+      email: entredEmail.toLowerCase(),
       password: entredPassword,
     });
     setOpen(true);
