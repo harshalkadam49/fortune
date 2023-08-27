@@ -13,6 +13,8 @@ async function handler(req: any, res: any) {
       gender,
       isEmailVerified,
       isPhoneVerified,
+      saveList,
+      addToCartList,
     } = data;
 
     if (!name || !email || !password || !phonenumber || !gender) {
@@ -48,15 +50,20 @@ async function handler(req: any, res: any) {
           gender: gender,
           isEmailVerified: isEmailVerified == null ? false : isEmailVerified,
           isPhoneVerified: isPhoneVerified == null ? false : isPhoneVerified,
+          saveList: saveList == null ? [] : saveList,
+          addToCartList: addToCartList == null ? [] : addToCartList,
         });
+
+        const collection = db.collection("Users");
+        const data = await collection.findOne({ email: email });
+        // localStorage.setItem("userData", JSON.stringify(data));
 
         res.status(200).json({
           message: "Registration Done",
           errorState: false,
-          data: result,
+          data: data,
         });
 
-        
         client.close();
       }
     }

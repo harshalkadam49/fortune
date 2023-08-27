@@ -8,7 +8,7 @@ import FemaleUnSelected from "../../public/prelogin/femaleUnSelected.svg";
 import CheckIcon from "../../public/prelogin/checkIcon.svg";
 import ErrorIcon from "../../public/prelogin/errorIcon.svg";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BottomStay from "@/components/bottomNavigation";
 import Tap from "@/components/animations/tap";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
@@ -136,9 +136,8 @@ export default function SignUp() {
     postUserapi(model, "/api/auth/signUp", "POST").then((res) => {
       if (!res.errorState) {
         router.replace("/prelogin/registrationdone");
-        console.log(res.data);
+        localStorage.setItem("userData", JSON.stringify(res.data));
         setIsLoading(false);
-        localStorage.setItem("userData", JSON.stringify(model));
       }
     });
   };

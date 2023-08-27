@@ -28,6 +28,10 @@ import { useRouter } from "next/router";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Loader from "@/components/loader";
+import { postAddToCartEquityapi } from "@/apifunctions/postAddToCartEquity";
+import { postRemoveFromCartEquityapi } from "@/apifunctions/postRemoveFromCartEquity";
+import { postSaveListsEquityapi } from "@/apifunctions/postSaveListsEquity";
+import { postRemoveFromSaveListsEquityapi } from "@/apifunctions/postRemoveFromSaveListsEquity";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 5,
@@ -50,12 +54,43 @@ export default function StockDetails() {
   const [stockDetails, setStockDetails] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<any>(false);
 
-  const onAddToWatchList = () => {
-    setSaveToWatchList(true);
+  var storedUser: any = localStorage.getItem("userData");
+  var userObject = JSON.parse(storedUser);
+
+  const onAddToCart = (UserID: any, EquityID: any) => {
+    setAddToCart(!addToCart);
+    let model: any = {
+      userID: UserID,
+      equityID: EquityID,
+    };
+
+    if (addToCart) {
+      postRemoveFromCartEquityapi(
+        model,
+        "/api/auth/removeFromCartEquity",
+        "POST"
+      );
+    } else {
+      postAddToCartEquityapi(model, "/api/auth/addToCartEquity", "POST");
+    }
   };
 
-  const onAddToCart = () => {
-    setAddToCart(true);
+  const onAddToWatchList = (UserID: any, EquityID: any) => {
+    setSaveToWatchList(!saveToWatchList);
+    let model: any = {
+      userID: UserID,
+      equityID: EquityID,
+    };
+
+    if (saveToWatchList) {
+      postRemoveFromSaveListsEquityapi(
+        model,
+        "/api/auth/removeFromCartEquity",
+        "POST"
+      );
+    } else {
+      postSaveListsEquityapi(model, "/api/auth/saveListEquity", "POST");
+    }
   };
 
   const onGetStockDetails = (CompanyName: any) => {
@@ -82,6 +117,7 @@ export default function StockDetails() {
     if (router.isReady) {
       onGetStockDetails(router.query.CompanyName);
       setCompanyName(router.query.CompanyName);
+      console.log(userObject._id);
     }
   }, [router.query]);
 
@@ -144,8 +180,12 @@ export default function StockDetails() {
                 </Stack>
 
                 <Stack direction="row" alignItems="center">
-                  <IconButton onClick={onAddToWatchList}>
-                    {saveToWatchList ? (
+                  <IconButton
+                    onClick={() =>
+                      onAddToCart(userObject._id, stockDetails._id)
+                    }
+                  >
+                    {addToCart ? (
                       <ShoppingCartIcon
                         sx={{ fontSize: "1.8rem", color: "#F0882D" }}
                       />
@@ -156,8 +196,12 @@ export default function StockDetails() {
                     )}
                   </IconButton>
 
-                  <IconButton onClick={onAddToCart}>
-                    {addToCart ? (
+                  <IconButton
+                    onClick={() =>
+                      onAddToWatchList(userObject._id, stockDetails._id)
+                    }
+                  >
+                    {saveToWatchList ? (
                       <BookmarkAddedIcon
                         sx={{ fontSize: "1.8rem", color: "#F0882D" }}
                       />
