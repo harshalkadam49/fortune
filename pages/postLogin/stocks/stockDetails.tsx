@@ -382,7 +382,7 @@ export default function StockDetails() {
         >
           <Stack
             sx={{
-              width: { lg: "25%", xs: "95%" },
+              width: { lg: "23%", xs: "10%" },
               mx: "auto",
             }}
             justifyContent="center"
