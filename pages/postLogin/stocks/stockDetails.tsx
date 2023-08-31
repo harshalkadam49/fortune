@@ -48,11 +48,12 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
 
 export default function StockDetails() {
   const router = useRouter();
-  const [saveToWatchList, setSaveToWatchList] = useState(false);
+  const [saveToWatchList, setSaveToWatchList] = useState<any>(false);
   const [addToCart, setAddToCart] = useState(false);
   const [CompanyName, setCompanyName] = useState<any>("");
   const [stockDetails, setStockDetails] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<any>(false);
+  const [isSaved, setIsSaved] = useState<any>(false);
 
   if (typeof window !== "undefined") {
     var storedUser: any = localStorage.getItem("userData");
@@ -102,7 +103,7 @@ export default function StockDetails() {
       "GET"
     ).then((res) => {
       if (!res.errorState) {
-        setStockDetails(res);
+        setStockDetails(res.data);
         setIsLoading(false);
       }
     });
@@ -119,7 +120,7 @@ export default function StockDetails() {
     if (router.isReady) {
       onGetStockDetails(router.query.CompanyName);
       setCompanyName(router.query.CompanyName);
-      console.log(userObject._id);
+      setSaveToWatchList(router.query.isSaved);
     }
   }, [router.query]);
 
@@ -182,7 +183,8 @@ export default function StockDetails() {
                 </Stack>
 
                 <Stack direction="row" alignItems="center">
-                  <IconButton
+                  {/* cannot place multiple orders at once */}
+                  {/* <IconButton
                     onClick={() =>
                       onAddToCart(userObject._id, stockDetails._id)
                     }
@@ -196,7 +198,8 @@ export default function StockDetails() {
                         sx={{ fontSize: "1.8rem", color: "#fff" }}
                       />
                     )}
-                  </IconButton>
+                  </IconButton> */}
+                  {/* cannot place multiple orders at once */}
 
                   <IconButton
                     onClick={() =>
@@ -219,8 +222,11 @@ export default function StockDetails() {
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Typography variant="h1">₹</Typography>
                 <Typography variant="h1">{stockDetails.LastPrice}</Typography>
-                <Typography variant="h3" color="#EE4D37">
-                  ({stockDetails.Change} %)
+                <Typography
+                  variant="h3"
+                  color={stockDetails.Change > 0 ? "#76FFC6" : "#EE4D37"}
+                >
+                  ({stockDetails.Change}%)
                 </Typography>
               </Stack>
             </Stack>
@@ -235,12 +241,14 @@ export default function StockDetails() {
               <Stack direction="row" justifyContent="space-between" pb="1rem">
                 <Box>
                   <Typography variant="h3">Today's Low</Typography>
-                  <Typography variant="h2">{stockDetails.Low}</Typography>
+                  <Typography variant="h2" pt={2}>
+                    {stockDetails.Low}
+                  </Typography>
                 </Box>
 
                 <Box>
                   <Typography variant="h3">Today's High</Typography>
-                  <Typography variant="h2" textAlign="right">
+                  <Typography variant="h2" pt={2} textAlign="right">
                     {stockDetails.High}
                   </Typography>
                 </Box>
@@ -388,7 +396,10 @@ export default function StockDetails() {
               }
               variant="contained"
               fullWidth={true}
-              className="buyButton"
+              sx={{
+                background: "#76FFC6",
+                color: "#fff",
+              }}
             >
               Buy
             </Button>
@@ -399,7 +410,10 @@ export default function StockDetails() {
               }
               variant="contained"
               fullWidth={true}
-              className="sellButton"
+              sx={{
+                background: "#EE4D37",
+                color: "#fff",
+              }}
             >
               Sell
             </Button>

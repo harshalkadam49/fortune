@@ -10,7 +10,7 @@ export default function Loader(props: any) {
           alignItems="center"
           sx={{
             position: "fixed",
-            width: "100%",
+            width: {md:"23.5%",xs:"100%"},
             minHeight: "100vh",
             background: "#000",
             zIndex: 55,

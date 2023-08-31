@@ -111,7 +111,7 @@ export default function Home() {
   return (
     <PostloginLayout>
       <Loader isLoading={isLoading} />
-      <Box>
+      <Box pt="5rem" pb="50%">
         <Swiper pagination={true} modules={[Pagination]} className="adsBanner">
           <SwiperSlide>
             <Box

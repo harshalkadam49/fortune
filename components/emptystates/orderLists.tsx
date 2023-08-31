@@ -8,8 +8,8 @@ export default function EmptyOrderList() {
       <Box textAlign="center" pt="10%">
         <Image
           src={EmptyOrderListImg}
-          height={150}
-          width={150}
+          height={100}
+          width={100}
           alt="EmptyOrderList"
         />
 

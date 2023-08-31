@@ -30,14 +30,13 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListIcon from "@mui/icons-material/List";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { getUserDataapi } from "@/apifunctions/getUserData";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
 export default function SwipeableTemporaryDrawer({ children, props }: any) {
-  if (typeof window !== "undefined") {
-    var storedUser: any = localStorage.getItem("userData");
-    var userObject: any = JSON.parse(storedUser);
-  }
+  const [userData, setUserData] = React.useState<any>({});
   const router = useRouter();
   const [state, setState] = React.useState({
     top: false,
@@ -50,6 +49,18 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
   const [isLoading, setIsLoading] = React.useState(false);
   Router.events.on("routeChangeStart", () => setIsLoading(true));
   Router.events.on("routeChangeComplete", () => setIsLoading(false));
+  const [menuList, setMenuList] = React.useState<any>([
+    {
+      title: "Orders",
+      icon: <ListIcon sx={{ fontSize: "1.5rem", color: "#fff" }} />,
+      redirectTo: "/postLogin/stocks/equityOrders",
+    },
+    {
+      title: "Watchlist",
+      icon: <BookmarkIcon sx={{ fontSize: "1.5rem", color: "#fff" }} />,
+      redirectTo: "/postLogin/stocks/equityWatchlists",
+    },
+  ]);
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -65,41 +76,6 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
 
       setState({ ...state, [anchor]: open });
     };
-
-  const list = (anchor: Anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
 
   const onRedirectToStocksLists = () => {
     router.push({
@@ -136,8 +112,6 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
       overflow: "hidden",
       width: "100%",
       p: "0rem",
-      pt: "6rem",
-      pb: "6rem",
     },
     mainContainer: {
       background: "#000 !important",
@@ -149,18 +123,12 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
     },
   };
 
-  const getUserData = () => {
-    getUserDataapi(`/api/auth/userDetails?id=${userObject._id}`, "GET").then(
-      (res: any) => {
-        if(!res.errorState){
-          localStorage.setItem("userData", JSON.stringify(res.data));
-        }
-      }
-    );
-  };
-
   React.useEffect(() => {
-    getUserData();
+    if (typeof window !== "undefined") {
+      var storedUser: any = localStorage.getItem("userData");
+      var userObject: any = JSON.parse(storedUser);
+      setUserData(userObject);
+    }
   }, []);
 
   return (
@@ -180,15 +148,11 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
               p="0.5rem 1rem"
             >
               <Stack direction="row" spacing={2} alignItems="center">
-                <IconButton
-                  color="inherit"
-                  aria-label="menu"
-                  // onClick={toggleDrawer(anchor, true)}
-                  sx={{ p: "0rem" }}
-                >
-                  <MenuIcon sx={{ fontSize: "1.8rem" }} />
-                </IconButton>
-                <Typography variant="h1" color="inherit" component="div">
+                <MenuIcon
+                  onClick={toggleDrawer(anchor, true)}
+                  sx={{ fontSize: "1.3rem" }}
+                />
+                <Typography sx={{ fontSize: "1.2rem" }} color="inherit" component="div">
                   Fortune
                 </Typography>
               </Stack>
@@ -197,17 +161,14 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                 direction="row"
                 alignItems="center"
                 justifyContent="space-evenly"
-                spacing={5}
+                spacing={3}
               >
                 <SearchIcon
-                  sx={{ fontSize: "1.8rem" }}
+                  sx={{ fontSize: "1.3rem" }}
                   onClick={onRedirectToStocksLists}
                 />
                 <Badge variant="dot" color="error">
-                  <ListIcon
-                    onClick={redirectToOrders}
-                    sx={{ fontSize: "1.8rem" }}
-                  />
+                  <NotificationsIcon sx={{ fontSize: "1.3rem" }} />
                 </Badge>
 
                 <IconButton
@@ -218,7 +179,7 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                   onClick={handleClick}
                 >
                   <AccountCircleIcon
-                    sx={{ fontSize: "1.8rem", color: "#fff" }}
+                    sx={{ fontSize: "1.3rem", color: "#fff" }}
                   />
                 </IconButton>
                 <Menu
@@ -244,6 +205,60 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
             onOpen={toggleDrawer(anchor, true)}
           >
             {/* List to be added here */}
+            <Box
+              sx={{
+                background: "#000",
+                height: "100vh",
+                p: "1rem",
+                width: "12rem",
+              }}
+            >
+              {userData && (
+                <Box>
+                  <Avatar
+                    sx={{
+                      border: "1px solid #76FFC6",
+                      background: "#000",
+                      height: "2.5rem",
+                      width: "2.5rem",
+                    }}
+                  ></Avatar>
+                  <Typography variant="h2" pt="0.5rem" color="#fff">
+                    {userData.name}
+                  </Typography>
+                  <Typography variant="h3" pt="0.2rem" color="#fff">
+                    {userData.email}
+                  </Typography>
+                </Box>
+              )}
+
+              <List sx={{ pl: "0rem", pt: "1rem" }}>
+                {menuList &&
+                  menuList.map((item: any) => (
+                    <ListItem
+                      onClick={() =>
+                        router.push({
+                          pathname: item.redirectTo,
+                        })
+                      }
+                      sx={{
+                        borderBottom: "1px solid #343434",
+                        py: "0.8rem",
+                      }}
+                      disablePadding
+                    >
+                      {item.icon}
+                      <ListItemText
+                        primary={
+                          <Typography pl="0.6rem" variant="h2" color="#fff">
+                            {item.title}
+                          </Typography>
+                        }
+                      />
+                    </ListItem>
+                  ))}
+              </List>
+            </Box>
           </SwipeableDrawer>
           <Box sx={styles.bgContainer}>
             <Container sx={styles.mainContainer} className="main_wrapper">

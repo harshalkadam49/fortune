@@ -16,19 +16,19 @@ export const theme = createTheme({
     fontSize: 1,
     htmlFontSize: 16,
     h1: {
-      fontSize: 20,
-      fontWeight: 400,
-    },
-    h2: {
       fontSize: 16,
       fontWeight: 400,
     },
+    h2: {
+      fontSize: 14,
+      fontWeight: 400,
+    },
     h3: {
-      fontSize: 12,
+      fontSize: 10,
       fontWeight: 400,
     },
     subtitle1: {
-      fontSize: 14,
+      fontSize: 12,
       fontWeight: 400,
     },
   },
