@@ -54,7 +54,7 @@ export default function OrderExecution() {
       "GET"
     ).then((res) => {
       if (!res.errorState) {
-        setStockDetails(res);
+        setStockDetails(res.data);
       }
     });
   };
