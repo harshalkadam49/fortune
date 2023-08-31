@@ -206,7 +206,10 @@ export default function OrderExecution() {
                   onClick={onPlaceOrder}
                   variant="contained"
                   fullWidth={true}
-                  className="buyButton"
+                  sx={{
+                    background: "#76FFC6",
+                    color: "#fff",
+                  }}
                 >
                   Buy
                 </Button>
@@ -217,7 +220,10 @@ export default function OrderExecution() {
                   onClick={onPlaceOrder}
                   variant="contained"
                   fullWidth={true}
-                  className="sellButton"
+                  sx={{
+                    background: "#EE4D37",
+                    color: "#fff",
+                  }}
                 >
                   Sell
                 </Button>
