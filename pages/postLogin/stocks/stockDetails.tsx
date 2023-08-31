@@ -370,6 +370,7 @@ export default function StockDetails() {
             {/* share hoilding pattern */}
           </Box>
         )}
+
         <Box
           sx={{
             position: "fixed",
@@ -382,7 +383,7 @@ export default function StockDetails() {
         >
           <Stack
             sx={{
-              width: { lg: "23%", xs: "10%" },
+              width: { lg: "23%", xs: "95%" },
               mx: "auto",
             }}
             justifyContent="center"

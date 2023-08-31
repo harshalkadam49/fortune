@@ -5,6 +5,10 @@ import {
   Stack,
   TextField,
   Typography,
+  FormControl,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { useRef, useState } from "react";
 import Toast from "../../components/toasts/loginToast";
@@ -14,6 +18,8 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader";
 import PreloginLayout from "@/components/layouts/prelogin";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 export default function SignUp() {
   const router = useRouter();
@@ -24,6 +30,13 @@ export default function SignUp() {
   const [errors, setErrors] = useState("");
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -63,81 +76,111 @@ export default function SignUp() {
 
   return (
     <>
-    <PreloginLayout>
-      <Toast
-        open={open}
-        handleClose={handleClose}
-        message={errors}
-        severity="error"
-      />
-      <Box>
-        <Loader isLoading={isLoading} />
-        <Paper
-          sx={{
-            mx: "auto",
-            p: "2rem",
-            mt: "5%",
-            background: "#000",
-          }}
-        >
-          <Box textAlign="center">
-            <Image src={LoginImg} height={200} width={200} alt="LoginImg" />
-          </Box>
-          <Typography variant="h1" color="#fff" pb="3rem">
-            Sign In
-          </Typography>
-          <form onSubmit={submithandler}>
-            <Stack spacing="3rem">
-              <TextField
-                autoComplete="off"
-                required
-                value={emailInput}
-                id="email"
-                placeholder="Email"
-                variant="outlined"
-                onChange={(e) => setEmailInput(e.target.value)}
-              />
-              <TextField
-                autoComplete="off"
-                required
-                value={passwordInput}
-                id="password"
-                placeholder="Password"
-                variant="outlined"
-                onChange={(e) => setPasswordInput(e.target.value)}
-              />
-            </Stack>
-            <Box
-              sx={{
-                position: "fixed",
-                bottom: 10,
-                left: 0,
-                right: 0,
-                background: "#000",
-                height: "7rem",
-              }}
-            >
-              <Stack sx={{ width: {md:"23%",xs:"100%"}, mx: "auto" }}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{
-                    borderRadius: "5rem",
-                  }}
-                >
-                  Sign In
-                </Button>
-              </Stack>
-
-              <Box textAlign="center" pt="1rem" onClick={onSignUp}>
-                <Typography variant="h2" color="#fff">
-                  Sign Up
-                </Typography>
-              </Box>
+      <PreloginLayout>
+        <Toast
+          open={open}
+          handleClose={handleClose}
+          message={errors}
+          severity="error"
+        />
+        <Box>
+          <Loader isLoading={isLoading} />
+          <Paper
+            sx={{
+              mx: "auto",
+              p: "2rem",
+              mt: "5%",
+              background: "#000",
+            }}
+          >
+            <Box textAlign="center">
+              <Image src={LoginImg} height={200} width={200} alt="LoginImg" />
             </Box>
-          </form>
-        </Paper>
-      </Box>
+            <Typography variant="h1" color="#fff" pb="3rem">
+              Sign In
+            </Typography>
+            <form onSubmit={submithandler}>
+              <Stack spacing="3rem">
+                <TextField
+                  autoComplete="off"
+                  required
+                  value={emailInput}
+                  id="email"
+                  placeholder="Email"
+                  variant="outlined"
+                  onChange={(e) => setEmailInput(e.target.value)}
+                />
+
+                <FormControl variant="filled">
+                  <OutlinedInput
+                    autoComplete="off"
+                    required
+                    value={passwordInput}
+                    id="password"
+                    placeholder="Password"
+                    variant="outlined"
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityOff
+                              sx={{
+                                fontSize: "1.5rem",
+                                color: "#fff",
+                              }}
+                            />
+                          ) : (
+                            <Visibility
+                              sx={{
+                                fontSize: "1.5rem",
+                                color: "#fff",
+                              }}
+                            />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                </FormControl>
+              </Stack>
+              <Box
+                sx={{
+                  position: "fixed",
+                  bottom: 10,
+                  left: 0,
+                  right: 0,
+                  background: "#000",
+                  height: "7rem",
+                }}
+              >
+                <Stack sx={{ width: { md: "23%", xs: "90%" }, mx: "auto" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      borderRadius: "5rem",
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                </Stack>
+
+                <Box textAlign="center" pt="1rem" onClick={onSignUp}>
+                  <Typography variant="h2" color="#fff">
+                    Sign Up
+                  </Typography>
+                </Box>
+              </Box>
+            </form>
+          </Paper>
+        </Box>
       </PreloginLayout>
     </>
   );

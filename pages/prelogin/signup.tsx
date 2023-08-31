@@ -278,7 +278,7 @@ export default function SignUp() {
               height: "7rem",
             }}
           >
-            <Stack sx={{ width: {md:"23%",xs:"100%"}, mx: "auto" }}>
+            <Stack sx={{ width: {md:"23%",xs:"90%"}, mx: "auto" }}>
               <Tap>
                 <Box>
                   <Button
