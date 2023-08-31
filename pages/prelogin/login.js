@@ -13,6 +13,7 @@ import LoginImg from "../../public/prelogin/login.svg";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader";
+import PreloginLayout from "@/components/layouts/prelogin";
 
 export default function SignUp() {
   const router = useRouter();
@@ -62,6 +63,7 @@ export default function SignUp() {
 
   return (
     <>
+    <PreloginLayout>
       <Toast
         open={open}
         handleClose={handleClose}
@@ -72,7 +74,6 @@ export default function SignUp() {
         <Loader isLoading={isLoading} />
         <Paper
           sx={{
-            width: { lg: "50%", xs: "100%" },
             mx: "auto",
             p: "2rem",
             mt: "5%",
@@ -116,7 +117,7 @@ export default function SignUp() {
                 height: "7rem",
               }}
             >
-              <Stack sx={{ width: "90%", mx: "auto" }}>
+              <Stack sx={{ width: {md:"23%",xs:"100%"}, mx: "auto" }}>
                 <Button
                   type="submit"
                   variant="contained"
@@ -137,6 +138,7 @@ export default function SignUp() {
           </form>
         </Paper>
       </Box>
+      </PreloginLayout>
     </>
   );
 }

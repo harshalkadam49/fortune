@@ -37,7 +37,7 @@ const deleteModal = {
   top: "40%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "90%",
+  width: { md: "20%", xs: "90%" },
   bgcolor: "#343434",
   boxShadow: 24,
   p: "2rem",
@@ -82,8 +82,11 @@ export default function EquityCart() {
       model,
       "/api/auth/removeFromSaveListEquity",
       "POST"
-    );
-    window.location.reload();
+    ).then((res: any) => {
+      if (!res.errorState) {
+        router.reload();
+      }
+    });
   };
 
   const handleOpen = (id: any) => {
