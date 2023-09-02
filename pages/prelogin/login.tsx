@@ -46,24 +46,9 @@ export default function SignUp() {
 
     const entredEmail = emailInput;
     const entredPassword = passwordInput;
-    // for log in user
-    // const result = await signIn("credentials", {
-    //   redirect: false,
-    //   email: entredEmail.toLowerCase(),
-    //   password: entredPassword,
-    // });
-    // setOpen(true);
-
-    // if (result.error) {
-    //   setIsLoading(false);
-    // } else {
-    //   setIsLoading(false);
-    //   setErrors("Logged in succesfully");
-    //   router.replace("/postLogin/");
-    // }
 
     let model = {
-      userName: emailInput,
+      userName: entredEmail.toLowerCase(),
       password: passwordInput,
     };
 
