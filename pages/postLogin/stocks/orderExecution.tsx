@@ -24,6 +24,8 @@ export default function OrderExecution() {
   const [error, setError] = useState<any>("");
   const [orderType, setOrderType] = useState<any>("");
   const [open, setOpen] = useState(false);
+  const [userData, setUserData] = useState<any>({});
+
 
   const onPlaceOrder = () => {
     if (error == " ") {
@@ -34,6 +36,7 @@ export default function OrderExecution() {
         price: stockDetails.LastPrice,
         quantity: quantity,
         type: orderType,
+        userID: userData._id,
       };
       postEquityOrdersapi(model, "/api/auth/equityOrders", "POST").then(
         (res) => {
@@ -86,6 +89,12 @@ export default function OrderExecution() {
       onGetStockDetails(router.query.CompanyName);
       setCompanyName(router.query.CompanyName);
       setOrderType(router.query.orderType);
+    }
+
+    if (typeof window !== "undefined") {
+      var storedUser: any = localStorage.getItem("userData");
+      var userObject: any = JSON.parse(storedUser);
+      setUserData(userObject);
     }
   }, [router.query]);
 

@@ -5,10 +5,7 @@ async function handler(req: any, res: any) {
     const data = req.body;
     const client = await connectToDataBase();
     const {
-      userid,
-      investorid,
-      portfolioid,
-      orderid,
+      userID,
       timestamp,
       stockname,
       price,
@@ -26,10 +23,7 @@ async function handler(req: any, res: any) {
       const db = client.db();
 
       const result = await db.collection("EquityOrders").insertOne({
-        userid: 1,
-        investorid: 1,
-        portfolioid: 1,
-        orderid: 1,
+        userID: userID,
         stockname: stockname,
         timestamp: new Date(),
         price: price,

@@ -19,6 +19,7 @@
     "@types/react-lottie": "^1.2.6",
     "bcryptjs": "^2.4.3",
     "framer-motion": "^10.15.0",
+    "moment": "^2.29.4",
     "mongodb": "^5.7.0",
     "mongoose": "^7.4.2",
     "next": "^13.4.12",
