@@ -3,7 +3,6 @@ import { Box, Skeleton, Stack } from "@mui/material";
 export default function PostLoginSimmer(props: any) {
   return (
     <>
-      {props.isLoading && (
         <Box
           sx={{
             pt: "5rem",
@@ -107,7 +106,6 @@ export default function PostLoginSimmer(props: any) {
           </Stack>
           
         </Box>
-      )}
     </>
   );
 }
