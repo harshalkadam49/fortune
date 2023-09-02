@@ -1,25 +1,24 @@
 import {
   Box,
   Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
   Paper,
   Stack,
   TextField,
   Typography,
-  FormControl,
-  OutlinedInput,
-  InputAdornment,
-  IconButton,
 } from "@mui/material";
 import { useRef, useState } from "react";
 import Toast from "../../components/toasts/loginToast";
-import { signIn, signin } from "next-auth/client";
 import LoginImg from "../../public/prelogin/login.svg";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader";
 import PreloginLayout from "@/components/layouts/prelogin";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { postLoginUserapi } from "@/apifunctions/postLoginUser";
+import { VisibilityOff, Visibility } from "@mui/icons-material";
 
 export default function SignUp() {
   const router = useRouter();
@@ -30,15 +29,10 @@ export default function SignUp() {
   const [errors, setErrors] = useState("");
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [severity, setSeverity] = useState("success");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handleClose = (event, reason) => {
+  const handleClose = (event: any, reason: any) => {
     if (reason === "clickaway") {
       return;
     }
@@ -46,32 +40,58 @@ export default function SignUp() {
   };
 
   //  hitting the api
-  async function submithandler(event) {
+  async function submithandler(event: any) {
     setIsLoading(true);
     event.preventDefault();
 
     const entredEmail = emailInput;
     const entredPassword = passwordInput;
     // for log in user
-    const result = await signIn("credentials", {
-      redirect: false,
-      email: entredEmail.toLowerCase(),
-      password: entredPassword,
-    });
-    setOpen(true);
+    // const result = await signIn("credentials", {
+    //   redirect: false,
+    //   email: entredEmail.toLowerCase(),
+    //   password: entredPassword,
+    // });
+    // setOpen(true);
 
-    if (result.error) {
-      setIsLoading(false);
-      setErrors(result.error);
-    } else {
-      setIsLoading(false);
-      setErrors("Logged in succesfully");
-      router.replace("/postLogin/");
-    }
+    // if (result.error) {
+    //   setIsLoading(false);
+    // } else {
+    //   setIsLoading(false);
+    //   setErrors("Logged in succesfully");
+    //   router.replace("/postLogin/");
+    // }
+
+    let model = {
+      userName: emailInput,
+      password: passwordInput,
+    };
+
+    postLoginUserapi(model, "/api/auth/login", "POST").then((res: any) => {
+      if (!res.errorState) {
+        localStorage.setItem("userData", JSON.stringify(res.data));
+        setIsLoading(false);
+        setSeverity("success");
+        router.replace("/postLogin/");
+      } else {
+        setIsLoading(false);
+        setSeverity("error");
+      }
+      setErrors(res.message);
+      setOpen(true);
+    });
   }
 
   const onSignUp = () => {
     router.push("/prelogin/signup");
+  };
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
   };
 
   return (
@@ -81,7 +101,7 @@ export default function SignUp() {
           open={open}
           handleClose={handleClose}
           message={errors}
-          severity="error"
+          severity={severity}
         />
         <Box>
           <Loader isLoading={isLoading} />
@@ -111,14 +131,13 @@ export default function SignUp() {
                   onChange={(e) => setEmailInput(e.target.value)}
                 />
 
-                <FormControl variant="filled">
+                <FormControl>
                   <OutlinedInput
                     autoComplete="off"
                     required
                     value={passwordInput}
                     id="password"
                     placeholder="Password"
-                    variant="outlined"
                     onChange={(e) => setPasswordInput(e.target.value)}
                     type={showPassword ? "text" : "password"}
                     endAdornment={
