@@ -32,6 +32,7 @@ import { postAddToCartEquityapi } from "@/apifunctions/postAddToCartEquity";
 import { postRemoveFromCartEquityapi } from "@/apifunctions/postRemoveFromCartEquity";
 import { postSaveListsEquityapi } from "@/apifunctions/postSaveListsEquity";
 import { postRemoveFromSaveListsEquityapi } from "@/apifunctions/postRemoveFromSaveListsEquity";
+import { getUserDataapi } from "@/apifunctions/getUserData";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 5,
@@ -54,11 +55,7 @@ export default function StockDetails() {
   const [stockDetails, setStockDetails] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<any>(false);
   const [isSaved, setIsSaved] = useState<any>(false);
-
-  if (typeof window !== "undefined") {
-    var storedUser: any = localStorage.getItem("userData");
-    var userObject: any = JSON.parse(storedUser);
-  }
+  const [userData, setUserData] = useState<any>({});
 
   const onAddToCart = (UserID: any, EquityID: any) => {
     setAddToCart(!addToCart);
@@ -116,11 +113,30 @@ export default function StockDetails() {
     });
   };
 
+  const isAlreadySaved = (array: any) => {
+    var fliteredArray = array.find((item: any) => {
+      var isAlreadySaved = item == stockDetails._id;
+
+      setSaveToWatchList(isAlreadySaved);
+    });
+  };
+
+  const onGetUserData = (id: any) => {
+    getUserDataapi(`/api/auth/userDetails?id=${id}`, "GET").then((res: any) => {
+      if (!res.errorState) {
+        setUserData(res.data);
+        isAlreadySaved(res.data.saveList);
+      }
+    });
+  };
+
   useEffect(() => {
-    if (router.isReady) {
+    if (typeof window !== "undefined" && router.isReady) {
+      var storedUser: any = localStorage.getItem("userData");
+      var userObject: any = JSON.parse(storedUser);
+      onGetUserData(userObject._id);
       onGetStockDetails(router.query.CompanyName);
       setCompanyName(router.query.CompanyName);
-      setSaveToWatchList(router.query.isSaved);
     }
   }, [router.query]);
 
@@ -203,7 +219,7 @@ export default function StockDetails() {
 
                   <IconButton
                     onClick={() =>
-                      onAddToWatchList(userObject._id, stockDetails._id)
+                      onAddToWatchList(userData._id, stockDetails._id)
                     }
                   >
                     {saveToWatchList ? (
@@ -399,7 +415,7 @@ export default function StockDetails() {
               fullWidth={true}
               sx={{
                 background: "#76FFC6",
-                color: "#fff",
+                color: "#1a1a1a",
               }}
             >
               Buy

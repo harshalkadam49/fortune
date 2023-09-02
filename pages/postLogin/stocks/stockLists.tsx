@@ -15,26 +15,30 @@ import { useEffect, useState } from "react";
 import { getEquityMasterapi } from "@/apifunctions/getEquityMaster";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader";
+import LoopOutlinedIcon from "@mui/icons-material/LoopOutlined";
 
 export default function StocksLists() {
   const router = useRouter();
   const [equityLists, setEquityLists] = useState<any>([]);
   const [filteredEquityLists, setFilteredEquityLists] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [results, setResults] = useState(10);
 
   const getData = (res: any) => {
     setFilteredEquityLists(res);
   };
 
-  const onGetEquityLists = () => {
+  const onGetEquityLists = (results: any) => {
     setIsLoading(true);
-    getEquityMasterapi("/api/auth/equityMaster", "GET").then((res) => {
-      if (!res.errorState) {
-        setEquityLists(res);
-        getData(res);
-        setIsLoading(false);
+    getEquityMasterapi(`/api/auth/equityMaster?toLimit=${results}`, "GET").then(
+      (res) => {
+        if (!res.errorState) {
+          setEquityLists(res);
+          getData(res);
+          setIsLoading(false);
+        }
       }
-    });
+    );
   };
 
   const onRedirectToDetails = (CompanyName: any) => {
@@ -58,9 +62,15 @@ export default function StocksLists() {
     setFilteredEquityLists(filteredEquityLists);
   };
 
+  const onLoadMore = () => {
+    var moreResults = results + 10;
+    setResults(moreResults);
+    onGetEquityLists(moreResults);
+  };
+
   useEffect(() => {
-    onGetEquityLists();
-  }, []);
+    onGetEquityLists(10);
+  }, [router.query]);
 
   return (
     <LayoutWithBackheader showHeader={true} pageTitle="Stock List">
@@ -140,7 +150,7 @@ export default function StocksLists() {
                 <Chip
                   onClick={() => onRedirectToOrders(item.CompanyName, "Buy")}
                   label={
-                    <Typography variant="h3" color="#fff">
+                    <Typography variant="h3" color="#1a1a1a">
                       Buy
                     </Typography>
                   }
@@ -168,6 +178,19 @@ export default function StocksLists() {
             </Grid>
           </Grid>
         ))}
+
+        {results <= equityLists.length && (
+          <Box textAlign="center" pt="2rem">
+            <Button
+              startIcon={<LoopOutlinedIcon sx={{ color: "#fff" }} />}
+              onClick={onLoadMore}
+            >
+              <Typography variant="h2" color="#fff">
+                Load More
+              </Typography>
+            </Button>
+          </Box>
+        )}
       </Box>
     </LayoutWithBackheader>
   );

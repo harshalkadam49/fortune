@@ -100,7 +100,7 @@ export default function EquityCart() {
   const onRedirectToDetails = (CompanyName: any) => {
     router.push({
       pathname: "/postLogin/stocks/stockDetails",
-      query: { CompanyName: CompanyName, isSaved: true },
+      query: { CompanyName: CompanyName },
     });
   };
 
