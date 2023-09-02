@@ -81,5 +81,13 @@ export const theme = createTheme({
         },
       },
     },
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          background:"#ffffff24",
+          borderRadius:"0.5rem"
+        },
+      },
+    },
   },
 });

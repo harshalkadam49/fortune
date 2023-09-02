@@ -33,6 +33,7 @@ import { getIndianIndicesMasterapi } from "@/apifunctions/getIndianIndicesMaster
 import { color } from "framer-motion";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader";
+import PostLoginSimmer from "@/components/simmers/postLoginSimmer";
 
 export default function Home() {
   const router = useRouter();
@@ -110,7 +111,7 @@ export default function Home() {
 
   return (
     <PostloginLayout>
-      <Loader isLoading={isLoading} />
+      <PostLoginSimmer isLoading={isLoading} />
       <Box pt="5rem" pb="50%">
         <Swiper pagination={true} modules={[Pagination]} className="adsBanner">
           <SwiperSlide>
