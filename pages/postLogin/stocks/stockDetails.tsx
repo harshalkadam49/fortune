@@ -33,6 +33,7 @@ import { postRemoveFromCartEquityapi } from "@/apifunctions/postRemoveFromCartEq
 import { postSaveListsEquityapi } from "@/apifunctions/postSaveListsEquity";
 import { postRemoveFromSaveListsEquityapi } from "@/apifunctions/postRemoveFromSaveListsEquity";
 import { getUserDataapi } from "@/apifunctions/getUserData";
+import StockDetailsSimmer from "@/components/simmers/stockDetailsSimmer";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 5,
@@ -122,10 +123,12 @@ export default function StockDetails() {
   };
 
   const onGetUserData = (id: any) => {
+    setIsLoading(true);
     getUserDataapi(`/api/auth/userDetails?id=${id}`, "GET").then((res: any) => {
       if (!res.errorState) {
         setUserData(res.data);
         isAlreadySaved(res.data.saveList);
+        setIsLoading(false);
       }
     });
   };
@@ -143,7 +146,7 @@ export default function StockDetails() {
   return (
     <>
       <LayoutWithBackheader showHeader={true} pageTitle="Stock Details">
-        <Loader isLoading={isLoading} />
+        <StockDetailsSimmer isLoading={isLoading} />
         {stockDetails && (
           <Box px="1rem" pt="5rem" pb="50%">
             <Stack direction="column" spacing={2}>

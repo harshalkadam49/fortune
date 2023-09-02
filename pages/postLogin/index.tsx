@@ -50,6 +50,7 @@ export default function Home() {
   };
 
   const handleChangeStockType = (event: SelectChangeEvent) => {
+    setIsLoading(true);
     setStocksType(event.target.value as string);
     if (event.target.value == "Gainers") {
       onGetEquityGainers();
@@ -63,23 +64,28 @@ export default function Home() {
     getEquityMasterapi("/api/auth/equityGainers", "GET").then((res) => {
       if (!res.errorState) {
         setIndianEquityGainers(res);
+        setIsLoading(false);
       }
     });
   };
 
   const onGetEquityLoosers = () => {
+    setIsLoading(true);
     getEquityLoosersapi("/api/auth/equityLoosers", "GET").then((res) => {
       if (!res.errorState) {
         setIndianEquityGainers(res);
+        setIsLoading(false);
       }
     });
   };
 
   const onGetIndianIndicesMaster = () => {
+    setIsLoading(true);
     getIndianIndicesMasterapi("/api/auth/equityIndicesMaster", "GET").then(
       (res) => {
         if (!res.errorState) {
           setIndianIndices(res);
+          setIsLoading(false);
         }
       }
     );
