@@ -19,6 +19,7 @@ import {
 import moment from "moment";
 import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import EquityOrdersSimmer from "@/components/simmers/equityOrdersSimmer";
 
 const style = {
   position: "absolute" as "absolute",
@@ -69,169 +70,172 @@ export default function EquityOrders() {
 
   return (
     <LayoutWithBackheader showHeader={true} pageTitle="Place Order">
-      <Loader isLoading={isLoading} />
-      <Box px="1rem" pt="5rem" pb="50%">
-        {orderLists.length == 0 && <EmptyOrderList />}
-        <>
-          <TableContainer
-            component={Paper}
-            sx={{
-              background: "#000",
-            }}
-          >
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <Typography variant="h2" color="#fff">
-                      Stock
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h2" color="#fff">
-                      Price
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h2" color="#fff">
-                      Qty
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h2" color="#fff">
-                      Type
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {orderLists.map((item: any, index: any) => (
-                  <TableRow onClick={() => handleOpen(item)} key={index}>
+      {isLoading ? (
+        <EquityOrdersSimmer />
+      ) : (
+        <Box px="1rem" pt="5rem" pb="50%">
+          {orderLists.length == 0 && <EmptyOrderList />}
+          <>
+            <TableContainer
+              component={Paper}
+              sx={{
+                background: "#000",
+              }}
+            >
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
                     <TableCell>
-                      <Typography variant="h3" color="#fff">
-                        {item.stockname}
+                      <Typography variant="h2" color="#fff">
+                        Stock
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="h3" color="#fff">
-                        {item.price}
+                      <Typography variant="h2" color="#fff">
+                        Price
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography
-                        variant="h3"
-                        color={item.type == "Buy" ? "#76FFC6" : "#EE4D37"}
-                      >
-                        {item.quantity}
+                      <Typography variant="h2" color="#fff">
+                        Qty
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      {" "}
-                      <Typography
-                        variant="h3"
-                        color={item.type == "Buy" ? "#76FFC6" : "#EE4D37"}
-                      >
-                        {item.type}
+                      <Typography variant="h2" color="#fff">
+                        Type
                       </Typography>
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {orderLists.map((item: any, index: any) => (
+                    <TableRow onClick={() => handleOpen(item)} key={index}>
+                      <TableCell>
+                        <Typography variant="h3" color="#fff">
+                          {item.stockname}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="h3" color="#fff">
+                          {item.price}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography
+                          variant="h3"
+                          color={item.type == "Buy" ? "#76FFC6" : "#EE4D37"}
+                        >
+                          {item.quantity}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        {" "}
+                        <Typography
+                          variant="h3"
+                          color={item.type == "Buy" ? "#76FFC6" : "#EE4D37"}
+                        >
+                          {item.type}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-          {orderLists.map(
-            (item: any, index: any) =>
-              item._id == selectedID && (
-                <Modal
-                  key={index}
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
-                >
-                  <Box sx={style}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <Typography
-                        variant="h1"
-                        fontSize="1.3rem"
-                        textAlign="center"
+            {orderLists.map(
+              (item: any, index: any) =>
+                item._id == selectedID && (
+                  <Modal
+                    key={index}
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Box sx={style}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
                       >
-                        Order Details
-                      </Typography>
+                        <Typography
+                          variant="h1"
+                          fontSize="1.3rem"
+                          textAlign="center"
+                        >
+                          Order Details
+                        </Typography>
 
-                      <CloseIcon
-                        onClick={handleClose}
-                        sx={{ fontSize: "1.5rem" }}
-                      />
-                    </Stack>
+                        <CloseIcon
+                          onClick={handleClose}
+                          sx={{ fontSize: "1.5rem" }}
+                        />
+                      </Stack>
 
-                    <Grid container spacing={4} pt="2rem">
-                      <Grid item xs={4}>
-                        <Typography variant="h1" color="#fff">
-                          Stock Name
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="h1" color="#fff">
-                          : {item.stockname}
-                        </Typography>
-                      </Grid>
+                      <Grid container spacing={4} pt="2rem">
+                        <Grid item xs={4}>
+                          <Typography variant="h1" color="#fff">
+                            Stock Name
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="h1" color="#fff">
+                            : {item.stockname}
+                          </Typography>
+                        </Grid>
 
-                      <Grid item xs={4}>
-                        <Typography variant="h1" color="#fff">
-                          Price
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="h1" color="#fff">
-                          : ₹ {item.price}
-                        </Typography>
-                      </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="h1" color="#fff">
+                            Price
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="h1" color="#fff">
+                            : ₹ {item.price}
+                          </Typography>
+                        </Grid>
 
-                      <Grid item xs={4}>
-                        <Typography variant="h1" color="#fff">
-                          Quantity
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="h1" color="#fff">
-                          : {item.quantity}
-                        </Typography>
-                      </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="h1" color="#fff">
+                            Quantity
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="h1" color="#fff">
+                            : {item.quantity}
+                          </Typography>
+                        </Grid>
 
-                      <Grid item xs={4}>
-                        <Typography variant="h1" color="#fff">
-                          Order Type
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="h1" color="#fff">
-                          : {item.type}
-                        </Typography>
-                      </Grid>
+                        <Grid item xs={4}>
+                          <Typography variant="h1" color="#fff">
+                            Order Type
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="h1" color="#fff">
+                            : {item.type}
+                          </Typography>
+                        </Grid>
 
-                      <Grid item xs={4}>
-                        <Typography variant="h1" color="#fff">
-                          Date
-                        </Typography>
+                        <Grid item xs={4}>
+                          <Typography variant="h1" color="#fff">
+                            Date
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Typography variant="h1" color="#fff">
+                            : {moment(item.timestamp).format("DD-MMM-YYYY")}
+                          </Typography>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={8}>
-                        <Typography variant="h1" color="#fff">
-                          : {moment(item.timestamp).format("DD-MMM-YYYY")}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Modal>
-              )
-          )}
-        </>
-      </Box>
+                    </Box>
+                  </Modal>
+                )
+            )}
+          </>
+        </Box>
+      )}
     </LayoutWithBackheader>
   );
 }
