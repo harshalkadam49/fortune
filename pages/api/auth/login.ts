@@ -23,11 +23,16 @@ async function handler(req: any, res: any) {
       if (isUser) {
         const isValidPassword = await verifyPassword(password, isUser.password);
         if (isValidPassword) {
+          const result = await db.collection("Logins").insertOne({
+            timeStamp: new Date(),
+          });
+
           res.status(200).json({
             data: isUser,
             message: "Login Succesfull",
             errorState: false,
           });
+
           client.close();
         } else {
           res.status(404).json({
