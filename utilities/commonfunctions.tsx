@@ -8,14 +8,21 @@ export const add3Dots = (string: any, limit: any) => {
   return string;
 };
 
-
 export function getInitials(input: string): string {
-  const words = input.split(' ');
+  const words = input.split(" ");
 
   const initials = words
-    .filter(word => word.length > 0)
-    .map(word => word[0].toUpperCase())
-    .join('');
+    .filter((word) => word.length > 0)
+    .map((word) => word[0].toUpperCase())
+    .join("");
 
   return initials;
 }
+
+export const getTwoDecimalValues = (number: any) => {
+  if (number == 0) return 0;
+  if (number) {
+    number = number.toFixed(2);
+    return number;
+  }
+};

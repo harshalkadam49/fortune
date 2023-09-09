@@ -27,7 +27,7 @@ import ComingSoon from "../../public/postLogin/comingSoon.svg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getEquityMasterapi } from "@/apifunctions/getEquityMaster";
-import { add3Dots } from "@/utilities/commonfunctions";
+import { add3Dots, getTwoDecimalValues } from "@/utilities/commonfunctions";
 import { getEquityLoosersapi } from "@/apifunctions/getEquityLoosers";
 import { getIndianIndicesMasterapi } from "@/apifunctions/getIndianIndicesMaster";
 import { color } from "framer-motion";
@@ -40,8 +40,10 @@ export default function Home() {
   const [type, setType] = useState("1");
   const [isLoading, setIsLoading] = useState(false);
   const [stocksType, setStocksType] = useState("Gainers");
-  const [indianEquityDetails, setIndianEquityDetails] = useState([]);
-  const [indianEquityGainers, setIndianEquityGainers] = useState([]);
+  const [equityLists, setEquityLists] = useState([]);
+  const [indianEquityGainersLoosers, setIndianEquityGainersLoosers] = useState(
+    []
+  );
   const [indianIndices, setIndianIndices] = useState([]);
   const [indianSectors, setIndianSectors] = useState([]);
 
@@ -61,22 +63,16 @@ export default function Home() {
 
   const onGetEquityGainers = () => {
     setIsLoading(true);
-    getEquityMasterapi("/api/auth/equityGainers", "GET").then((res) => {
-      if (!res.errorState) {
-        setIndianEquityGainers(res);
-        setIsLoading(false);
-      }
-    });
+    const result = equityLists.filter((c: any) => c.Change >= 0);
+    setIndianEquityGainersLoosers(result);
+    setIsLoading(false);
   };
 
   const onGetEquityLoosers = () => {
     setIsLoading(true);
-    getEquityLoosersapi("/api/auth/equityLoosers", "GET").then((res) => {
-      if (!res.errorState) {
-        setIndianEquityGainers(res);
-        setIsLoading(false);
-      }
-    });
+    const result = equityLists.filter((c: any) => c.Change < 0);
+    setIndianEquityGainersLoosers(result);
+    setIsLoading(false);
   };
 
   const onGetIndianIndicesMaster = () => {
@@ -102,6 +98,19 @@ export default function Home() {
     );
   };
 
+  const onGetEquityLists = () => {
+    setIsLoading(true);
+    getEquityMasterapi(`/api/auth/equityMaster`, "GET").then((res) => {
+      if (!res.errorState) {
+        setEquityLists(res);
+        setIsLoading(false);
+
+        const result = res.filter((c: any) => c.Change >= 0);
+        setIndianEquityGainersLoosers(result);
+      }
+    });
+  };
+
   const onRedirectToDetails = (CompanyName: any) => {
     router.push({
       pathname: "/postLogin/stocks/stockDetails",
@@ -110,9 +119,9 @@ export default function Home() {
   };
 
   useEffect(() => {
-    onGetEquityGainers();
     onGetIndianIndicesMaster();
     onGetIndianSectorsMaster();
+    onGetEquityLists();
   }, []);
 
   return (
@@ -288,7 +297,7 @@ export default function Home() {
                   freeMode={true}
                   modules={[Pagination, FreeMode]}
                 >
-                  {indianEquityGainers.map((item: any, index: any) => (
+                  {indianEquityGainersLoosers.map((item: any, index: any) => (
                     <SwiperSlide>
                       <Box
                         sx={{
@@ -300,13 +309,38 @@ export default function Home() {
                         onClick={() => onRedirectToDetails(item.CompanyName)}
                       >
                         <Stack spacing={2}>
-                          <Avatar sx={{ background: "#F3FFBD" }}>
-                            <Typography variant="h1" color="#1a1a1a">
-                              {item.CompanyName.split(" ")[0].substring(0, 1)}
-                              {item.CompanyName.split(" ").length > 1
-                                ? item.CompanyName.split(" ")[1].substring(0, 1)
-                                : ""}
-                            </Typography>
+                          <Avatar
+                            sx={{
+                              background: item.logoUrl ? "#fff" : "#76FFC6",
+                              height: "2.5rem",
+                              width: "2.5rem",
+                              color: "#1a1a1a",
+                              fontSize: "1rem",
+                            }}
+                          >
+                            {item.logoUrl ? (
+                              <img
+                                src={item.logoUrl}
+                                height="100%"
+                                width="100%"
+                              />
+                            ) : (
+                              <Typography variant="h1" color="#1a1a1a">
+                                {item.CompanyName && (
+                                  <>
+                                    {item.CompanyName.split(" ")[0].substring(
+                                      0,
+                                      1
+                                    )}
+                                    {item.CompanyName.split(" ").length > 1
+                                      ? item.CompanyName.split(
+                                          " "
+                                        )[1].substring(0, 1)
+                                      : ""}
+                                  </>
+                                )}
+                              </Typography>
+                            )}
                           </Avatar>
                           <Typography variant="h2" pt="0.5rem">
                             {add3Dots(item.CompanyName, 8)}
@@ -319,7 +353,7 @@ export default function Home() {
                               fontSize="0.6rem"
                               color={item.Change < 0 ? "#EE4D37" : "#76FFC6"}
                             >
-                              ({item.Change} %)
+                              ({getTwoDecimalValues(item.Change)} %)
                             </Typography>
                           </Stack>
                         </Stack>
@@ -349,7 +383,7 @@ export default function Home() {
                       >
                         <Stack spacing={2}>
                           <Typography variant="h1">
-                            {add3Dots(item.Index, 10)}
+                            {add3Dots(item.symbol, 10)}
                           </Typography>
                           <Stack
                             direction="row"
@@ -357,7 +391,7 @@ export default function Home() {
                             alignItems="center"
                           >
                             <Typography variant="subtitle1">
-                              ₹ {item.CurrentValue}
+                              ₹ {item.value}
                             </Typography>
                             <Typography
                               fontSize="0.6rem"
@@ -365,7 +399,7 @@ export default function Home() {
                                 item.ChangeChgPer < 0 ? "#EE4D37" : "#76FFC6"
                               }
                             >
-                              ({item.ChangeChgPer} %)
+                              {getTwoDecimalValues(item.dayChangePerc)}%
                             </Typography>
                           </Stack>
                         </Stack>
@@ -391,7 +425,7 @@ export default function Home() {
                       }}
                     >
                       <Typography variant="subtitle1">
-                        {item.Sectors}
+                        {item.sectorName}
                       </Typography>
                     </Grid>
                   ))}

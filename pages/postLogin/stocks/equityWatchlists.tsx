@@ -27,6 +27,7 @@ import EmptyOrderList from "@/components/emptystates/orderLists";
 import EmptyWatchList from "@/components/emptystates/emptyWatchList";
 import { useRouter } from "next/router";
 import EquityWatchlistsSimmer from "@/components/simmers/equityWatchlistsSimmer";
+import { getTwoDecimalValues } from "@/utilities/commonfunctions";
 
 const style = {
   width: "100%",
@@ -142,26 +143,37 @@ export default function EquityCart() {
                       <ListItemAvatar>
                         <Avatar
                           sx={{
-                            background: "#F3FFBD",
+                            background: item.logoUrl ? "#fff" : "#76FFC6",
                             height: "2.5rem",
                             width: "2.5rem",
                             color: "#1a1a1a",
                             fontSize: "1rem",
                           }}
                         >
-                          <Typography variant="h1" color="#1a1a1a">
-                            {item.CompanyName && (
-                              <>
-                                {item.CompanyName.split(" ")[0].substring(0, 1)}
-                                {item.CompanyName.split(" ").length > 1
-                                  ? item.CompanyName.split(" ")[1].substring(
-                                      0,
-                                      1
-                                    )
-                                  : ""}
-                              </>
-                            )}
-                          </Typography>
+                          {item.logoUrl ? (
+                            <img
+                              src={item.logoUrl}
+                              height="100%"
+                              width="100%"
+                            />
+                          ) : (
+                            <Typography variant="h1" color="#1a1a1a">
+                              {item.CompanyName && (
+                                <>
+                                  {item.CompanyName.split(" ")[0].substring(
+                                    0,
+                                    1
+                                  )}
+                                  {item.CompanyName.split(" ").length > 1
+                                    ? item.CompanyName.split(" ")[1].substring(
+                                        0,
+                                        1
+                                      )
+                                    : ""}
+                                </>
+                              )}
+                            </Typography>
+                          )}
                         </Avatar>
                       </ListItemAvatar>
                       <ListItemText
@@ -176,7 +188,7 @@ export default function EquityCart() {
                             pt="0.5rem"
                             color={item.Change > 0 ? "#76FFC6" : "#EE4D37"}
                           >
-                            ₹ {item.LastPrice} ({item.Change}%)
+                            ₹ {item.LastPrice} ({getTwoDecimalValues(item.Change)}%)
                           </Typography>
                         }
                       />

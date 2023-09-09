@@ -34,6 +34,7 @@ import { postSaveListsEquityapi } from "@/apifunctions/postSaveListsEquity";
 import { postRemoveFromSaveListsEquityapi } from "@/apifunctions/postRemoveFromSaveListsEquity";
 import { getUserDataapi } from "@/apifunctions/getUserData";
 import StockDetailsSimmer from "@/components/simmers/stockDetailsSimmer";
+import { getTwoDecimalValues } from "@/utilities/commonfunctions";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 5,
@@ -162,28 +163,35 @@ export default function StockDetails() {
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Avatar
                         sx={{
-                          background: "#76FFC6",
+                          background: stockDetails.logoUrl ? "#fff" : "#76FFC6",
                           height: "2.5rem",
                           width: "2.5rem",
                           color: "#1a1a1a",
                           fontSize: "1rem",
                         }}
                       >
-                        <Typography variant="h1" color="#1a1a1a">
-                          {stockDetails.CompanyName && (
-                            <>
-                              {stockDetails.CompanyName.split(" ")[0].substring(
-                                0,
-                                1
-                              )}
-                              {stockDetails.CompanyName.split(" ").length > 1
-                                ? stockDetails.CompanyName.split(
-                                    " "
-                                  )[1].substring(0, 1)
-                                : ""}
-                            </>
-                          )}
-                        </Typography>
+                        {stockDetails.logoUrl ? (
+                          <img
+                            src={stockDetails.logoUrl}
+                            height="100%"
+                            width="100%"
+                          />
+                        ) : (
+                          <Typography variant="h1" color="#1a1a1a">
+                            {stockDetails.CompanyName && (
+                              <>
+                                {stockDetails.CompanyName.split(
+                                  " "
+                                )[0].substring(0, 1)}
+                                {stockDetails.CompanyName.split(" ").length > 1
+                                  ? stockDetails.CompanyName.split(
+                                      " "
+                                    )[1].substring(0, 1)
+                                  : ""}
+                              </>
+                            )}
+                          </Typography>
+                        )}
                       </Avatar>
 
                       <Typography variant="h1">
@@ -249,7 +257,7 @@ export default function StockDetails() {
                       variant="h3"
                       color={stockDetails.Change > 0 ? "#76FFC6" : "#EE4D37"}
                     >
-                      ({stockDetails.Change}%)
+                      {getTwoDecimalValues(stockDetails.Change)}%
                     </Typography>
                   </Stack>
                 </Stack>
@@ -334,7 +342,7 @@ export default function StockDetails() {
                         Change (%)
                       </Typography>
                       <Typography variant="h2">
-                        {stockDetails.Change}
+                        {getTwoDecimalValues(stockDetails.Change)}%
                       </Typography>
                     </Stack>
                   </Grid>

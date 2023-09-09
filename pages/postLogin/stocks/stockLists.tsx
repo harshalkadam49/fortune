@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import Loader from "@/components/loader";
 import LoopOutlinedIcon from "@mui/icons-material/LoopOutlined";
 import StockListsSimmer from "@/components/simmers/stockListsSimmer";
+import { getTwoDecimalValues } from "@/utilities/commonfunctions";
 
 export default function StocksLists() {
   const router = useRouter();
@@ -29,9 +30,9 @@ export default function StocksLists() {
     setFilteredEquityLists(res);
   };
 
-  const onGetEquityLists = (results: any) => {
+  const onGetEquityLists = () => {
     setIsLoading(true);
-    getEquityMasterapi(`/api/auth/equityMaster?toLimit=${results}`, "GET").then(
+    getEquityMasterapi(`/api/auth/equityMaster`, "GET").then(
       (res) => {
         if (!res.errorState) {
           setEquityLists(res);
@@ -63,14 +64,8 @@ export default function StocksLists() {
     setFilteredEquityLists(filteredEquityLists);
   };
 
-  const onLoadMore = () => {
-    var moreResults = results + 10;
-    setResults(moreResults);
-    onGetEquityLists(moreResults);
-  };
-
   useEffect(() => {
-    onGetEquityLists(10);
+    onGetEquityLists();
   }, [router.query]);
 
   return (
@@ -119,16 +114,39 @@ export default function StocksLists() {
                 xs={2}
                 onClick={() => onRedirectToDetails(item.CompanyName)}
               >
-                <Avatar
-                  sx={{ background: "#F3FFBD", height: "2rem", width: "2rem" }}
-                >
-                  <Typography variant="h2" color="#1a1a1a">
-                    {item.CompanyName.split(" ")[0].substring(0, 1)}
-                    {item.CompanyName.split(" ").length > 1
-                      ? item.CompanyName.split(" ")[1].substring(0, 1)
-                      : ""}
-                  </Typography>
-                </Avatar>
+                          <Avatar
+                            sx={{
+                              background: item.logoUrl ? "#fff" : "#76FFC6",
+                              height: "2.5rem",
+                              width: "2.5rem",
+                              color: "#1a1a1a",
+                              fontSize: "1rem",
+                            }}
+                          >
+                            {item.logoUrl ? (
+                              <img
+                                src={item.logoUrl}
+                                height="100%"
+                                width="100%"
+                              />
+                            ) : (
+                              <Typography variant="h1" color="#1a1a1a">
+                                {item.CompanyName && (
+                                  <>
+                                    {item.CompanyName.split(" ")[0].substring(
+                                      0,
+                                      1
+                                    )}
+                                    {item.CompanyName.split(" ").length > 1
+                                      ? item.CompanyName.split(
+                                          " "
+                                        )[1].substring(0, 1)
+                                      : ""}
+                                  </>
+                                )}
+                              </Typography>
+                            )}
+                          </Avatar>
               </Grid>
 
               <Grid
@@ -143,7 +161,7 @@ export default function StocksLists() {
                     variant="h3"
                     color={item.Change > 0 ? "#76FFC6" : "#EE4D37"}
                   >
-                    ({item.Change})
+                    {getTwoDecimalValues(item.Change)}%
                   </Typography>
                 </Stack>
               </Grid>
@@ -181,19 +199,6 @@ export default function StocksLists() {
               </Grid>
             </Grid>
           ))}
-
-          {results <= equityLists.length && (
-            <Box textAlign="center" pt="2rem">
-              <Button
-                startIcon={<LoopOutlinedIcon sx={{ color: "#fff" }} />}
-                onClick={onLoadMore}
-              >
-                <Typography variant="h2" color="#fff">
-                  Load More
-                </Typography>
-              </Button>
-            </Box>
-          )}
         </Box>
       )}
     </LayoutWithBackheader>
