@@ -12,9 +12,15 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import SpeedIcon from "@mui/icons-material/Speed";
+import StarIcon from "@mui/icons-material/Star";
+import TimelineIcon from "@mui/icons-material/Timeline";
+import { add3Dots } from "@/utilities/commonfunctions";
+import { useRouter } from "next/router";
 
 export default function MutualFundHome() {
+  const router = useRouter();
   const [value, setValue] = useState("one");
+  const [color, setColor] = useState<any>();
   const [mutualFundListData, setMutualFundListData] = useState([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -22,15 +28,27 @@ export default function MutualFundHome() {
   };
 
   const onGetMutualMaster = () => {
-    getMutualMasterapi("/api/auth/mutualFundMaster", "GET").then((res) => {
-      if (!res.errorState) {
-        setMutualFundListData(res);
+    getMutualMasterapi("/api/auth/mutualFundMaster?type=list", "GET").then(
+      (res) => {
+        if (!res.errorState) {
+          setMutualFundListData(res);
+        }
       }
+    );
+  };
+
+  const onRedirectToFundDetails = (fundName: any) => {
+    router.push({
+      pathname: "/postLogin/mutualFunds/fundDetails",
+      query: {
+        type: "details",
+        fundName: fundName,
+      },
     });
   };
 
   useEffect(() => {
-    // onGetMutualMaster()
+    onGetMutualMaster();
   }, []);
 
   return (
@@ -120,27 +138,89 @@ export default function MutualFundHome() {
           />
         </Tabs> */}
 
-        <Box
-          sx={{
-            background: "#343434",
-            borderRadius: "0.5rem",
-            p: "0.7rem",
-          }}
-        >
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar>HH</Avatar>
+        <Grid container spacing={3}>
+          {mutualFundListData.map((item: any, index: any) => (
+            <Grid item xs={12}
+            onClick={() => onRedirectToFundDetails(item.fund_name)}
+            >
+              <Box
+                sx={{
+                  background: "#343434",
+                  borderRadius: "0.5rem",
+                  p: "0.7rem",
+                }}
+              >
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Stack direction="row" alignItems="center" spacing={3}>
+                    <Avatar sx={{ background: "#fff" }}>
+                      <img height="100%" width="100%" src={item.logoUrl} />
+                    </Avatar>
 
-            <Stack direction="column" spacing={1}>
-              <Typography variant="h1">TesT fund dskkj</Typography>
+                    <Stack spacing={1.5}>
+                      <Typography variant="h2">
+                        {add3Dots(item.fund_name, 25)}
+                      </Typography>
 
-              
-              <Typography variant="h2">
-                5Y {" "}
-                <span style={{ fontSize: "0.6rem" }}>(29.25%)</span>
-              </Typography>
-            </Stack>
-          </Stack>
-        </Box>
+                      <Stack direction="row" alignItems="center" spacing={5}>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <StarIcon
+                            sx={{ color: "#9381FF", fontSize: "1.1rem" }}
+                          />
+                          <Typography variant="h2" fontSize="0.9rem">
+                            {item.groww_rating}
+                          </Typography>
+                        </Stack>
+
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <TimelineIcon
+                            sx={{ color: "#9381FF", fontSize: "1.2rem" }}
+                          />
+
+                          <Typography variant="h2" fontSize="0.9rem">
+                            {item.return5y}{" "}
+                            <span style={{ fontSize: "0.7rem", color: "#ccc" }}>
+                              {" "}
+                              (5Y){" "}
+                            </span>
+                          </Typography>
+                        </Stack>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+
+                  <Box
+                    sx={{
+                      background:
+                        item.risk == "Low"
+                          ? "#99FFC4"
+                          : item.risk == "Moderate"
+                          ? "#FFD770"
+                          : item.risk == "High"
+                          ? "#FFA947"
+                          : "#FF8247",
+                      p: "0.1rem 0.5rem",
+                      borderRadius: "5rem",
+                      minWidth: "64px",
+                    }}
+                  >
+                    <Typography
+                      fontSize="0.7rem"
+                      fontWeight="400"
+                      color="#09080C"
+                      textAlign="center"
+                    >
+                      {item.risk}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </LayoutWithBackheader>
   );
