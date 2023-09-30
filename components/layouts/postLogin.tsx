@@ -242,7 +242,7 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                         })
                       }
                       sx={{
-                        borderBottom: "1px solid #343434",
+                        borderBottom: "1px solid #34343459",
                         py: "0.8rem",
                       }}
                       disablePadding

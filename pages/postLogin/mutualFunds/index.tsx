@@ -145,7 +145,7 @@ export default function MutualFundHome() {
             >
               <Box
                 sx={{
-                  background: "#343434",
+                  background: "#34343459",
                   borderRadius: "0.5rem",
                   p: "0.7rem",
                 }}

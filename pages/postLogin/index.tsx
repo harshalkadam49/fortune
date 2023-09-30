@@ -182,7 +182,7 @@ export default function Home() {
             <SwiperSlide>
               <Box
                 sx={{
-                  background: "#343434",
+                  background: "#34343459",
                   height: "11rem",
                   textAlign: "center",
                   mx: "1rem",
@@ -201,7 +201,7 @@ export default function Home() {
             <SwiperSlide>
               <Box
                 sx={{
-                  background: "#343434",
+                  background: "#34343459",
                   height: "11rem",
                   textAlign: "center",
                   mx: "1rem",
@@ -220,7 +220,7 @@ export default function Home() {
             <SwiperSlide>
               <Box
                 sx={{
-                  background: "#343434",
+                  background: "#34343459",
                   height: "11rem",
                   textAlign: "center",
                   mx: "1rem",
@@ -239,7 +239,7 @@ export default function Home() {
             <SwiperSlide>
               <Box
                 sx={{
-                  background: "#343434",
+                  background: "#34343459",
                   height: "11rem",
                   textAlign: "center",
                   mx: "1rem",
@@ -346,7 +346,7 @@ export default function Home() {
                       <Box
                         sx={{
                           height: "10rem",
-                          background: "#343434",
+                          background: "#34343459",
                           borderRadius: "0.5rem",
                           p: "0.7rem",
                         }}
@@ -420,7 +420,7 @@ export default function Home() {
                     <SwiperSlide>
                       <Box
                         sx={{
-                          background: "#343434",
+                          background: "#34343459",
                           borderRadius: "0.5rem",
                           p: "0.7rem",
                         }}
@@ -491,7 +491,7 @@ export default function Home() {
                       >
                         <Box
                           sx={{
-                            background: "#34343459",
+                            background: "#3434345959",
                             borderRadius: "0.5rem",
                             p: "0.5rem",
                           }}

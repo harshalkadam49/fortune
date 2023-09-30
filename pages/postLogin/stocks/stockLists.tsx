@@ -104,7 +104,7 @@ export default function StocksLists() {
               container
               alignItems="center"
               sx={{
-                background: "#343434",
+                background: "#34343459",
                 borderRadius: "0.5rem",
                 p: "1.2rem 0.688rem",
               }}

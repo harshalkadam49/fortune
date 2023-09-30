@@ -154,7 +154,7 @@ export default function Home() {
       <Box px="1rem" pt="5rem" pb="50%">
         <Paper
           sx={{
-            background: "#343434",
+            background: "#34343459",
             borderRadius: "1rem",
             p: "1rem",
           }}
@@ -222,7 +222,7 @@ export default function Home() {
                 onChange={handleChangeInvestmentType}
                 disableUnderline
                 sx={{
-                  background: "#343434",
+                  background: "#34343459",
                   p: "0.2rem 1rem",
                   borderRadius: "0.5rem",
                   color: "#fff",
@@ -252,7 +252,7 @@ export default function Home() {
                 centered
                 sx={{
                   width: "100%",
-                  background: "#343434",
+                  background: "#34343459",
                   mx: "auto",
                   borderRadius: "2rem",
                   p: "0.3rem",
