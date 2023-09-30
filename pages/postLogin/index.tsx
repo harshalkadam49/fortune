@@ -52,6 +52,44 @@ export default function Home() {
   );
   const [indianIndices, setIndianIndices] = useState([]);
   const [indianSectors, setIndianSectors] = useState([]);
+  const [fundCategory, setFundCategory] = useState([
+    {
+      id: 0,
+      title: "Small Cap",
+      link: "",
+      icon: SmallCap,
+    },
+    {
+      id: 1,
+      title: "Mid Cap",
+      link: "",
+      icon: MidCap,
+    },
+    {
+      id: 2,
+      title: "Large Cap",
+      link: "",
+      icon: LargeCap,
+    },
+    {
+      id: 3,
+      title: "SIP With 500",
+      link: "",
+      icon: SIP_With_500,
+    },
+    {
+      id: 4,
+      title: "Tax Saving",
+      link: "",
+      icon: Tax_saving,
+    },
+    {
+      id: 5,
+      title: "High Returns",
+      link: "",
+      icon: High_returns,
+    },
+  ]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setType(newValue);
@@ -439,74 +477,47 @@ export default function Home() {
               </TabPanel>
 
               <TabPanel value="2">
-                <Box pt="10%">
-                  <Grid textAlign="center" container spacing={10}>
-                    <Grid item xs={4}>
-                      <Image src={SmallCap} height={35} width={35} alt="img" />
-                      <Typography variant="h2" pt="0.5rem">
-                        Small Cap
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                      <Image src={MidCap} height={35} width={35} alt="img" />
-                      <Typography variant="h2" pt="0.5rem">
-                        Mid Cap
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                      <Image src={LargeCap} height={35} width={35} alt="img" />
-                      <Typography variant="h2" pt="0.5rem">
-                        Large Cap
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                      <Image
-                        src={Tax_saving}
-                        height={35}
-                        width={35}
-                        alt="img"
-                      />
-                      <Typography variant="h2" pt="0.5rem">
-                        Tax Saving
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                      <Image
-                        src={SIP_With_500}
-                        height={35}
-                        width={35}
-                        alt="img"
-                      />
-                      <Typography variant="h2" pt="0.5rem">
-                        SIP With 500
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                      <Image
-                        src={High_returns}
-                        height={35}
-                        width={35}
-                        alt="img"
-                      />
-                      <Typography variant="h2" pt="0.5rem">
-                        High Returns{" "}
-                      </Typography>
-                    </Grid>
+                <Box pt="1rem">
+                  <Grid textAlign="center" container>
+                    {fundCategory.map((item: any, index: any) => (
+                      <Grid
+                        key={index}
+                        item
+                        xs={4}
+                        sx={{
+                          background: "#000",
+                          p: "0.5rem",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            background: "#34343459",
+                            borderRadius: "0.5rem",
+                            p: "0.5rem",
+                          }}
+                        >
+                          <Image
+                            src={item.icon}
+                            height={35}
+                            width={35}
+                            alt="img"
+                          />
+                          <Typography variant="h2" pt="0.5rem">
+                            {item.title}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    ))}
                   </Grid>
 
-
-
-                  <Grid container >
-                    <Grid item xs={2} >
-                      
-                    </Grid>
+                  <Typography variant="h1" py="1rem">
+                    Popular Funds
+                  </Typography>
+                  <Grid container>
+                    <Grid item xs={2}></Grid>
                   </Grid>
                 </Box>
+                
               </TabPanel>
             </TabContext>
           </Box>

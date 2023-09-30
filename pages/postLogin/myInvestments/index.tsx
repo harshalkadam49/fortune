@@ -361,41 +361,6 @@ export default function Home() {
           Top Performing Scheams:
         </Typography>
 
-        {/* <Grid container alignItems="center">
-          <Grid item xs={8}>
-            <Stack direction="row" spacing={2}>
-              <Avatar
-                sx={{
-                  background: "#fff",
-                  height: "2.5rem",
-                  width: "2.5rem",
-                  color: "#1a1a1a",
-                  fontSize: "1rem",
-                }}
-              >
-                <Typography variant="h1" color="#1a1a1a">
-                  TM
-                </Typography>
-              </Avatar>
-
-              <Stack>
-                <Typography variant="h1" color="#fff">
-                  Tata Motors
-                </Typography>
-                <Typography variant="h1" color="#fff">
-                  ₹ 120
-                </Typography>
-              </Stack>
-            </Stack>
-          </Grid>
-
-          <Grid item xs={4}>
-            <Typography variant="h1" color="#76FFC6">
-              ₹ 12000
-            </Typography>
-          </Grid>
-        </Grid> */}
-
         <>
           <Card
             onClick={handleExpandClick}
@@ -483,6 +448,7 @@ export default function Home() {
           </Card>
           <Divider flexItem sx={{ background: "#ccc" }} />
         </>
+
         <>
           <Card
             onClick={handleExpandClick}
