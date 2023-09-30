@@ -34,6 +34,12 @@ import { color } from "framer-motion";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader";
 import PostLoginSimmer from "@/components/simmers/postLoginSimmer";
+import SmallCap from "../../public/postLogin/small_cap.png";
+import MidCap from "../../public/postLogin/mid_cap.png";
+import LargeCap from "../../public/postLogin/large_cap.png";
+import SIP_With_500 from "../../public/postLogin/SIP_With_500.png";
+import Tax_saving from "../../public/postLogin/tax_saving.png";
+import High_returns from "../../public/postLogin/high_returns.png";
 
 export default function Home() {
   const router = useRouter();
@@ -432,19 +438,74 @@ export default function Home() {
                 </Grid>
               </TabPanel>
 
-              <TabPanel value="2" sx={{ pt: "2rem" }}>
-                <Box textAlign="center" pt="10%">
-                  <Image
-                    src={ComingSoon}
-                    alt="comingSoon"
-                    height={150}
-                    width={300}
-                  />
+              <TabPanel value="2">
+                <Box pt="10%">
+                  <Grid textAlign="center" container spacing={10}>
+                    <Grid item xs={4}>
+                      <Image src={SmallCap} height={35} width={35} alt="img" />
+                      <Typography variant="h2" pt="0.5rem">
+                        Small Cap
+                      </Typography>
+                    </Grid>
 
-                  <Typography variant="h1" pt={3}>
-                    Coming <span style={{ color: "#76FFC6" }}> Soon </span>
-                    ...!!!
-                  </Typography>
+                    <Grid item xs={4}>
+                      <Image src={MidCap} height={35} width={35} alt="img" />
+                      <Typography variant="h2" pt="0.5rem">
+                        Mid Cap
+                      </Typography>
+                    </Grid>
+
+                    <Grid item xs={4}>
+                      <Image src={LargeCap} height={35} width={35} alt="img" />
+                      <Typography variant="h2" pt="0.5rem">
+                        Large Cap
+                      </Typography>
+                    </Grid>
+
+                    <Grid item xs={4}>
+                      <Image
+                        src={Tax_saving}
+                        height={35}
+                        width={35}
+                        alt="img"
+                      />
+                      <Typography variant="h2" pt="0.5rem">
+                        Tax Saving
+                      </Typography>
+                    </Grid>
+
+                    <Grid item xs={4}>
+                      <Image
+                        src={SIP_With_500}
+                        height={35}
+                        width={35}
+                        alt="img"
+                      />
+                      <Typography variant="h2" pt="0.5rem">
+                        SIP With 500
+                      </Typography>
+                    </Grid>
+
+                    <Grid item xs={4}>
+                      <Image
+                        src={High_returns}
+                        height={35}
+                        width={35}
+                        alt="img"
+                      />
+                      <Typography variant="h2" pt="0.5rem">
+                        High Returns{" "}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+
+
+
+                  <Grid container >
+                    <Grid item xs={2} >
+                      
+                    </Grid>
+                  </Grid>
                 </Box>
               </TabPanel>
             </TabContext>
