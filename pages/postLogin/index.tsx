@@ -2,6 +2,7 @@ import PostloginLayout from "@/components/layouts/postLogin";
 import {
   Avatar,
   Box,
+  Button,
   FormControl,
   Grid,
   MenuItem,
@@ -20,6 +21,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Pagination, FreeMode } from "swiper/modules";
+import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 
 // images
 import DummyImgSlider from "../../public/dummyImg.svg";
@@ -477,7 +479,25 @@ export default function Home() {
               </TabPanel>
 
               <TabPanel value="2">
-                <Box pt="1rem">
+                <Box>
+                  <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="h1" py="1rem">
+                      Top Category
+                    </Typography>
+
+                    <Button
+                      endIcon={
+                        <ArrowRightAltIcon
+                          sx={{ color: "#85FFCC", fontSize: "1.2rem" }}
+                        />
+                      }
+                      variant="text"
+                      sx={{ color: "#fff", fontSize: "0.9rem" }}
+                    >
+                      See More
+                    </Button>
+                  </Stack>
+
                   <Grid textAlign="center" container>
                     {fundCategory.map((item: any, index: any) => (
                       <Grid
@@ -491,7 +511,7 @@ export default function Home() {
                       >
                         <Box
                           sx={{
-                            background: "#3434345959",
+                            background: "#34343459",
                             borderRadius: "0.5rem",
                             p: "0.5rem",
                           }}
@@ -510,14 +530,72 @@ export default function Home() {
                     ))}
                   </Grid>
 
-                  <Typography variant="h1" py="1rem">
-                    Popular Funds
-                  </Typography>
+                  <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="h1" py="1rem">
+                      Popular Funds
+                    </Typography>
+
+                    <Button
+                      endIcon={
+                        <ArrowRightAltIcon
+                          sx={{ color: "#85FFCC", fontSize: "1.2rem" }}
+                        />
+                      }
+                      variant="text"
+                      sx={{ color: "#fff", fontSize: "0.9rem" }}
+                    >
+                      See More
+                    </Button>
+                  </Stack>
                   <Grid container>
                     <Grid item xs={2}></Grid>
                   </Grid>
                 </Box>
-                
+
+                <Box>
+                  <Grid container>
+                    {fundCategory.map((item: any, index: any) => (
+                      <Grid
+                        key={index}
+                        item
+                        xs={4}
+                        sx={{
+                          background: "#000",
+                          p: "0.5rem",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            background: "#34343459",
+                            borderRadius: "0.5rem",
+                            p: "0.5rem",
+                          }}
+                        >
+                          <Avatar
+                            sx={{
+                              background: item.logoUrl ? "#fff" : "#D6FFEE",
+                              height: "2rem",
+                              width: "2rem",
+                              color: "#1a1a1a",
+                              fontSize: "1rem",
+                            }}
+                          >
+                            <Typography variant="h1" color="#1a1a1a">
+                              TC
+                            </Typography>
+                          </Avatar>
+                          <Typography fontSize="0.7rem" pt="0.5rem">
+                            Quant Small Cap Fund...
+                          </Typography>
+
+                          <Typography fontSize="0.7rem" pt="0.5rem">
+                            47.6% <span style={{ color: "#ccc" }}>(3Y)</span>
+                          </Typography>
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
               </TabPanel>
             </TabContext>
           </Box>
