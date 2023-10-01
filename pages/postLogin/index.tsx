@@ -164,6 +164,12 @@ export default function Home() {
     });
   };
 
+  const onSeeMoreClick = () => {
+    router.push({
+      pathname: "/postLogin/mutualFunds/fundLists",
+    });
+  };
+
   useEffect(() => {
     onGetIndianIndicesMaster();
     onGetIndianSectorsMaster();
@@ -493,6 +499,7 @@ export default function Home() {
                       }
                       variant="text"
                       sx={{ color: "#fff", fontSize: "0.9rem" }}
+                      onClick={onSeeMoreClick}
                     >
                       See More
                     </Button>

@@ -110,17 +110,27 @@ a {
 }
 
 .sellButton {
-  background: #EE4D37;
+  background: #ee4d37;
   color: #fff;
   border-radius: 0.5rem;
   padding: 0.5rem 4rem;
 }
 
 ::-webkit-scrollbar {
-  width: 0;  /* Remove scrollbar space */
-  background: transparent;  /* Optional: just make scrollbar invisible */
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
 }
 /* Optional: show position indicator in red */
 ::-webkit-scrollbar-thumb {
-  background: #FF0000;
+  background: #ff0000;
+}
+
+.MFHoldingAnalysis
+  .apexcharts-legend.apexcharts-align-center.apx-legend-position-right {
+  top: 0 !important;
+}
+
+
+.MFHoldingAnalysis span.apexcharts-legend-text{
+  color: #fff !important;
 }

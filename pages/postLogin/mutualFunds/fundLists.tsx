@@ -55,12 +55,14 @@ export default function StocksLists() {
         if (!res.errorState) {
           setMutualFundListData(res);
           getData(res);
+          setIsLoading(false);
         }
       }
     );
   };
 
   useEffect(() => {
+    setIsLoading(true);
     onGetMutualMaster();
   }, [router.query]);
 
@@ -146,7 +148,8 @@ export default function StocksLists() {
                 </Typography>
                 <Stack direction="row" alignItems="center" pt={1} spacing={1}>
                   <Typography fontSize="0.7rem">
-                    {getTwoDecimalValues(item.return3y)}% <span style={{ color: "#ccc" }}>(3Y)</span>
+                    {getTwoDecimalValues(item.return3y)}%{" "}
+                    <span style={{ color: "#ccc" }}>(3Y)</span>
                   </Typography>
                 </Stack>
               </Grid>
