@@ -11,10 +11,14 @@ export default function StockListsSimmer(props: any) {
       >
         <Stack spacing="1rem" >
           <Skeleton variant="rounded" height={60} />
-          <Skeleton variant="rounded" height={60} />
-          <Skeleton variant="rounded" height={60} />
-          <Skeleton variant="rounded" height={60} />
-          <Skeleton variant="rounded" height={60} />
+          <Skeleton variant="rounded" height={45} />
+          <Skeleton variant="rounded" height={45} />
+          <Skeleton variant="rounded" height={45} />
+          <Skeleton variant="rounded" height={45} />
+          <Skeleton variant="rounded" height={45} />
+          <Skeleton variant="rounded" height={45} />
+          <Skeleton variant="rounded" height={45} />
+          <Skeleton variant="rounded" height={45} />
         </Stack>
       </Box>
     </>

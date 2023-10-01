@@ -58,37 +58,37 @@ export default function Home() {
     {
       id: 0,
       title: "Small Cap",
-      link: "",
+      type: "Small Cap",
       icon: SmallCap,
     },
     {
       id: 1,
       title: "Mid Cap",
-      link: "",
+      type: "Mid Cap",
       icon: MidCap,
     },
     {
       id: 2,
       title: "Large Cap",
-      link: "",
+      type: "Large Cap",
       icon: LargeCap,
     },
     {
       id: 3,
       title: "SIP With 500",
-      link: "",
+      type: "SIP500",
       icon: SIP_With_500,
     },
     {
       id: 4,
       title: "Tax Saving",
-      link: "",
+      type: "ELSS",
       icon: Tax_saving,
     },
     {
       id: 5,
       title: "High Returns",
-      link: "",
+      type: "High returns",
       icon: High_returns,
     },
   ]);
@@ -170,6 +170,12 @@ export default function Home() {
     });
   };
 
+  const onRedirectToCategoryList = (type: "any") => {
+    router.push({
+      pathname: "/postLogin/mutualFunds/fundCategory",
+      query: { type: type },
+    });
+  };
   useEffect(() => {
     onGetIndianIndicesMaster();
     onGetIndianSectorsMaster();
@@ -508,6 +514,7 @@ export default function Home() {
                   <Grid textAlign="center" container>
                     {fundCategory.map((item: any, index: any) => (
                       <Grid
+                        onClick={() => onRedirectToCategoryList(item.type)}
                         key={index}
                         item
                         xs={4}

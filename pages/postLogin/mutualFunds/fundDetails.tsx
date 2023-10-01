@@ -323,7 +323,6 @@ export default function FundDetails() {
           {mutualFundDetailsData.holdings && (
             <>
               <Card
-                onClick={() => handleExpandClick("holdings")}
                 sx={{
                   background: "#000",
                   my: "1rem",
@@ -331,6 +330,7 @@ export default function FundDetails() {
                 }}
               >
                 <CardHeader
+                  onClick={() => handleExpandClick("holdings")}
                   sx={{
                     p: "0rem",
                   }}
@@ -396,7 +396,6 @@ export default function FundDetails() {
         {/* Equity sector allocation */}
         <>
           <Card
-            onClick={() => handleExpandClick("allocation")}
             sx={{
               background: "#000",
               my: "1rem",
@@ -404,6 +403,7 @@ export default function FundDetails() {
             }}
           >
             <CardHeader
+              onClick={() => handleExpandClick("allocation")}
               sx={{
                 p: "0rem",
               }}
@@ -440,7 +440,6 @@ export default function FundDetails() {
         {/* Fund Details */}
         <>
           <Card
-            onClick={() => handleExpandClick("fundDetails")}
             sx={{
               background: "#000",
               my: "1rem",
@@ -448,6 +447,7 @@ export default function FundDetails() {
             }}
           >
             <CardHeader
+              onClick={() => handleExpandClick("fundDetails")}
               sx={{
                 p: "0rem",
               }}
@@ -575,7 +575,6 @@ export default function FundDetails() {
         {/* AMC Details */}
         <>
           <Card
-            onClick={() => handleExpandClick("amcDetails")}
             sx={{
               background: "#000",
               my: "1rem",
@@ -583,6 +582,7 @@ export default function FundDetails() {
             }}
           >
             <CardHeader
+              onClick={() => handleExpandClick("amcDetails")}
               sx={{
                 p: "0rem",
               }}
@@ -712,7 +712,6 @@ export default function FundDetails() {
           {mutualFundDetailsData.analysis && (
             <>
               <Card
-                onClick={() => handleExpandClick("prosCons")}
                 sx={{
                   background: "#000",
                   my: "1rem",
@@ -720,6 +719,7 @@ export default function FundDetails() {
                 }}
               >
                 <CardHeader
+                  onClick={() => handleExpandClick("prosCons")}
                   sx={{
                     p: "0rem",
                   }}
@@ -787,145 +787,141 @@ export default function FundDetails() {
 
         {/* Returns */}
         <>
-          <>
-            <Card
+          <Card
+            sx={{
+              background: "#000",
+              my: "1rem",
+              cursor: "pointer",
+            }}
+          >
+            <CardHeader
               onClick={() => handleExpandClick("returns")}
               sx={{
-                background: "#000",
-                my: "1rem",
-                cursor: "pointer",
+                p: "0rem",
               }}
-            >
-              <CardHeader
-                sx={{
-                  p: "0rem",
-                }}
-                title={
-                  <Typography variant="h1" color="#fff" py="1rem">
-                    Returns
-                  </Typography>
-                }
-                action={
-                  <IconButton aria-label="settings">
-                    <ExpandMoreIcon
-                      sx={{ color: "#fff", fontSize: "1.5rem" }}
-                    />
-                  </IconButton>
-                }
-              />
+              title={
+                <Typography variant="h1" color="#fff" py="1rem">
+                  Returns
+                </Typography>
+              }
+              action={
+                <IconButton aria-label="settings">
+                  <ExpandMoreIcon sx={{ color: "#fff", fontSize: "1.5rem" }} />
+                </IconButton>
+              }
+            />
 
-              <Collapse in={expandReturns} timeout="auto" unmountOnExit>
-                <CardContent sx={{ px: "0rem" }}>
-                  <TableContainer
-                    sx={{ background: "#000", border: "1px solid #000" }}
-                    component={Paper}
-                  >
-                    <Table aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>
-                            <Typography fontSize="0.9rem" color="#fff">
-                              Category
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography
-                              align="right"
-                              fontSize="0.9rem"
-                              color="#fff"
+            <Collapse in={expandReturns} timeout="auto" unmountOnExit>
+              <CardContent sx={{ px: "0rem" }}>
+                <TableContainer
+                  sx={{ background: "#000", border: "1px solid #000" }}
+                  component={Paper}
+                >
+                  <Table aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          <Typography fontSize="0.9rem" color="#fff">
+                            Category
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            align="right"
+                            fontSize="0.9rem"
+                            color="#fff"
+                          >
+                            1Y
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            align="right"
+                            fontSize="0.9rem"
+                            color="#fff"
+                          >
+                            3Y
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            align="right"
+                            fontSize="0.9rem"
+                            color="#fff"
+                          >
+                            5Y
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            align="right"
+                            fontSize="0.9rem"
+                            color="#fff"
+                          >
+                            All
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {mutualFundDetailsData.stats &&
+                        mutualFundDetailsData.stats.map(
+                          (row: any, index: any) => (
+                            <TableRow
+                              key={index}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
                             >
-                              1Y
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography
-                              align="right"
-                              fontSize="0.9rem"
-                              color="#fff"
-                            >
-                              3Y
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography
-                              align="right"
-                              fontSize="0.9rem"
-                              color="#fff"
-                            >
-                              5Y
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography
-                              align="right"
-                              fontSize="0.9rem"
-                              color="#fff"
-                            >
-                              All
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {mutualFundDetailsData.stats &&
-                          mutualFundDetailsData.stats.map(
-                            (row: any, index: any) => (
-                              <TableRow
-                                key={index}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell>
-                                  <Typography fontSize="0.7rem" color="#fff">
-                                    {row.title}
-                                  </Typography>
-                                </TableCell>
+                              <TableCell>
+                                <Typography fontSize="0.7rem" color="#fff">
+                                  {row.title}
+                                </Typography>
+                              </TableCell>
 
-                                <TableCell align="right">
-                                  <Typography fontSize="0.7rem" color="#fff">
-                                    {row.stat_1y
-                                      ? getTwoDecimalValues(row.stat_1y)
-                                      : "NA"}
-                                    %
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="right">
-                                  <Typography fontSize="0.7rem" color="#fff">
-                                    {row.stat_3y
-                                      ? getTwoDecimalValues(row.stat_3y)
-                                      : "NA"}
-                                    %
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="right">
-                                  <Typography fontSize="0.7rem" color="#fff">
-                                    {row.stat_5y
-                                      ? getTwoDecimalValues(row.stat_5y)
-                                      : "NA"}
-                                    %
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="right">
-                                  <Typography fontSize="0.7rem" color="#fff">
-                                    {row.stat_all
-                                      ? getTwoDecimalValues(row.stat_all)
-                                      : "NA"}
-                                    %
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </CardContent>
-              </Collapse>
-            </Card>
-          </>
+                              <TableCell align="right">
+                                <Typography fontSize="0.7rem" color="#fff">
+                                  {row.stat_1y
+                                    ? getTwoDecimalValues(row.stat_1y)
+                                    : "NA"}
+                                  %
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="right">
+                                <Typography fontSize="0.7rem" color="#fff">
+                                  {row.stat_3y
+                                    ? getTwoDecimalValues(row.stat_3y)
+                                    : "NA"}
+                                  %
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="right">
+                                <Typography fontSize="0.7rem" color="#fff">
+                                  {row.stat_5y
+                                    ? getTwoDecimalValues(row.stat_5y)
+                                    : "NA"}
+                                  %
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="right">
+                                <Typography fontSize="0.7rem" color="#fff">
+                                  {row.stat_all
+                                    ? getTwoDecimalValues(row.stat_all)
+                                    : "NA"}
+                                  %
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          )
+                        )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardContent>
+            </Collapse>
+          </Card>
         </>
         {/* Returns */}
       </Box>
