@@ -202,7 +202,12 @@ export default function Home() {
     onGetPopularFunds();
 
     if (router.isReady) {
-      setType(router.query.viewedFrom);
+      var id: any = router.query.viewedFrom;
+      if (id > 0) {
+        setType(router.query.viewedFrom);
+      }else{
+        setType('1');
+      }
     }
   }, []);
 
