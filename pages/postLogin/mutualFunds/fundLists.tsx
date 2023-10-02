@@ -28,6 +28,7 @@ export default function StocksLists() {
   const [filteredMutualFundListData, setFilteredMutualFundListData] = useState(
     []
   );
+  const [viewedFrom, setViewedFrom] = useState<any>("");
 
   const getData = (res: any) => {
     setFilteredMutualFundListData(res);
@@ -64,10 +65,17 @@ export default function StocksLists() {
   useEffect(() => {
     setIsLoading(true);
     onGetMutualMaster();
+    if (router.isReady) {
+      setViewedFrom(router.query.viewedFrom);
+    }
   }, [router.query]);
 
   return (
-    <LayoutWithBackheader showHeader={true} pageTitle="Mutual Funds">
+    <LayoutWithBackheader
+      showHeader={true}
+      pageTitle="Mutual Funds"
+      viewedFrom={viewedFrom}
+    >
       {isLoading ? (
         <StockListsSimmer />
       ) : (

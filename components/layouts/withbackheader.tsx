@@ -18,11 +18,26 @@ export default function LayoutWithBackheader(props: any) {
   const [isLoading, setIsLoading] = useState(false);
   Router.events.on("routeChangeStart", () => setIsLoading(true));
   Router.events.on("routeChangeComplete", () => setIsLoading(false));
-  const handleBack = () => {
-    history.back();
+  const handleBack = (viewedFrom: any) => {
+    if (viewedFrom == 1) {
+      router.push({
+        pathname: "/postLogin/",
+        query: { viewedFrom: viewedFrom },
+      });
+    } else if (viewedFrom == 2) {
+      router.push({
+        pathname: "/postLogin/",
+        query: { viewedFrom: viewedFrom },
+      });
+    } else {
+      history.back();
+    }
   };
   const redirectToHome = () => {
-    router.push("/postLogin/");
+    router.push({
+      pathname: "/postLogin/",
+      query: { viewedFrom: 1 },
+    });
   };
 
   const styles = {
@@ -66,7 +81,7 @@ export default function LayoutWithBackheader(props: any) {
                 >
                   <Stack direction="row" alignItems="center">
                     <IconButton
-                      onClick={handleBack}
+                      onClick={() => handleBack(props.viewedFrom)}
                       aria-label="menu"
                       sx={{ mr: 2 }}
                     >

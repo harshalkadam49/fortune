@@ -42,10 +42,11 @@ import LargeCap from "../../public/postLogin/large_cap.png";
 import SIP_With_500 from "../../public/postLogin/SIP_With_500.png";
 import Tax_saving from "../../public/postLogin/tax_saving.png";
 import High_returns from "../../public/postLogin/high_returns.png";
+import { getPopularFundsapi } from "@/apifunctions/getPopularFunds";
 
 export default function Home() {
   const router = useRouter();
-  const [type, setType] = useState("1");
+  const [type, setType] = useState<any>("1");
   const [isLoading, setIsLoading] = useState(false);
   const [stocksType, setStocksType] = useState("Gainers");
   const [equityLists, setEquityLists] = useState([]);
@@ -92,6 +93,7 @@ export default function Home() {
       icon: High_returns,
     },
   ]);
+  const [popularFunds, setPopularFunds] = useState([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setType(newValue);
@@ -157,29 +159,51 @@ export default function Home() {
     });
   };
 
-  const onRedirectToDetails = (CompanyName: any) => {
+  const onRedirectToDetails = (CompanyName: any, viewedFrom: any) => {
     router.push({
       pathname: "/postLogin/stocks/stockDetails",
-      query: { CompanyName: CompanyName },
+      query: { CompanyName: CompanyName, viewedFrom: viewedFrom },
     });
   };
 
-  const onSeeMoreClick = () => {
+  const onSeeMoreClick = (viewedFrom: any) => {
     router.push({
       pathname: "/postLogin/mutualFunds/fundLists",
+      query: { viewedFrom: viewedFrom },
     });
   };
 
-  const onRedirectToCategoryList = (type: "any") => {
+  const onRedirectToCategoryList = (type: "any", viewedFrom: any) => {
     router.push({
       pathname: "/postLogin/mutualFunds/fundCategory",
-      query: { type: type },
+      query: { type: type, viewedFrom: viewedFrom },
+    });
+  };
+
+  const onGetPopularFunds = () => {
+    getPopularFundsapi("/api/auth/popularFunds", "GET").then((res: any) => {
+      setPopularFunds(res);
+    });
+  };
+
+  const onRedirectToMFDetails = (fundName: any, viewedFrom: any) => {
+    router.push({
+      pathname: "/postLogin/mutualFunds/fundDetails",
+      query: {
+        fundName: fundName,
+        viewedFrom: viewedFrom,
+      },
     });
   };
   useEffect(() => {
     onGetIndianIndicesMaster();
     onGetIndianSectorsMaster();
     onGetEquityLists();
+    onGetPopularFunds();
+
+    if (router.isReady) {
+      setType(router.query.viewedFrom);
+    }
   }, []);
 
   return (
@@ -363,8 +387,9 @@ export default function Home() {
                           background: "#34343459",
                           borderRadius: "0.5rem",
                           p: "0.7rem",
+                          cursor: "pointer",
                         }}
-                        onClick={() => onRedirectToDetails(item.CompanyName)}
+                        onClick={() => onRedirectToDetails(item.CompanyName, 1)}
                       >
                         <Stack spacing={2}>
                           <Avatar
@@ -505,7 +530,7 @@ export default function Home() {
                       }
                       variant="text"
                       sx={{ color: "#fff", fontSize: "0.9rem" }}
-                      onClick={onSeeMoreClick}
+                      onClick={() => onSeeMoreClick(2)}
                     >
                       See More
                     </Button>
@@ -514,13 +539,14 @@ export default function Home() {
                   <Grid textAlign="center" container>
                     {fundCategory.map((item: any, index: any) => (
                       <Grid
-                        onClick={() => onRedirectToCategoryList(item.type)}
+                        onClick={() => onRedirectToCategoryList(item.type, 2)}
                         key={index}
                         item
                         xs={4}
                         sx={{
                           background: "#000",
                           p: "0.5rem",
+                          cursor: "pointer",
                         }}
                       >
                         <Box
@@ -557,6 +583,7 @@ export default function Home() {
                       }
                       variant="text"
                       sx={{ color: "#fff", fontSize: "0.9rem" }}
+                      onClick={() => onSeeMoreClick(2)}
                     >
                       See More
                     </Button>
@@ -568,7 +595,7 @@ export default function Home() {
 
                 <Box>
                   <Grid container>
-                    {fundCategory.map((item: any, index: any) => (
+                    {popularFunds.map((item: any, index: any) => (
                       <Grid
                         key={index}
                         item
@@ -576,7 +603,9 @@ export default function Home() {
                         sx={{
                           background: "#000",
                           p: "0.5rem",
+                          cursor: "pointer",
                         }}
+                        onClick={() => onRedirectToMFDetails(item.search_id, 2)}
                       >
                         <Box
                           sx={{
@@ -587,23 +616,44 @@ export default function Home() {
                         >
                           <Avatar
                             sx={{
-                              background: item.logoUrl ? "#fff" : "#D6FFEE",
+                              background: item.logo_url ? "#fff" : "#76FFC6",
                               height: "2rem",
                               width: "2rem",
                               color: "#1a1a1a",
                               fontSize: "1rem",
                             }}
                           >
-                            <Typography variant="h1" color="#1a1a1a">
-                              TC
-                            </Typography>
+                            {item.logo_url ? (
+                              <img
+                                src={item.logo_url}
+                                height="100%"
+                                width="100%"
+                              />
+                            ) : (
+                              <Typography variant="h1" color="#1a1a1a">
+                                {item.scheme_name && (
+                                  <>
+                                    {item.scheme_name
+                                      .split(" ")[0]
+                                      .substring(0, 1)}
+                                    {item.scheme_name.split(" ").length > 1
+                                      ? item.scheme_name
+                                          .split(" ")[1]
+                                          .substring(0, 1)
+                                      : ""}
+                                  </>
+                                )}
+                              </Typography>
+                            )}
                           </Avatar>
+
                           <Typography fontSize="0.7rem" pt="0.5rem">
-                            Quant Small Cap Fund...
+                            {add3Dots(item.scheme_name, 18)}
                           </Typography>
 
                           <Typography fontSize="0.7rem" pt="0.5rem">
-                            47.6% <span style={{ color: "#ccc" }}>(3Y)</span>
+                            {item.returns_1Y}%{" "}
+                            <span style={{ color: "#ccc" }}>(1Y)</span>
                           </Typography>
                         </Box>
                       </Grid>

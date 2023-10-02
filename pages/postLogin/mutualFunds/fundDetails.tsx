@@ -58,6 +58,7 @@ export default function FundDetails() {
   const [expandAMCDetails, setExpandAMCDetails] = useState(false);
   const [expandProsCons, setExpandProsCons] = useState(false);
   const [expandReturns, setExpandReturns] = useState(false);
+  const [viewedFrom, setViewedFrom] = useState<any>("");
 
   const onGetMutualDetailsMaster = (fundName: any) => {
     getMutualDetailsapi(
@@ -139,11 +140,16 @@ export default function FundDetails() {
     if (router.isReady) {
       if (typeof window !== "undefined") {
         onGetMutualDetailsMaster(router.query.fundName);
+        setViewedFrom(router.query.viewedFrom);
       }
     }
   }, [router.query]);
   return (
-    <LayoutWithBackheader showHeader={true} pageTitle="Mutual Details">
+    <LayoutWithBackheader
+      showHeader={true}
+      pageTitle="Mutual Details"
+      viewedFrom={viewedFrom}
+    >
       <Box px="1rem" pt="5rem" pb="50%">
         <Stack direction="column" spacing={2}>
           <Stack

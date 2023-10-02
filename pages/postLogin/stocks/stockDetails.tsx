@@ -58,6 +58,7 @@ export default function StockDetails() {
   const [isLoading, setIsLoading] = useState<any>(false);
   const [isSaved, setIsSaved] = useState<any>(false);
   const [userData, setUserData] = useState<any>({});
+  const [viewedFrom, setViewedFrom] = useState<any>("");
 
   const onAddToCart = (UserID: any, EquityID: any) => {
     setAddToCart(!addToCart);
@@ -141,12 +142,17 @@ export default function StockDetails() {
       onGetUserData(userObject._id);
       onGetStockDetails(router.query.CompanyName);
       setCompanyName(router.query.CompanyName);
+      setViewedFrom(router.query.viewedFrom);
     }
   }, [router.query]);
 
   return (
     <>
-      <LayoutWithBackheader showHeader={true} pageTitle="Stock Details">
+      <LayoutWithBackheader
+        showHeader={true}
+        pageTitle="Stock Details"
+        viewedFrom={viewedFrom}
+      >
         {isLoading ? (
           <StockDetailsSimmer />
         ) : (

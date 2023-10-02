@@ -19,6 +19,7 @@ export default function FundCategory() {
   const router = useRouter();
   const [fundType, setFundType] = useState<any>("");
   const [isLoading, setIsLoading] = useState<any>(false);
+  const [viewedFrom, setViewedFrom] = useState<any>("");
   const [mutualFundList, setMutualFundList] = useState<any>([]);
   const [filteredMutualFundListData, setFilteredMutualFundListData] =
     useState<any>([]);
@@ -59,11 +60,16 @@ export default function FundCategory() {
       setIsLoading(true);
       setFundType(router.query.type);
       onGetFundList(router.query.type);
+      setViewedFrom(router.query.viewedFrom);
     }
   }, [router.query]);
 
   return (
-    <LayoutWithBackheader showHeader={true} pageTitle={`Best ${fundType}`}>
+    <LayoutWithBackheader
+      showHeader={true}
+      pageTitle={`Best ${fundType}`}
+      viewedFrom={viewedFrom}
+    >
       {isLoading ? (
         <StockListsSimmer />
       ) : (
@@ -99,7 +105,7 @@ export default function FundCategory() {
                 borderRadius: "0.5rem",
                 p: "0.5rem",
                 my: "0.5rem",
-                cursor:"pointer"
+                cursor: "pointer",
               }}
             >
               <Grid container alignItems="center" spacing={1}>
