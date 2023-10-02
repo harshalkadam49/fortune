@@ -37,6 +37,12 @@ import dynamic from "next/dynamic";
 import moment from "moment";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
+import { postAddToWatchListMFapi } from "@/apifunctions/postAddToWatchListMF";
+import { model } from "mongoose";
+import { postRemoveToWatchListMFapi } from "@/apifunctions/postRemoveToWatchListMF";
+import { postRemoveToCartListMFapi } from "@/apifunctions/postRemoveToCartListMF";
+import { postAddToCartListMF } from "@/apifunctions/postAddToCartListMF";
+import { getSavedSchemesapi } from "@/apifunctions/getSavedSchemes";
 
 export default function FundDetails() {
   const router = useRouter();
@@ -59,6 +65,7 @@ export default function FundDetails() {
   const [expandProsCons, setExpandProsCons] = useState(false);
   const [expandReturns, setExpandReturns] = useState(false);
   const [viewedFrom, setViewedFrom] = useState<any>("");
+  const [userData, setUserData] = useState<any>({});
 
   const onGetMutualDetailsMaster = (fundName: any) => {
     getMutualDetailsapi(
@@ -136,11 +143,61 @@ export default function FundDetails() {
     series: holdingAnalysisTotals,
   };
 
+  const onPostToWatchListMF = (userID: any, searchID: any) => {
+    setSaveToWatchList(!saveToWatchList);
+    let model: any = {
+      userID: userID,
+      searchID: searchID,
+    };
+
+    if (saveToWatchList) {
+      postRemoveToWatchListMFapi(
+        model,
+        "/api/auth/userRemoveToMFWatchList",
+        "POST"
+      );
+    } else {
+      postAddToWatchListMFapi(model, "/api/auth/userAddToMFWatchList", "POST");
+    }
+  };
+
+  const onPostToCartListMF = (userID: any, searchID: any) => {
+    setAddToCart(!addToCart);
+    let model: any = {
+      userID: userID,
+      searchID: searchID,
+    };
+
+    if (addToCart) {
+      postRemoveToCartListMFapi(
+        model,
+        "/api/auth/userRemoveToMFCartList",
+        "POST"
+      );
+    } else {
+      postAddToCartListMF(model, "/api/auth/userAddToMFCart", "POST");
+    }
+  };
+
+  const onGetSavedSchemes = (userID: any, searchID: any) => {
+    getSavedSchemesapi(
+      `/api/auth/savedSchemes?userID=${userID}&searchID=${searchID}`,
+      "GET"
+    ).then((res) => {
+      setAddToCart(res.isSavedToCart);
+      setSaveToWatchList(res.isSavedToWatchLists);
+    });
+  };
+
   useEffect(() => {
     if (router.isReady) {
       if (typeof window !== "undefined") {
         onGetMutualDetailsMaster(router.query.fundName);
         setViewedFrom(router.query.viewedFrom);
+        var storedUser: any = localStorage.getItem("userData");
+        var userObject: any = JSON.parse(storedUser);
+        setUserData(userObject);
+        onGetSavedSchemes(userObject._id, router.query.fundName);
       }
     }
   }, [router.query]);
@@ -197,7 +254,14 @@ export default function FundDetails() {
 
             <Stack direction="row" alignItems="center">
               {/* cannot place multiple orders at once */}
-              <IconButton>
+              <IconButton
+                onClick={() =>
+                  onPostToCartListMF(
+                    userData._id,
+                    mutualFundDetailsData.search_id
+                  )
+                }
+              >
                 {addToCart ? (
                   <ShoppingCartIcon
                     sx={{ fontSize: "1.8rem", color: "#F0882D" }}
@@ -210,7 +274,14 @@ export default function FundDetails() {
               </IconButton>
               {/* cannot place multiple orders at once */}
 
-              <IconButton>
+              <IconButton
+                onClick={() =>
+                  onPostToWatchListMF(
+                    userData._id,
+                    mutualFundDetailsData.search_id
+                  )
+                }
+              >
                 {saveToWatchList ? (
                   <BookmarkAddedIcon
                     sx={{ fontSize: "1.8rem", color: "#F0882D" }}

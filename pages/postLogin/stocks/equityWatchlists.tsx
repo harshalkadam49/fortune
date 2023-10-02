@@ -5,11 +5,15 @@ import {
   Box,
   Button,
   Divider,
+  FormControl,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  SelectChangeEvent,
+  MenuItem,
   Modal,
+  Select,
   Stack,
   Typography,
 } from "@mui/material";
@@ -28,6 +32,7 @@ import EmptyWatchList from "@/components/emptystates/emptyWatchList";
 import { useRouter } from "next/router";
 import EquityWatchlistsSimmer from "@/components/simmers/equityWatchlistsSimmer";
 import { getTwoDecimalValues } from "@/utilities/commonfunctions";
+import { getMFSavedLists } from "@/apifunctions/getMFSavedLists";
 
 const style = {
   width: "100%",
@@ -52,25 +57,21 @@ export default function EquityCart() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [saveListData, setSaveListData] = useState([]);
+  const [MFSavedLists, setMFSavedLists] = useState([]);
   const [usersData, setUsersData] = useState<any>({});
   const [activeID, setActiveID] = useState<any>(0);
+  const [investmentType, setInvestmentType] = useState("Stocks");
 
-  const onGetStockDetails = () => {
-    if (typeof window !== "undefined") {
-      var storedUser: any = localStorage.getItem("userData");
-      var userObject: any = JSON.parse(storedUser);
-      setUsersData(userObject);
-    }
+  const onGetStockDetails = (id: any) => {
     setIsLoading(true);
-    getUsersWatchListsapi(
-      `/api/auth/userWatchLists?id=${userObject._id}`,
-      "GET"
-    ).then((res: any) => {
-      if (!res.errorState) {
-        setSaveListData(res.saveList);
-        setIsLoading(false);
+    getUsersWatchListsapi(`/api/auth/userWatchLists?id=${id}`, "GET").then(
+      (res: any) => {
+        if (!res.errorState) {
+          setSaveListData(res.saveList);
+          setIsLoading(false);
+        }
       }
-    });
+    );
   };
 
   const onAddToWatchList = (EquityID: any) => {
@@ -93,6 +94,14 @@ export default function EquityCart() {
     });
   };
 
+  const onGetMFSaveListData = (userID: any) => {
+    getMFSavedLists(`/api/auth/mfSavedLists?userID=${userID}`, "GET").then(
+      (res: any) => {
+        setMFSavedLists(res);
+      }
+    );
+  };
+
   const handleOpen = (id: any) => {
     setActiveID(id);
     setOpen(true);
@@ -108,8 +117,27 @@ export default function EquityCart() {
     });
   };
 
+  const handleChangeInvestmentType = (event: SelectChangeEvent) => {
+    setInvestmentType(event.target.value as string);
+  };
+
+  const onRedirectToMFDetails = (fundName: any) => {
+    router.push({
+      pathname: "/postLogin/mutualFunds/fundDetails",
+      query: {
+        fundName: fundName,
+      },
+    });
+  };
+
   useEffect(() => {
-    onGetStockDetails();
+    if (typeof window !== "undefined") {
+      var storedUser: any = localStorage.getItem("userData");
+      var userObject: any = JSON.parse(storedUser);
+      setUsersData(userObject);
+      onGetStockDetails(userObject._id);
+      onGetMFSaveListData(userObject._id);
+    }
   }, []);
 
   return (
@@ -118,158 +146,312 @@ export default function EquityCart() {
         <EquityWatchlistsSimmer />
       ) : (
         <Box px="1rem" pt="5rem" pb="50%">
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <FilterListIcon
+          <FormControl sx={{ width: "50%" }} variant="standard">
+            <Select
+              value={investmentType}
+              onChange={handleChangeInvestmentType}
+              disableUnderline
               sx={{
+                background: "#34343459",
+                p: "0.2rem 1rem",
+                borderRadius: "0.5rem",
                 color: "#fff",
-                fontSize: "1.5rem",
+                "& .MuiSvgIcon-root": {
+                  color: "white",
+                  fontSize: "2rem",
+                },
               }}
-            />
-            <Typography variant="h2">Sort</Typography>
-          </Stack>
+            >
+              <MenuItem value="Stocks">
+                <Typography variant="h1">Stocks</Typography>
+              </MenuItem>
+              <MenuItem value="Mutual Funds">
+                <Typography variant="h1">Mutual Funds</Typography>
+              </MenuItem>
+            </Select>
+          </FormControl>
 
-          <Box pt="1rem">
-            {saveListData.length ? (
-              saveListData.map((item: any, index: any) => (
-                <>
-                  <ListItem key={index} sx={{ pl: "0" }}>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      width="100%"
-                      onClick={() => onRedirectToDetails(item.CompanyName)}
-                    >
-                      <ListItemAvatar>
-                        <Avatar
-                          sx={{
-                            background: item.logoUrl ? "#fff" : "#76FFC6",
-                            height: "2.5rem",
-                            width: "2.5rem",
-                            color: "#1a1a1a",
-                            fontSize: "1rem",
-                          }}
-                        >
-                          {item.logoUrl ? (
-                            <img
-                              src={item.logoUrl}
-                              height="100%"
-                              width="100%"
-                            />
-                          ) : (
-                            <Typography variant="h1" color="#1a1a1a">
-                              {item.CompanyName && (
-                                <>
-                                  {item.CompanyName.split(" ")[0].substring(
-                                    0,
-                                    1
-                                  )}
-                                  {item.CompanyName.split(" ").length > 1
-                                    ? item.CompanyName.split(" ")[1].substring(
-                                        0,
-                                        1
-                                      )
-                                    : ""}
-                                </>
-                              )}
-                            </Typography>
-                          )}
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={
-                          <Typography variant="h2">
-                            {item.CompanyName}
-                          </Typography>
-                        }
-                        secondary={
-                          <Typography
-                            variant="h3"
-                            pt="0.5rem"
-                            color={item.Change > 0 ? "#76FFC6" : "#EE4D37"}
+          {investmentType == "Stocks" ? (
+            <Box pt="1rem">
+              {saveListData.length ? (
+                saveListData.map((item: any, index: any) => (
+                  <>
+                    <ListItem key={index} sx={{ pl: "0" }}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        width="100%"
+                        onClick={() => onRedirectToDetails(item.CompanyName)}
+                      >
+                        <ListItemAvatar>
+                          <Avatar
+                            sx={{
+                              background: item.logoUrl ? "#fff" : "#76FFC6",
+                              height: "2.5rem",
+                              width: "2.5rem",
+                              color: "#1a1a1a",
+                              fontSize: "1rem",
+                            }}
                           >
-                            ₹ {item.LastPrice} ({getTwoDecimalValues(item.Change)}%)
-                          </Typography>
-                        }
-                      />
-                    </Stack>
-                    <DeleteIcon
-                      // onClick={() => onAddToWatchList(item._id)}
-                      onClick={() => handleOpen(item._id)}
-                      sx={{
-                        color: "#EE4D37",
-                        fontSize: "1.2rem",
-                      }}
-                    />
-                  </ListItem>
-
-                  {activeID == item._id && (
-                    <Modal
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="child-modal-title"
-                      aria-describedby="child-modal-description"
-                    >
-                      <Box sx={{ ...deleteModal }}>
-                        <Image
-                          src={DeleteImg}
-                          height={50}
-                          width={50}
-                          alt="delete"
+                            {item.logoUrl ? (
+                              <img
+                                src={item.logoUrl}
+                                height="100%"
+                                width="100%"
+                              />
+                            ) : (
+                              <Typography variant="h1" color="#1a1a1a">
+                                {item.CompanyName && (
+                                  <>
+                                    {item.CompanyName.split(" ")[0].substring(
+                                      0,
+                                      1
+                                    )}
+                                    {item.CompanyName.split(" ").length > 1
+                                      ? item.CompanyName.split(
+                                          " "
+                                        )[1].substring(0, 1)
+                                      : ""}
+                                  </>
+                                )}
+                              </Typography>
+                            )}
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            <Typography variant="h2">
+                              {item.CompanyName}
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography
+                              variant="h3"
+                              pt="0.5rem"
+                              color={item.Change > 0 ? "#76FFC6" : "#EE4D37"}
+                            >
+                              ₹ {item.LastPrice} (
+                              {getTwoDecimalValues(item.Change)}%)
+                            </Typography>
+                          }
                         />
+                      </Stack>
+                      <DeleteIcon
+                        // onClick={() => onAddToWatchList(item._id)}
+                        onClick={() => handleOpen(item._id)}
+                        sx={{
+                          color: "#EE4D37",
+                          fontSize: "1.2rem",
+                        }}
+                      />
+                    </ListItem>
 
-                        <Typography variant="h2" py="1rem">
-                          Are you sure to remove "{item.CompanyName}" from this
-                          list ?
-                        </Typography>
+                    {activeID == item._id && (
+                      <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="child-modal-title"
+                        aria-describedby="child-modal-description"
+                      >
+                        <Box sx={{ ...deleteModal }}>
+                          <Image
+                            src={DeleteImg}
+                            height={50}
+                            width={50}
+                            alt="delete"
+                          />
 
-                        <Stack
-                          direction="row"
-                          justifyContent="center"
-                          spacing={5}
-                          pt="1rem"
-                        >
-                          <Button
-                            variant="outlined"
-                            onClick={handleClose}
+                          <Typography variant="h2" py="1rem">
+                            Are you sure to remove "{item.CompanyName}" from
+                            this list ?
+                          </Typography>
+
+                          <Stack
+                            direction="row"
+                            justifyContent="center"
+                            spacing={5}
+                            pt="1rem"
+                          >
+                            <Button
+                              variant="outlined"
+                              onClick={handleClose}
+                              sx={{
+                                border: "1px solid #ccc",
+                                background: "#ccc",
+                                borderRadius: "0.5rem",
+                                textTransform: "capitalize",
+                                p: "0.3rem 1.5rem",
+                              }}
+                            >
+                              <Typography fontSize="1rem" color="#1a1a1a">
+                                Close
+                              </Typography>
+                            </Button>
+
+                            <Button
+                              variant="contained"
+                              onClick={() => onAddToWatchList(item._id)}
+                              sx={{
+                                border: "1px solid #EB5757",
+                                background: "#EB5757",
+                                borderRadius: "0.5rem",
+                                textTransform: "capitalize",
+                                p: "0.3rem 1.5rem",
+                              }}
+                            >
+                              <Typography fontSize="1rem" color="#FFF">
+                                Delete
+                              </Typography>
+                            </Button>
+                          </Stack>
+                        </Box>
+                      </Modal>
+                    )}
+                  </>
+                ))
+              ) : (
+                <EmptyWatchList />
+              )}
+            </Box>
+          ) : (
+            <Box pt="1rem">
+              {MFSavedLists.length ? (
+                MFSavedLists.map((item: any, index: any) => (
+                  <>
+                    <ListItem key={index} sx={{ pl: "0" }}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        width="100%"
+                        onClick={() => onRedirectToMFDetails(item.search_id)}
+                      >
+                        <ListItemAvatar>
+                          <Avatar
                             sx={{
-                              border: "1px solid #ccc",
-                              background: "#ccc",
-                              borderRadius: "0.5rem",
-                              textTransform: "capitalize",
-                              p: "0.3rem 1.5rem",
+                              background: item.logo_url ? "#fff" : "#76FFC6",
+                              height: "2.5rem",
+                              width: "2.5rem",
+                              color: "#1a1a1a",
+                              fontSize: "1rem",
                             }}
                           >
-                            <Typography fontSize="1rem" color="#1a1a1a">
-                              Close
+                            {item.logo_url ? (
+                              <img
+                                src={item.logo_url}
+                                height="100%"
+                                width="100%"
+                              />
+                            ) : (
+                              <Typography variant="h1" color="#1a1a1a">
+                                {item.scheme_name && (
+                                  <>
+                                    {item.scheme_name
+                                      .split(" ")[0]
+                                      .substring(0, 1)}
+                                    {item.scheme_name.split(" ").length > 1
+                                      ? item.scheme_name
+                                          .split(" ")[1]
+                                          .substring(0, 1)
+                                      : ""}
+                                  </>
+                                )}
+                              </Typography>
+                            )}
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            <Typography variant="h2">
+                              {item.scheme_name}
                             </Typography>
-                          </Button>
+                          }
+                          secondary={
+                            <Typography variant="h3" pt="0.5rem">
+                              {getTwoDecimalValues(item.returns_3Y)} % (3Y)
+                            </Typography>
+                          }
+                        />
+                      </Stack>
+                      {/* <DeleteIcon
+                        // onClick={() => onAddToWatchList(item._id)}
+                        onClick={() => handleOpen(item._id)}
+                        sx={{
+                          color: "#EE4D37",
+                          fontSize: "1.2rem",
+                        }}
+                      /> */}
+                    </ListItem>
 
-                          <Button
-                            variant="contained"
-                            onClick={() => onAddToWatchList(item._id)}
-                            sx={{
-                              border: "1px solid #EB5757",
-                              background: "#EB5757",
-                              borderRadius: "0.5rem",
-                              textTransform: "capitalize",
-                              p: "0.3rem 1.5rem",
-                            }}
+                    {activeID == item._id && (
+                      <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="child-modal-title"
+                        aria-describedby="child-modal-description"
+                      >
+                        <Box sx={{ ...deleteModal }}>
+                          <Image
+                            src={DeleteImg}
+                            height={50}
+                            width={50}
+                            alt="delete"
+                          />
+
+                          <Typography variant="h2" py="1rem">
+                            Are you sure to remove "{item.scheme_name}" from
+                            this list ?
+                          </Typography>
+
+                          <Stack
+                            direction="row"
+                            justifyContent="center"
+                            spacing={5}
+                            pt="1rem"
                           >
-                            <Typography fontSize="1rem" color="#FFF">
-                              Delete
-                            </Typography>
-                          </Button>
-                        </Stack>
-                      </Box>
-                    </Modal>
-                  )}
-                </>
-              ))
-            ) : (
-              <EmptyWatchList />
-            )}
-          </Box>
+                            <Button
+                              variant="outlined"
+                              onClick={handleClose}
+                              sx={{
+                                border: "1px solid #ccc",
+                                background: "#ccc",
+                                borderRadius: "0.5rem",
+                                textTransform: "capitalize",
+                                p: "0.3rem 1.5rem",
+                              }}
+                            >
+                              <Typography fontSize="1rem" color="#1a1a1a">
+                                Close
+                              </Typography>
+                            </Button>
+
+                            <Button
+                              variant="contained"
+                              onClick={() => onAddToWatchList(item._id)}
+                              sx={{
+                                border: "1px solid #EB5757",
+                                background: "#EB5757",
+                                borderRadius: "0.5rem",
+                                textTransform: "capitalize",
+                                p: "0.3rem 1.5rem",
+                              }}
+                            >
+                              <Typography fontSize="1rem" color="#FFF">
+                                Delete
+                              </Typography>
+                            </Button>
+                          </Stack>
+                        </Box>
+                      </Modal>
+                    )}
+                  </>
+                ))
+              ) : (
+                <EmptyWatchList />
+              )}
+            </Box>
+          )}
         </Box>
       )}
     </LayoutWithBackheader>
