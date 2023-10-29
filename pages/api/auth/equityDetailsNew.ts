@@ -16,6 +16,7 @@ async function handler(req: any, res: any) {
       industryName: data.header.industryName,
       displayName: data.header.displayName,
       shortName: data.header.shortName,
+      nseScriptCode: data.header.nseScriptCode,
       type: data.header.type,
       logoUrl: data.header.logoUrl,
       floatingShares: data.header.floatingShares,
@@ -33,9 +34,27 @@ async function handler(req: any, res: any) {
       financialStatement: data.financialStatement,
       expertRating: data.expertRating,
     };
+
+    const livePriceCollection = db.collection("EquityLivePrices");
+    const livePriceData: any = await livePriceCollection.findOne({
+      symbol: data.header.nseScriptCode,
+    });
+
+    let priceModel = {
+      dayChange: livePriceData.dayChange,
+      dayChangePerc: livePriceData.dayChangePerc,
+      high: livePriceData.high,
+      low: livePriceData.low,
+      open: livePriceData.open,
+      close: livePriceData.close,
+      ltp: livePriceData.ltp,
+      volume: livePriceData.volume,
+    };
+
     res.status(200).json({
       errorState: false,
       data: model,
+      livePriceData: priceModel,
     });
     client.close();
   }

@@ -82,6 +82,7 @@ export default function StockDetails() {
   const [addToCart, setAddToCart] = useState(false);
   const [CompanyName, setCompanyName] = useState<any>("");
   const [stockDetails, setStockDetails] = useState<any>([]);
+  const [livePriceData, setLivePriceData] = useState<any>({});
   const [isLoading, setIsLoading] = useState<any>(false);
   const [isSaved, setIsSaved] = useState<any>(false);
   const [userData, setUserData] = useState<any>({});
@@ -137,6 +138,7 @@ export default function StockDetails() {
     ).then((res) => {
       if (!res.errorState) {
         setStockDetails(res.data);
+        setLivePriceData(res.livePriceData);
         setIsLoading(false);
         onGetFundamentalData(res.data.fundamentals);
         onGetHighestRattings(res.data.expertRating);
@@ -316,20 +318,22 @@ export default function StockDetails() {
                     </Stack>
                   </Stack>
 
-                  <Stack direction="row" alignItems="top" spacing={1}>
-                    <Typography fontSize="1.1rem" color="#ccc">
+                  <Stack direction="row" alignItems="baseline" spacing={2}>
+                    <Typography fontSize="1rem" color="#ccc">
                       ₹
                     </Typography>
-                    <Typography fontSize="1.5rem">
-                      {stockDetails.priceData && stockDetails.priceData.bse.ltp}
+                    <Typography fontSize="1.4rem">
+                      {livePriceData.ltp && livePriceData.ltp}
                     </Typography>
 
-                    {/* <Typography
-                      variant="h3"
-                      color={stockDetails.Change > 0 ? "#76FFC6" : "#EE4D37"}
+                    <Typography
+                      fontSize="0.8rem"
+                      color={
+                        livePriceData.dayChangePerc > 0 ? "#76FFC6" : "#EE4D37"
+                      }
                     >
-                      {getTwoDecimalValues(stockDetails.Change)}%
-                    </Typography> */}
+                      ({getTwoDecimalValues(livePriceData.dayChangePerc)}%)
+                    </Typography>
                   </Stack>
                 </Stack>
 
@@ -349,23 +353,20 @@ export default function StockDetails() {
                       <Box>
                         <Typography variant="h3">Today's Low</Typography>
                         <Typography variant="h2" pt={2}>
-                          {stockDetails.priceData.bse.low}
+                          {livePriceData.low}
                         </Typography>
                       </Box>
 
                       <Box>
                         <Typography variant="h3">Today's High</Typography>
                         <Typography variant="h2" pt={2} textAlign="right">
-                          {stockDetails.priceData.bse.high}
+                          {livePriceData.high}
                         </Typography>
                       </Box>
                     </Stack>
                     <BorderLinearProgress
                       variant="determinate"
-                      value={
-                        stockDetails.priceData.bse.high -
-                        stockDetails.priceData.bse.low
-                      }
+                      value={livePriceData.high - livePriceData.low}
                     />
                   </Box>
                 )}
@@ -398,10 +399,10 @@ export default function StockDetails() {
                     <Grid item xs={3}>
                       <Stack spacing={2}>
                         <Typography variant="h3" color="#8A8A8A">
-                          Last Price
+                          Open
                         </Typography>
                         <Typography variant="h2">
-                          {stockDetails.priceData.bse.ltp}
+                          {livePriceData.open}
                         </Typography>
                       </Stack>
                     </Grid>
@@ -409,10 +410,21 @@ export default function StockDetails() {
                     <Grid item xs={3}>
                       <Stack spacing={2}>
                         <Typography variant="h3" color="#8A8A8A">
-                          Prev Close
+                          Close
                         </Typography>
                         <Typography variant="h2">
-                          {stockDetails.priceData.bse.pclose}
+                          {livePriceData.close}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+
+                    <Grid item xs={3}>
+                      <Stack spacing={2}>
+                        <Typography variant="h3" color="#8A8A8A">
+                          Volume
+                        </Typography>
+                        <Typography variant="h2">
+                          {livePriceData.volume}
                         </Typography>
                       </Stack>
                     </Grid>

@@ -4,6 +4,7 @@ import LayoutWithBackheader from "@/components/layouts/withbackheader";
 import Loader from "@/components/loader";
 import {
   Box,
+  Chip,
   Grid,
   Modal,
   Paper,
@@ -20,6 +21,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import EquityOrdersSimmer from "@/components/simmers/equityOrdersSimmer";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 const style = {
   position: "absolute" as "absolute",
@@ -27,7 +29,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: { md: "20%", xs: "90%" },
-  bgcolor: "#34343459",
+  bgcolor: "#000",
   boxShadow: 24,
   p: "1rem",
   borderRadius: "0.5rem",
@@ -76,72 +78,47 @@ export default function EquityOrders() {
         <Box px="1rem" pt="5rem" pb="50%">
           {orderLists.length == 0 && <EmptyOrderList />}
           <>
-            <TableContainer
-              component={Paper}
-              sx={{
-                background: "#000",
-              }}
-            >
-              <Table aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <Typography variant="h2" color="#fff">
-                        Stock
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="h2" color="#fff">
-                        Price
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="h2" color="#fff">
-                        Qty
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="h2" color="#fff">
-                        Type
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {orderLists.map((item: any, index: any) => (
-                    <TableRow onClick={() => handleOpen(item)} key={index}>
-                      <TableCell>
-                        <Typography variant="h3" color="#fff">
-                          {item.stockname}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="h3" color="#fff">
-                          {item.price}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          variant="h3"
-                          color={item.type == "Buy" ? "#76FFC6" : "#EE4D37"}
-                        >
-                          {item.quantity}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {" "}
-                        <Typography
-                          variant="h3"
-                          color={item.type == "Buy" ? "#76FFC6" : "#EE4D37"}
-                        >
-                          {item.type}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            {orderLists.map((item: any, index: any) => (
+              <Box
+                sx={{
+                  background: "#34343459",
+                  borderRadius: "0.5rem",
+                  p: "1rem",
+                  mb: "0.9rem",
+                }}
+                onClick={() => handleOpen(item)}
+              >
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Box>
+                    <Typography variant="h1" color="#fff">
+                      {item.stockname}
+                    </Typography>
+
+                    <Typography variant="h2" color="#fff" pt={2}>
+                      {item.quantity} @{item.price}
+                    </Typography>
+                  </Box>
+
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <Box
+                      sx={{
+                        background: item.type == "Sell" ? "#EE4D37" : "#76FFC6",
+                        color: item.type == "Sell" ? "#fff" : "#323232",
+                        fontSize: "0.8rem",
+                        p: "0.1rem 0.8rem",
+                        borderRadius: "0.2rem",
+                      }}
+                    >
+                      {item.type}
+                    </Box>
+                  </Stack>
+                </Stack>
+              </Box>
+            ))}
 
             {orderLists.map(
               (item: any, index: any) =>
@@ -225,7 +202,10 @@ export default function EquityOrders() {
                         </Grid>
                         <Grid item xs={8}>
                           <Typography variant="h1" color="#fff">
-                            : {moment(item.timestamp).format("DD-MMM-YYYY")}
+                            :{" "}
+                            {moment(item.timestamp).format(
+                              "MMM Do YYYY, h:mm A"
+                            )}
                           </Typography>
                         </Grid>
                       </Grid>

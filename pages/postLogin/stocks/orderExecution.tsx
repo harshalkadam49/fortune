@@ -27,14 +27,15 @@ export default function OrderExecution() {
   const [open, setOpen] = useState(false);
   const [userData, setUserData] = useState<any>({});
   const [isLoading, setIsLoading] = useState<any>(false);
+  const [livePriceData, setLivePriceData] = useState<any>({});
 
   const onPlaceOrder = () => {
     if (error == " ") {
       setOpen(false);
       setError(" ");
       let model = {
-        stockname: stockDetails.CompanyName,
-        price: stockDetails.LastPrice,
+        stockname: stockDetails.displayName,
+        price: livePriceData.ltp,
         quantity: quantity,
         type: orderType,
         userID: userData._id,
@@ -63,6 +64,7 @@ export default function OrderExecution() {
     ).then((res) => {
       if (!res.errorState) {
         setStockDetails(res.data);
+        setLivePriceData(res.livePriceData);
         setIsLoading(false);
       }
     });
@@ -186,8 +188,8 @@ export default function OrderExecution() {
                       InputProps={{
                         readOnly: true,
                       }}
-                      defaultValue={stockDetails.LastPrice}
-                      value={stockDetails.LastPrice}
+                      defaultValue={livePriceData.ltp}
+                      value={livePriceData.ltp}
                     />
                   </Box>
                 </Grid>
@@ -201,7 +203,7 @@ export default function OrderExecution() {
                     <TextField
                       value={quantity}
                       type="Numbers"
-                      defaultValue={stockDetails.LastPrice}
+                      defaultValue={livePriceData.ltp}
                       InputProps={{
                         type: "number",
                       }}

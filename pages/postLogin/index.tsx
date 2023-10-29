@@ -149,7 +149,6 @@ export default function Home() {
     );
   };
 
-
   const onRedirectToDetails = (searchId: any, viewedFrom: any) => {
     router.push({
       pathname: "/postLogin/stocks/stockDetails",
@@ -344,8 +343,54 @@ export default function Home() {
               </Box>
 
               <TabPanel value="1" sx={{ pt: "2rem" }}>
+                <Typography variant="h1" pb="1.5rem">
+                  Indices
+                </Typography>
+
+                <Swiper
+                  slidesPerView={2}
+                  spaceBetween={10}
+                  freeMode={true}
+                  modules={[Pagination, FreeMode]}
+                >
+                  {indianIndices.map((item: any, index: any) => (
+                    <SwiperSlide>
+                      <Box
+                        sx={{
+                          background: "#34343459",
+                          borderRadius: "0.5rem",
+                          p: "0.7rem",
+                        }}
+                      >
+                        <Stack spacing={2}>
+                          <Typography variant="h1">
+                            {add3Dots(item.symbol, 10)}
+                          </Typography>
+                          <Stack
+                            direction="row"
+                            spacing={2}
+                            alignItems="center"
+                          >
+                            <Typography variant="subtitle1">
+                              ₹ {item.value}
+                            </Typography>
+                            <Typography
+                              fontSize="0.6rem"
+                              color={
+                                item.ChangeChgPer < 0 ? "#EE4D37" : "#76FFC6"
+                              }
+                            >
+                              {getTwoDecimalValues(item.dayChangePerc)}%
+                            </Typography>
+                          </Stack>
+                        </Stack>
+                      </Box>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+
                 <FormControl
-                  sx={{ width: "40%", pb: "1.5rem" }}
+                  sx={{ width: "40%", py: "1.5rem" }}
                   variant="standard"
                 >
                   <Select
@@ -441,70 +486,24 @@ export default function Home() {
                 </Swiper>
 
                 <Typography variant="h1" py="1.563rem">
-                  Indices
-                </Typography>
-
-                <Swiper
-                  slidesPerView={2}
-                  spaceBetween={10}
-                  freeMode={true}
-                  modules={[Pagination, FreeMode]}
-                >
-                  {indianIndices.map((item: any, index: any) => (
-                    <SwiperSlide>
-                      <Box
-                        sx={{
-                          background: "#34343459",
-                          borderRadius: "0.5rem",
-                          p: "0.7rem",
-                        }}
-                      >
-                        <Stack spacing={2}>
-                          <Typography variant="h1">
-                            {add3Dots(item.symbol, 10)}
-                          </Typography>
-                          <Stack
-                            direction="row"
-                            spacing={2}
-                            alignItems="center"
-                          >
-                            <Typography variant="subtitle1">
-                              ₹ {item.value}
-                            </Typography>
-                            <Typography
-                              fontSize="0.6rem"
-                              color={
-                                item.ChangeChgPer < 0 ? "#EE4D37" : "#76FFC6"
-                              }
-                            >
-                              {getTwoDecimalValues(item.dayChangePerc)}%
-                            </Typography>
-                          </Stack>
-                        </Stack>
-                      </Box>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-
-                <Typography variant="h1" py="1.563rem">
                   Top Sectors
                 </Typography>
 
                 <Grid container>
                   {indianSectors.map((item: any) => (
-                    <Grid
-                      item
-                      sx={{
-                        border: `1px solid ${item.color}`,
-                        borderRadius: "2rem",
-                        p: "0.2rem 1rem",
-                        mr: "1rem",
-                        my: "0.5rem",
-                      }}
-                    >
-                      <Typography variant="subtitle1">
-                        {item.sectorName}
-                      </Typography>
+                    <Grid xs={6} item p={2}>
+                      <Box
+                        sx={{
+                          background: "#34343459",
+                          borderRadius: "0.5rem",
+                          p: "0.7rem",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Typography variant="subtitle1">
+                          {item.sectorName}
+                        </Typography>
+                      </Box>
                     </Grid>
                   ))}
                 </Grid>
@@ -642,7 +641,11 @@ export default function Home() {
                             )}
                           </Avatar>
 
-                          <Typography fontSize="0.7rem" pt="0.5rem">
+                          <Typography
+                            fontSize="0.7rem"
+                            pt="0.8rem"
+                            height="2.6rem"
+                          >
                             {add3Dots(item.scheme_name, 18)}
                           </Typography>
 

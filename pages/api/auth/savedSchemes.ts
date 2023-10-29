@@ -6,8 +6,6 @@ async function handler(req: any, res: any) {
     const userID = req.query.userID;
     const searchID = req.query.searchID;
 
-    console.log(userID, searchID);
-
     const db = client.db();
     const UserMFCartListsCollection = db.collection("UserMFCartLists");
     const isSavedToCart = await UserMFCartListsCollection.find({

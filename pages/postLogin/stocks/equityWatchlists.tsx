@@ -182,7 +182,7 @@ export default function EquityCart() {
                         alignItems="center"
                         justifyContent="space-between"
                         width="100%"
-                        onClick={() => onRedirectToDetails(item.CompanyName)}
+                        onClick={() => onRedirectToDetails(item.search_id)}
                       >
                         <ListItemAvatar>
                           <Avatar
@@ -237,14 +237,14 @@ export default function EquityCart() {
                           }
                         />
                       </Stack>
-                      <DeleteIcon
+                      {/* <DeleteIcon
                         // onClick={() => onAddToWatchList(item._id)}
                         onClick={() => handleOpen(item._id)}
                         sx={{
                           color: "#EE4D37",
                           fontSize: "1.2rem",
                         }}
-                      />
+                      /> */}
                     </ListItem>
 
                     {activeID == item._id && (
@@ -374,14 +374,14 @@ export default function EquityCart() {
                           }
                         />
                       </Stack>
-                      {/* <DeleteIcon
+                      <DeleteIcon
                         // onClick={() => onAddToWatchList(item._id)}
                         onClick={() => handleOpen(item._id)}
                         sx={{
                           color: "#EE4D37",
                           fontSize: "1.2rem",
                         }}
-                      /> */}
+                      />
                     </ListItem>
 
                     {activeID == item._id && (
