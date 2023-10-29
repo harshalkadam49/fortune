@@ -1,5 +1,5 @@
-import { getMutualDetailsapi } from "@/apifunctions/getMutualDetails";
-import { getMutualMasterapi } from "@/apifunctions/getMutualMaster";
+import { getMutualDetailsapi } from "@/apifunctions/GET/getMutualDetails";
+import { getMutualMasterapi } from "@/apifunctions/GET/getMutualMaster";
 import LayoutWithBackheader from "@/components/layouts/withbackheader";
 import { getTwoDecimalValues } from "@/utilities/commonfunctions";
 import {
@@ -37,12 +37,12 @@ import dynamic from "next/dynamic";
 import moment from "moment";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
-import { postAddToWatchListMFapi } from "@/apifunctions/postAddToWatchListMF";
+import { postAddToWatchListMFapi } from "@/apifunctions/POST/postAddToWatchListMF";
 import { model } from "mongoose";
-import { postRemoveToWatchListMFapi } from "@/apifunctions/postRemoveToWatchListMF";
-import { postRemoveToCartListMFapi } from "@/apifunctions/postRemoveToCartListMF";
-import { postAddToCartListMF } from "@/apifunctions/postAddToCartListMF";
-import { getSavedSchemesapi } from "@/apifunctions/getSavedSchemes";
+import { postRemoveToWatchListMFapi } from "@/apifunctions/POST/postRemoveToWatchListMF";
+import { postRemoveToCartListMFapi } from "@/apifunctions/POST/postRemoveToCartListMF";
+import { postAddToCartListMF } from "@/apifunctions/POST/postAddToCartListMF";
+import { getSavedSchemesapi } from "@/apifunctions/GET/getSavedSchemes";
 
 export default function FundDetails() {
   const router = useRouter();
@@ -184,21 +184,24 @@ export default function FundDetails() {
       `/api/auth/savedSchemes?userID=${userID}&searchID=${searchID}`,
       "GET"
     ).then((res) => {
-      setAddToCart(res.isSavedToCart);
-      setSaveToWatchList(res.isSavedToWatchLists);
+      setAddToCart(res.isSavedToCart.length > 0 ? true : false);
+      setSaveToWatchList(res.isSavedToWatchLists.length > 0 ? true : false);
+
+      console.log(res.isSavedToCart.length > 0 ? true : false,res.isSavedToWatchLists.length > 0 ? true : false)
     });
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      var storedUser: any = localStorage.getItem("userData");
+      var userObject: any = JSON.parse(storedUser);
+      setUserData(userObject);
+    }
+
     if (router.isReady) {
-      if (typeof window !== "undefined") {
-        onGetMutualDetailsMaster(router.query.fundName);
-        setViewedFrom(router.query.viewedFrom);
-        var storedUser: any = localStorage.getItem("userData");
-        var userObject: any = JSON.parse(storedUser);
-        setUserData(userObject);
-        onGetSavedSchemes(userObject._id, router.query.fundName);
-      }
+      onGetMutualDetailsMaster(router.query.fundName);
+      setViewedFrom(router.query.viewedFrom);
+      onGetSavedSchemes(userObject._id, router.query.fundName);
     }
   }, [router.query]);
   return (

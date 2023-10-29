@@ -29,13 +29,13 @@ import {
   isOnlyAlphabets,
   isOnlyDigits,
 } from "@/utilities/validators";
-import { postSmsOtpapi } from "@/apifunctions/postSmsOtp";
-import { postUserapi } from "@/apifunctions/postUser";
-import { postEmailOtpapi } from "@/apifunctions/postEmailOtp";
-import { postValidateOtpapi } from "@/apifunctions/postValidateOtp";
+import { postSmsOtpapi } from "@/apifunctions/POST/postSmsOtp";
+import { postUserapi } from "@/apifunctions/POST/postUser";
+import { postEmailOtpapi } from "@/apifunctions/POST/postEmailOtp";
+import { postValidateOtpapi } from "@/apifunctions/POST/postValidateOtp";
 import { hash } from "bcryptjs";
-import { postCheckExistingEmailapi } from "@/apifunctions/postCheckExistingEmail";
-import { postCheckExistingPhoneapi } from "@/apifunctions/postCheckExistingPhone";
+import { postCheckExistingEmailapi } from "@/apifunctions/POST/postCheckExistingEmail";
+import { postCheckExistingPhoneapi } from "@/apifunctions/POST/postCheckExistingPhone";
 import Loader from "@/components/loader";
 
 export default function SignUp() {

@@ -22,8 +22,8 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { getUsersWatchListsapi } from "@/apifunctions/getUsersWatchLists";
-import { postRemoveFromSaveListsEquityapi } from "@/apifunctions/postRemoveFromSaveListsEquity";
+import { getUsersWatchListsapi } from "@/apifunctions/GET/getUsersWatchLists";
+import { postRemoveFromSaveListsEquityapi } from "@/apifunctions/POST/postRemoveFromSaveListsEquity";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DeleteImg from "../../../public/postLogin/delete.png";
 import Image from "next/image";
@@ -32,7 +32,7 @@ import EmptyWatchList from "@/components/emptystates/emptyWatchList";
 import { useRouter } from "next/router";
 import EquityWatchlistsSimmer from "@/components/simmers/equityWatchlistsSimmer";
 import { getTwoDecimalValues } from "@/utilities/commonfunctions";
-import { getMFSavedLists } from "@/apifunctions/getMFSavedLists";
+import { getMFSavedLists } from "@/apifunctions/GET/getMFSavedLists";
 
 const style = {
   width: "100%",

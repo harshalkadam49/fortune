@@ -1,4 +1,4 @@
-import { getEquityOrdersPlacedapi } from "@/apifunctions/getEquityOrdersPlaced";
+import { getEquityOrdersPlacedapi } from "@/apifunctions/GET/getEquityOrdersPlaced";
 import EmptyOrderList from "@/components/emptystates/orderLists";
 import LayoutWithBackheader from "@/components/layouts/withbackheader";
 import Loader from "@/components/loader";

@@ -4,10 +4,18 @@ import {
   BottomNavigation,
   Box,
   Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Collapse,
   Grid,
   IconButton,
+  IconButtonProps,
   Paper,
   Stack,
+  Tab,
   Table,
   TableBody,
   TableCell,
@@ -23,18 +31,22 @@ import LinearProgress, {
 } from "@mui/material/LinearProgress";
 import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { getEquityDetailsapi } from "@/apifunctions/getEquityDetails";
+import { getEquityDetailsapi } from "@/apifunctions/GET/getEquityDetails";
 import { useRouter } from "next/router";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Loader from "@/components/loader";
-import { postAddToCartEquityapi } from "@/apifunctions/postAddToCartEquity";
-import { postRemoveFromCartEquityapi } from "@/apifunctions/postRemoveFromCartEquity";
-import { postSaveListsEquityapi } from "@/apifunctions/postSaveListsEquity";
-import { postRemoveFromSaveListsEquityapi } from "@/apifunctions/postRemoveFromSaveListsEquity";
-import { getUserDataapi } from "@/apifunctions/getUserData";
+import { postAddToCartEquityapi } from "@/apifunctions/POST/postAddToCartEquity";
+import { postRemoveFromCartEquityapi } from "@/apifunctions/POST/postRemoveFromCartEquity";
+import { postSaveListsEquityapi } from "@/apifunctions/POST/postSaveListsEquity";
+import { postRemoveFromSaveListsEquityapi } from "@/apifunctions/POST/postRemoveFromSaveListsEquity";
+import { getUserDataapi } from "@/apifunctions/GET/getUserData";
 import StockDetailsSimmer from "@/components/simmers/stockDetailsSimmer";
-import { getTwoDecimalValues } from "@/utilities/commonfunctions";
+import { add3Dots, getTwoDecimalValues } from "@/utilities/commonfunctions";
+import dynamic from "next/dynamic";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { red } from "@mui/material/colors";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 5,
@@ -49,6 +61,21 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   },
 }));
 
+interface ExpandMoreProps extends IconButtonProps {
+  expand: boolean;
+}
+
+const ExpandMore = styled((props: ExpandMoreProps) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
+  marginLeft: "auto",
+  transition: theme.transitions.create("transform", {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
+
 export default function StockDetails() {
   const router = useRouter();
   const [saveToWatchList, setSaveToWatchList] = useState<any>(false);
@@ -59,6 +86,12 @@ export default function StockDetails() {
   const [isSaved, setIsSaved] = useState<any>(false);
   const [userData, setUserData] = useState<any>({});
   const [viewedFrom, setViewedFrom] = useState<any>("");
+  const [fundamentalsArray, setFundamentalsArray] = useState<any>();
+  const [year, setYear] = useState<any>();
+  const [expanded, setExpanded] = useState(false);
+  const [expertRatingArray, setExpertRatingArray] = useState([]);
+  const [expertRatingFinal, setExpertRatingFinal] = useState<any>();
+  const [ratingColor, setRatingColor] = useState<any>("");
 
   const onAddToCart = (UserID: any, EquityID: any) => {
     setAddToCart(!addToCart);
@@ -96,23 +129,56 @@ export default function StockDetails() {
     }
   };
 
-  const onGetStockDetails = (CompanyName: any) => {
+  const onGetStockDetails = (searchId: any) => {
     setIsLoading(true);
     getEquityDetailsapi(
-      `/api/auth/equityDetails?CompanyName=${CompanyName}`,
+      `/api/auth/equityDetailsNew?searchId=${searchId}`,
       "GET"
     ).then((res) => {
       if (!res.errorState) {
         setStockDetails(res.data);
         setIsLoading(false);
+        onGetFundamentalData(res.data.fundamentals);
+        onGetHighestRattings(res.data.expertRating);
       }
     });
   };
 
-  const onRedirectToOrders = (CompanyName: any, orderType: any) => {
+  const onGetFundamentalData = (data: any) => {
+    let array = [];
+    for (let i = 0; i < data.length; i++) {
+      array.push(data[i]);
+    }
+
+    setFundamentalsArray(array);
+  };
+
+  const onGetHighestRattings = (data: any) => {
+    let array: any = [
+      { type: "Buy", value: data.buyPercent },
+      { type: "Sell", value: data.sellPercent },
+      { type: "Hold", value: data.holdPercent },
+    ];
+
+    setExpertRatingArray(array);
+    let maxObject = array.reduce(function (max: any, obj: any) {
+      return obj["value"] > max["value"] ? obj : max;
+    });
+
+    setExpertRatingFinal(maxObject);
+    if (maxObject.type == "Buy") {
+      setRatingColor("#76FFC6");
+    } else if (maxObject.type == "Sell") {
+      setRatingColor("#D04539");
+    } else {
+      setRatingColor("#FFF7EB");
+    }
+  };
+
+  const onRedirectToOrders = (searchId: any, orderType: any) => {
     router.push({
       pathname: "/postLogin/stocks/orderExecution",
-      query: { CompanyName: CompanyName, orderType: orderType },
+      query: { searchId: searchId, orderType: orderType },
     });
   };
 
@@ -135,13 +201,27 @@ export default function StockDetails() {
     });
   };
 
+  const handleChangePromotersHoldings = (
+    event: React.SyntheticEvent,
+    newValue: string
+  ) => {
+    setYear(newValue);
+  };
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
   useEffect(() => {
-    if (typeof window !== "undefined" && router.isReady) {
+    if (typeof window !== "undefined") {
       var storedUser: any = localStorage.getItem("userData");
       var userObject: any = JSON.parse(storedUser);
       onGetUserData(userObject._id);
-      onGetStockDetails(router.query.CompanyName);
-      setCompanyName(router.query.CompanyName);
+    }
+
+    if (router.isReady) {
+      onGetStockDetails(router.query.searchId);
+      setCompanyName(router.query.searchId);
       setViewedFrom(router.query.viewedFrom);
     }
   }, [router.query]);
@@ -184,15 +264,15 @@ export default function StockDetails() {
                           />
                         ) : (
                           <Typography variant="h1" color="#1a1a1a">
-                            {stockDetails.CompanyName && (
+                            {stockDetails.displayName && (
                               <>
-                                {stockDetails.CompanyName.split(
-                                  " "
-                                )[0].substring(0, 1)}
-                                {stockDetails.CompanyName.split(" ").length > 1
-                                  ? stockDetails.CompanyName.split(
-                                      " "
-                                    )[1].substring(0, 1)
+                                {stockDetails.displayName
+                                  .split(" ")[0]
+                                  .substring(0, 1)}
+                                {stockDetails.displayName.split(" ").length > 1
+                                  ? stockDetails.displayName
+                                      .split(" ")[1]
+                                      .substring(0, 1)
                                   : ""}
                               </>
                             )}
@@ -201,7 +281,7 @@ export default function StockDetails() {
                       </Avatar>
 
                       <Typography variant="h1">
-                        {stockDetails.CompanyName}
+                        {stockDetails.displayName}
                       </Typography>
 
                       <Box
@@ -212,30 +292,12 @@ export default function StockDetails() {
                         }}
                       >
                         <Typography variant="h3">
-                          {stockDetails.SectorName}
+                          {stockDetails.industryName}
                         </Typography>
                       </Box>
                     </Stack>
 
                     <Stack direction="row" alignItems="center">
-                      {/* cannot place multiple orders at once */}
-                      {/* <IconButton
-                    onClick={() =>
-                      onAddToCart(userObject._id, stockDetails._id)
-                    }
-                  >
-                    {addToCart ? (
-                      <ShoppingCartIcon
-                        sx={{ fontSize: "1.8rem", color: "#F0882D" }}
-                      />
-                    ) : (
-                      <ShoppingCartOutlinedIcon
-                        sx={{ fontSize: "1.8rem", color: "#fff" }}
-                      />
-                    )}
-                  </IconButton> */}
-                      {/* cannot place multiple orders at once */}
-
                       <IconButton
                         onClick={() =>
                           onAddToWatchList(userData._id, stockDetails._id)
@@ -254,17 +316,20 @@ export default function StockDetails() {
                     </Stack>
                   </Stack>
 
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Typography variant="h1">₹</Typography>
-                    <Typography variant="h1">
-                      {stockDetails.LastPrice}
+                  <Stack direction="row" alignItems="top" spacing={1}>
+                    <Typography fontSize="1.1rem" color="#ccc">
+                      ₹
                     </Typography>
-                    <Typography
+                    <Typography fontSize="1.5rem">
+                      {stockDetails.priceData && stockDetails.priceData.bse.ltp}
+                    </Typography>
+
+                    {/* <Typography
                       variant="h3"
                       color={stockDetails.Change > 0 ? "#76FFC6" : "#EE4D37"}
                     >
                       {getTwoDecimalValues(stockDetails.Change)}%
-                    </Typography>
+                    </Typography> */}
                   </Stack>
                 </Stack>
 
@@ -274,94 +339,85 @@ export default function StockDetails() {
                 </Typography>
                 {/* chart */}
 
-                <Box py="2rem">
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    pb="1rem"
-                  >
-                    <Box>
-                      <Typography variant="h3">Today's Low</Typography>
-                      <Typography variant="h2" pt={2}>
-                        {stockDetails.Low}
-                      </Typography>
-                    </Box>
+                {stockDetails.priceData && (
+                  <Box py="2rem">
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      pb="1rem"
+                    >
+                      <Box>
+                        <Typography variant="h3">Today's Low</Typography>
+                        <Typography variant="h2" pt={2}>
+                          {stockDetails.priceData.bse.low}
+                        </Typography>
+                      </Box>
 
-                    <Box>
-                      <Typography variant="h3">Today's High</Typography>
-                      <Typography variant="h2" pt={2} textAlign="right">
-                        {stockDetails.High}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                  <BorderLinearProgress
-                    variant="determinate"
-                    value={stockDetails.High - stockDetails.Low}
-                  />
-                </Box>
+                      <Box>
+                        <Typography variant="h3">Today's High</Typography>
+                        <Typography variant="h2" pt={2} textAlign="right">
+                          {stockDetails.priceData.bse.high}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                    <BorderLinearProgress
+                      variant="determinate"
+                      value={
+                        stockDetails.priceData.bse.high -
+                        stockDetails.priceData.bse.low
+                      }
+                    />
+                  </Box>
+                )}
 
                 {/* table */}
-                <Grid container spacing={4}>
-                  <Grid item xs={4}>
-                    <Stack spacing={2}>
-                      <Typography variant="h3" color="#8A8A8A">
-                        High
-                      </Typography>
-                      <Typography variant="h2">{stockDetails.High}</Typography>
-                    </Stack>
-                  </Grid>
+                {stockDetails.priceData && (
+                  <Grid container spacing={4}>
+                    <Grid item xs={3}>
+                      <Stack spacing={2}>
+                        <Typography variant="h3" color="#8A8A8A">
+                          High (52W)
+                        </Typography>
+                        <Typography variant="h2">
+                          {stockDetails.priceData.bse.yearHighPrice}
+                        </Typography>
+                      </Stack>
+                    </Grid>
 
-                  <Grid item xs={4}>
-                    <Stack spacing={2}>
-                      <Typography variant="h3" color="#8A8A8A">
-                        Low
-                      </Typography>
-                      <Typography variant="h2">{stockDetails.Low}</Typography>
-                    </Stack>
-                  </Grid>
+                    <Grid item xs={3}>
+                      <Stack spacing={2}>
+                        <Typography variant="h3" color="#8A8A8A">
+                          Low (52W)
+                        </Typography>
+                        <Typography variant="h2">
+                          {stockDetails.priceData.bse.yearLowPrice}
+                        </Typography>
+                      </Stack>
+                    </Grid>
 
-                  <Grid item xs={4}>
-                    <Stack spacing={2}>
-                      <Typography variant="h3" color="#8A8A8A">
-                        Last Price
-                      </Typography>
-                      <Typography variant="h2">
-                        {stockDetails.LastPrice}
-                      </Typography>
-                    </Stack>
-                  </Grid>
+                    <Grid item xs={3}>
+                      <Stack spacing={2}>
+                        <Typography variant="h3" color="#8A8A8A">
+                          Last Price
+                        </Typography>
+                        <Typography variant="h2">
+                          {stockDetails.priceData.bse.ltp}
+                        </Typography>
+                      </Stack>
+                    </Grid>
 
-                  <Grid item xs={4}>
-                    <Stack spacing={2}>
-                      <Typography variant="h3" color="#8A8A8A">
-                        Prev Close
-                      </Typography>
-                      <Typography variant="h2">
-                        {stockDetails.PrevClose}
-                      </Typography>
-                    </Stack>
+                    <Grid item xs={3}>
+                      <Stack spacing={2}>
+                        <Typography variant="h3" color="#8A8A8A">
+                          Prev Close
+                        </Typography>
+                        <Typography variant="h2">
+                          {stockDetails.priceData.bse.pclose}
+                        </Typography>
+                      </Stack>
+                    </Grid>
                   </Grid>
-
-                  <Grid item xs={4}>
-                    <Stack spacing={2}>
-                      <Typography variant="h3" color="#8A8A8A">
-                        Change (%)
-                      </Typography>
-                      <Typography variant="h2">
-                        {getTwoDecimalValues(stockDetails.Change)}%
-                      </Typography>
-                    </Stack>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Stack spacing={2}>
-                      <Typography variant="h3" color="#8A8A8A">
-                        Loss (%)
-                      </Typography>
-                      <Typography variant="h2">{stockDetails.Loss}</Typography>
-                    </Stack>
-                  </Grid>
-                </Grid>
+                )}
 
                 <Box
                   className="maxWidth"
@@ -370,51 +426,197 @@ export default function StockDetails() {
                   }}
                 >
                   <Typography variant="h2" pt="2rem" pb="0.3rem">
-                    About {stockDetails.CompanyName}
+                    About {stockDetails.displayName}
                   </Typography>
                 </Box>
-                <Typography fontSize="0.8rem" pt="1rem" fontWeight="200">
-                  {stockDetails.CompanyDesc}
-                </Typography>
+
+                {/* card */}
+                <Card sx={{ mt: "1rem", background: "#000", p: "0rem" }}>
+                  <CardHeader
+                    sx={{ p: "0rem" }}
+                    onClick={handleExpandClick}
+                    title={
+                      <>
+                        {!expanded && (
+                          <Typography
+                            fontSize="0.8rem"
+                            fontWeight="200"
+                            textAlign="justify"
+                            color="#fff"
+                          >
+                            {stockDetails.businessSummary &&
+                              add3Dots(stockDetails.businessSummary, 200)}{" "}
+                            <span style={{ color: "#76FFC6" }}>See More</span>
+                          </Typography>
+                        )}
+                      </>
+                    }
+                    subheader="September 14, 2016"
+                  />
+                  <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CardContent sx={{ p: "0rem" }} onClick={handleExpandClick}>
+                      <Typography
+                        fontSize="0.8rem"
+                        fontWeight="200"
+                        textAlign="justify"
+                        color="#fff"
+                      >
+                        {stockDetails.businessSummary}...
+                        <span style={{ color: "#76FFC6" }}>See Less</span>
+                      </Typography>
+                    </CardContent>
+                  </Collapse>
+                </Card>
+                {/* card */}
+
+                <Grid container spacing={5} pt="1rem">
+                  <Grid item xs={12}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <Typography variant="h2" color="#8A8A8A">
+                        Parent Organization
+                      </Typography>
+                      <Typography variant="h2" textAlign="right">
+                        {stockDetails.parentCompany}
+                      </Typography>
+                    </Stack>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <Typography variant="h2" color="#8A8A8A">
+                        CEO
+                      </Typography>
+                      <Typography variant="h2" textAlign="right">
+                        {stockDetails.ceo}
+                      </Typography>
+                    </Stack>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <Typography variant="h2" color="#8A8A8A">
+                        Headquarters
+                      </Typography>
+                      <Typography variant="h2" textAlign="right">
+                        {stockDetails.headquarters}
+                      </Typography>
+                    </Stack>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <Typography variant="h2" color="#8A8A8A">
+                        Founded
+                      </Typography>
+                      <Typography variant="h2" textAlign="right">
+                        {stockDetails.foundedYear}
+                      </Typography>
+                    </Stack>
+                  </Grid>
+                </Grid>
 
                 {/* table */}
 
-                {/* share hoilding pattern */}
-                <Typography variant="h2" pt="2rem" pb="1rem">
-                  Share Hoilding Pattern
-                </Typography>
-                <Stack pt="1rem" spacing="1.5rem">
-                  <Box>
-                    <Typography variant="h3" pb="0.5rem">
-                      Promoters ({stockDetails.ShareHoildingPromoters}%)
-                    </Typography>
-                    <BorderLinearProgress
-                      variant="determinate"
-                      value={stockDetails.ShareHoildingPromoters}
-                    />
-                  </Box>
+                {/* fundamentals */}
+                <Box
+                  className="maxWidth"
+                  sx={{
+                    borderBottom: "2px solid #76FFC6",
+                  }}
+                >
+                  <Typography variant="h2" pt="2rem" pb="0.3rem">
+                    Fundamentals
+                  </Typography>
+                </Box>
 
-                  <Box>
-                    <Typography variant="h3" pb="0.5rem">
-                      Retail and Others ({stockDetails.ShareHoildingRetails}%)
-                    </Typography>
-                    <BorderLinearProgress
-                      variant="determinate"
-                      value={stockDetails.ShareHoildingRetails}
-                    />
-                  </Box>
+                <Grid container spacing={5} pt="1rem">
+                  {fundamentalsArray &&
+                    fundamentalsArray.map((item: any, index: any) => (
+                      <Grid item xs={6} key={index}>
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          justifyContent="space-between"
+                        >
+                          <Typography variant="h2" color="#8A8A8A">
+                            {item.name}
+                          </Typography>
+                          <Typography variant="h2">{item.value}</Typography>
+                        </Stack>
+                      </Grid>
+                    ))}
+                </Grid>
+                {/* fundamentals */}
 
-                  <Box>
-                    <Typography variant="h3" pb="0.5rem">
-                      Mutual Funds ({stockDetails.ShareHoildingMF}%)
-                    </Typography>
-                    <BorderLinearProgress
-                      variant="determinate"
-                      value={stockDetails.ShareHoildingMF}
-                    />
-                  </Box>
-                </Stack>
-                {/* share hoilding pattern */}
+                {/* expertRating */}
+
+                <Box
+                  className="maxWidth"
+                  sx={{
+                    borderBottom: "2px solid #76FFC6",
+                  }}
+                >
+                  <Typography variant="h2" pt="2rem" pb="0.3rem">
+                    Expert Rating
+                  </Typography>
+                </Box>
+
+                <Grid container alignItems="center" pt={2}>
+                  <Grid item xs={4}>
+                    {expertRatingFinal && (
+                      <Avatar
+                        sx={{
+                          height: "5rem",
+                          width: "5rem",
+
+                          background: ratingColor,
+                        }}
+                      >
+                        <Typography fontSize="1.6rem" color="#000">
+                          {expertRatingFinal && expertRatingFinal.value}
+                        </Typography>
+                      </Avatar>
+                    )}
+                  </Grid>
+                  <Grid item xs={8}>
+                    {expertRatingArray &&
+                      expertRatingArray.map((item: any, index: any) => (
+                        <Grid container alignItems="center" spacing={2} py={2}>
+                          <Grid item xs={2}>
+                            <Typography variant="h2">{item.type}</Typography>
+                          </Grid>
+                          <Grid item xs={7.5}>
+                            <BorderLinearProgress
+                              variant="determinate"
+                              value={item.value}
+                            />
+                          </Grid>
+                          <Grid item xs={2.5}>
+                            <Typography variant="h2" color="#8A8A8A">
+                              {item.value}%
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      ))}
+                  </Grid>
+                </Grid>
+                {/* expertRating */}
               </Box>
             )}
 
@@ -440,7 +642,7 @@ export default function StockDetails() {
               >
                 <Button
                   onClick={() =>
-                    onRedirectToOrders(stockDetails.CompanyName, "Buy")
+                    onRedirectToOrders(stockDetails.searchId, "Buy")
                   }
                   variant="contained"
                   fullWidth={true}
@@ -454,7 +656,7 @@ export default function StockDetails() {
 
                 <Button
                   onClick={() =>
-                    onRedirectToOrders(stockDetails.CompanyName, "Sell")
+                    onRedirectToOrders(stockDetails.searchId, "Sell")
                   }
                   variant="contained"
                   fullWidth={true}

@@ -12,13 +12,13 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
-import { getEquityMasterapi } from "@/apifunctions/getEquityMaster";
+import { getEquityMasterapi } from "@/apifunctions/GET/getEquityMaster";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader";
 import LoopOutlinedIcon from "@mui/icons-material/LoopOutlined";
 import StockListsSimmer from "@/components/simmers/stockListsSimmer";
 import { add3Dots, getTwoDecimalValues } from "@/utilities/commonfunctions";
-import { getMutualMasterapi } from "@/apifunctions/getMutualMaster";
+import { getMutualMasterapi } from "@/apifunctions/GET/getMutualMaster";
 
 export default function StocksLists() {
   const router = useRouter();

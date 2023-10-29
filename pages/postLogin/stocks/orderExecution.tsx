@@ -1,5 +1,5 @@
-import { getEquityDetailsapi } from "@/apifunctions/getEquityDetails";
-import { postEquityOrdersapi } from "@/apifunctions/postEquityOrders";
+import { getEquityDetailsapi } from "@/apifunctions/GET/getEquityDetails";
+import { postEquityOrdersapi } from "@/apifunctions/POST/postEquityOrders";
 import CustomInput from "@/components/inputs/custominput";
 import LayoutWithBackheader from "@/components/layouts/withbackheader";
 import OrderExecutionSimmer from "@/components/simmers/orderExecutionSimmer";
@@ -55,10 +55,10 @@ export default function OrderExecution() {
     }
   };
 
-  const onGetStockDetails = (CompanyName: any) => {
+  const onGetStockDetails = (searchId: any) => {
     setIsLoading(true);
     getEquityDetailsapi(
-      `/api/auth/equityDetails?CompanyName=${CompanyName}`,
+      `/api/auth/equityDetailsNew?searchId=${searchId}`,
       "GET"
     ).then((res) => {
       if (!res.errorState) {
@@ -92,8 +92,8 @@ export default function OrderExecution() {
 
   useEffect(() => {
     if (router.isReady) {
-      onGetStockDetails(router.query.CompanyName);
-      setCompanyName(router.query.CompanyName);
+      onGetStockDetails(router.query.searchId);
+      setCompanyName(router.query.searchId);
       setOrderType(router.query.orderType);
     }
 
@@ -142,16 +142,15 @@ export default function OrderExecution() {
                       />
                     ) : (
                       <Typography variant="h1" color="#1a1a1a">
-                        {stockDetails.CompanyName && (
+                        {stockDetails.displayName && (
                           <>
-                            {stockDetails.CompanyName.split(" ")[0].substring(
-                              0,
-                              1
-                            )}
-                            {stockDetails.CompanyName.split(" ").length > 1
-                              ? stockDetails.CompanyName.split(
-                                  " "
-                                )[1].substring(0, 1)
+                            {stockDetails.displayName
+                              .split(" ")[0]
+                              .substring(0, 1)}
+                            {stockDetails.displayName.split(" ").length > 1
+                              ? stockDetails.displayName
+                                  .split(" ")[1]
+                                  .substring(0, 1)
                               : ""}
                           </>
                         )}
@@ -160,7 +159,7 @@ export default function OrderExecution() {
                   </Avatar>
 
                   <Typography variant="h1">
-                    {stockDetails.CompanyName}
+                    {stockDetails.displayName}
                   </Typography>
                 </Stack>
 
@@ -172,7 +171,7 @@ export default function OrderExecution() {
                   }}
                 >
                   <Typography variant="h3">
-                    {stockDetails.SectorName}
+                    {stockDetails.industryName}
                   </Typography>
                 </Box>
               </Stack>

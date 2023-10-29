@@ -4,24 +4,24 @@ async function handler(req: any, res: any) {
   if (req.method == "GET") {
     const client = await connectToDataBase();
     const userID = req.query.userID;
-    const serachID = req.query.serachID;
+    const searchID = req.query.searchID;
+
+    console.log(userID, searchID);
 
     const db = client.db();
     const UserMFCartListsCollection = db.collection("UserMFCartLists");
     const isSavedToCart = await UserMFCartListsCollection.find({
-      userID: userID,
-      serachID: serachID,
+      $and: [{ userID: userID }, { searchID: searchID }],
     }).toArray();
 
     const UserMFWatchListsCollection = db.collection("UserMFWatchLists");
     const isSavedToWatchLists = await UserMFWatchListsCollection.find({
-      userID: userID,
-      serachID: serachID,
+      $and: [{ userID: userID }, { searchID: searchID }],
     }).toArray();
 
     let model = {
-      isSavedToCart: isSavedToCart.length > 0 ? true : false,
-      isSavedToWatchLists: isSavedToWatchLists.length > 0 ? true : false,
+      isSavedToCart: isSavedToCart,
+      isSavedToWatchLists: isSavedToWatchLists,
     };
 
     res.status(200).json(model);

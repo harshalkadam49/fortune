@@ -29,7 +29,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ListIcon from "@mui/icons-material/List";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { getUserDataapi } from "@/apifunctions/getUserData";
+import { getUserDataapi } from "@/apifunctions/GET/getUserData";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 

@@ -28,10 +28,10 @@ import DummyImgSlider from "../../public/dummyImg.svg";
 import ComingSoon from "../../public/postLogin/comingSoon.svg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { getEquityMasterapi } from "@/apifunctions/getEquityMaster";
+import { getEquityMasterapi } from "@/apifunctions/GET/getEquityMaster";
 import { add3Dots, getTwoDecimalValues } from "@/utilities/commonfunctions";
-import { getEquityLoosersapi } from "@/apifunctions/getEquityLoosers";
-import { getIndianIndicesMasterapi } from "@/apifunctions/getIndianIndicesMaster";
+import { getEquityLoosersapi } from "@/apifunctions/GET/getEquityLoosers";
+import { getIndianIndicesMasterapi } from "@/apifunctions/GET/getIndianIndicesMaster";
 import { color } from "framer-motion";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader";
@@ -42,7 +42,8 @@ import LargeCap from "../../public/postLogin/large_cap.png";
 import SIP_With_500 from "../../public/postLogin/SIP_With_500.png";
 import Tax_saving from "../../public/postLogin/tax_saving.png";
 import High_returns from "../../public/postLogin/high_returns.png";
-import { getPopularFundsapi } from "@/apifunctions/getPopularFunds";
+import { getPopularFundsapi } from "@/apifunctions/GET/getPopularFunds";
+import { getEquityGainers } from "@/apifunctions/GET/getEquityGainers";
 
 export default function Home() {
   const router = useRouter();
@@ -111,16 +112,18 @@ export default function Home() {
 
   const onGetEquityGainers = () => {
     setIsLoading(true);
-    const result = equityLists.filter((c: any) => c.Change >= 0);
-    setIndianEquityGainersLoosers(result);
-    setIsLoading(false);
+    getEquityGainers("/api/auth/equityGainers", "GET").then((res) => {
+      setIndianEquityGainersLoosers(res);
+      setIsLoading(false);
+    });
   };
 
   const onGetEquityLoosers = () => {
     setIsLoading(true);
-    const result = equityLists.filter((c: any) => c.Change < 0);
-    setIndianEquityGainersLoosers(result);
-    setIsLoading(false);
+    getEquityGainers("/api/auth/equityLoosers", "GET").then((res) => {
+      setIndianEquityGainersLoosers(res);
+      setIsLoading(false);
+    });
   };
 
   const onGetIndianIndicesMaster = () => {
@@ -146,23 +149,11 @@ export default function Home() {
     );
   };
 
-  const onGetEquityLists = () => {
-    setIsLoading(true);
-    getEquityMasterapi(`/api/auth/equityMaster`, "GET").then((res) => {
-      if (!res.errorState) {
-        setEquityLists(res);
-        setIsLoading(false);
 
-        const result = res.filter((c: any) => c.Change >= 0);
-        setIndianEquityGainersLoosers(result);
-      }
-    });
-  };
-
-  const onRedirectToDetails = (CompanyName: any, viewedFrom: any) => {
+  const onRedirectToDetails = (searchId: any, viewedFrom: any) => {
     router.push({
       pathname: "/postLogin/stocks/stockDetails",
-      query: { CompanyName: CompanyName, viewedFrom: viewedFrom },
+      query: { searchId: searchId, viewedFrom: viewedFrom },
     });
   };
 
@@ -198,15 +189,15 @@ export default function Home() {
   useEffect(() => {
     onGetIndianIndicesMaster();
     onGetIndianSectorsMaster();
-    onGetEquityLists();
     onGetPopularFunds();
+    onGetEquityGainers();
 
     if (router.isReady) {
       var id: any = router.query.viewedFrom;
       if (id > 0) {
         setType(router.query.viewedFrom);
-      }else{
-        setType('1');
+      } else {
+        setType("1");
       }
     }
   }, []);
@@ -394,7 +385,7 @@ export default function Home() {
                           p: "0.7rem",
                           cursor: "pointer",
                         }}
-                        onClick={() => onRedirectToDetails(item.CompanyName, 1)}
+                        onClick={() => onRedirectToDetails(item.searchId, 1)}
                       >
                         <Stack spacing={2}>
                           <Avatar
@@ -414,34 +405,33 @@ export default function Home() {
                               />
                             ) : (
                               <Typography variant="h1" color="#1a1a1a">
-                                {item.CompanyName && (
+                                {/* {item.companyName && (
                                   <>
-                                    {item.CompanyName.split(" ")[0].substring(
-                                      0,
-                                      1
-                                    )}
-                                    {item.CompanyName.split(" ").length > 1
-                                      ? item.CompanyName.split(
-                                          " "
-                                        )[1].substring(0, 1)
+                                    {item.companyName
+                                      .split(" ")[0]
+                                      .substring(0, 1)}
+                                    {item.companyName.split(" ").length > 1
+                                      ? item.companyName
+                                          .split(" ")[1]
+                                          .substring(0, 1)
                                       : ""}
                                   </>
-                                )}
+                                )} */}
                               </Typography>
                             )}
                           </Avatar>
                           <Typography variant="h2" pt="0.5rem">
-                            {add3Dots(item.CompanyName, 8)}
+                            {item.companyName && add3Dots(item.companyName, 8)}
                           </Typography>
                           <Stack direction="column">
                             <Typography variant="subtitle1">
-                              ₹ {item.LastPrice}
+                              ₹ {item.ltp}
                             </Typography>
                             <Typography
                               fontSize="0.6rem"
-                              color={item.Change < 0 ? "#EE4D37" : "#76FFC6"}
+                              color={item.dayChange < 0 ? "#EE4D37" : "#76FFC6"}
                             >
-                              ({getTwoDecimalValues(item.Change)} %)
+                              ({getTwoDecimalValues(item.dayChangePerc)} %)
                             </Typography>
                           </Stack>
                         </Stack>

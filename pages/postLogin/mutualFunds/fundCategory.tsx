@@ -1,4 +1,4 @@
-import { getMutualFundCategoryapi } from "@/apifunctions/getMutualFundCategory";
+import { getMutualFundCategoryapi } from "@/apifunctions/GET/getMutualFundCategory";
 import LayoutWithBackheader from "@/components/layouts/withbackheader";
 import {
   Avatar,

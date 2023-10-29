@@ -17,7 +17,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import Loader from "@/components/loader";
 import PreloginLayout from "@/components/layouts/prelogin";
-import { postLoginUserapi } from "@/apifunctions/postLoginUser";
+import { postLoginUserapi } from "@/apifunctions/POST/postLoginUser";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 
 export default function SignUp() {
