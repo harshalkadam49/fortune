@@ -21,7 +21,6 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Pagination, FreeMode } from "swiper/modules";
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 
 // images
 import DummyImgSlider from "../../public/dummyImg.svg";
@@ -46,6 +45,7 @@ import { getPopularFundsapi } from "@/apifunctions/GET/getPopularFunds";
 import { getEquityGainers } from "@/apifunctions/GET/getEquityGainers";
 import { getNewOfferingsapi } from "@/apifunctions/GET/getNewOfferings";
 import Riskmeter from "../../public/postLogin/riskProfile/riskmeter.png";
+import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 
 export default function Home() {
   const router = useRouter();
@@ -221,7 +221,11 @@ export default function Home() {
             <Typography variant="h1" pb="1.5rem">
               New Offerings
             </Typography>
-            <Swiper pagination={true} modules={[Pagination]}>
+            <Swiper
+              className="adsBanner"
+              pagination={true}
+              modules={[Pagination]}
+            >
               {offeringArray.map((item: any, index: any) => (
                 <SwiperSlide>
                   <Box
@@ -230,32 +234,30 @@ export default function Home() {
                     sx={{
                       background: "#34343459",
                       borderRadius: "0.5rem",
-                      p: "0.2rem 0.5rem",
-                      cursor:"pointer"
+                      p: "0.5rem",
+                      cursor: "pointer",
                     }}
                   >
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <Image
-                        src={Riskmeter}
-                        height={30}
-                        width={30}
-                        alt="Riskmeter"
-                      />
-
-                      <Typography fontSize="0.8rem" sx={{}}>
-                        {item.desc}
-                      </Typography>
-
-                      <Button
-                        variant="text"
-                        sx={{
-                          fontSize: "0.7rem",
-                          color: "#fff",
-                        }}
-                      >
-                        {item.CTA}
-                      </Button>
-                    </Stack>
+                    <Grid container alignItems="center">
+                      <Grid item xs={1.5}>
+                        <Image
+                          src={`/postLogin/riskProfile/${item.icon}.png`}
+                          height={30}
+                          width={30}
+                          alt="Riskmeter"
+                        />
+                      </Grid>
+                      <Grid item xs={9}>
+                        <Typography fontSize="0.7rem" sx={{}}>
+                          {item.desc}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <ArrowRightAltIcon
+                          sx={{ color: "#85FFCC", fontSize: "2rem" }}
+                        />
+                      </Grid>
+                    </Grid>
                   </Box>
                 </SwiperSlide>
               ))}

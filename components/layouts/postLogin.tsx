@@ -191,8 +191,12 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                     "aria-labelledby": "basic-button",
                   }}
                 >
-                  <MenuItem onClick={OnLogout}>
-                    <Typography variant="h3">Logout</Typography>
+                  <MenuItem onClick={OnLogout}
+                  sx={{
+                    minHeight:"10px"
+                  }}
+                  >
+                    <Typography variant="h2">Logout</Typography>
                   </MenuItem>
                 </Menu>
               </Stack>

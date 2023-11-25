@@ -155,7 +155,7 @@ export default function Home() {
         <Paper
           sx={{
             background: "#34343459",
-            borderRadius: "1rem",
+            borderRadius: "0.5rem",
             p: "1rem",
           }}
         >
@@ -178,13 +178,13 @@ export default function Home() {
             </Grid>
           </Grid>
 
-          <Grid container alignItems="center">
+          <Grid container alignItems="center" pt="0.3rem">
             <Grid item xs={4}>
               <Stack direction="row" alignItems="baseline" spacing={2}>
                 <Typography variant="h1" color="#ccc">
                   ₹
                 </Typography>
-                <Typography fontSize="1.3rem" color="#fff">
+                <Typography fontSize="0.9rem" color="#fff">
                   201254
                 </Typography>
               </Stack>
@@ -195,7 +195,7 @@ export default function Home() {
                 <Typography variant="h1" color="#ccc">
                   ₹
                 </Typography>
-                <Typography fontSize="1.3rem" color="#fff">
+                <Typography fontSize="0.9rem" color="#fff">
                   201254
                 </Typography>
               </Stack>
@@ -206,7 +206,7 @@ export default function Home() {
                 <Typography variant="h1" color="#ccc">
                   ₹
                 </Typography>
-                <Typography fontSize="1.3rem" color="#fff">
+                <Typography fontSize="0.9rem" color="#fff">
                   201254
                 </Typography>
               </Stack>
@@ -243,7 +243,7 @@ export default function Home() {
           </Grid>
 
           <Grid item xs={5}>
-            <TabContext value={type}>
+            {/* <TabContext value={type}>
               <TabList
                 TabIndicatorProps={{
                   style: { backgroundColor: "transparent" },
@@ -307,7 +307,7 @@ export default function Home() {
                   }}
                 />
               </TabList>
-            </TabContext>
+            </TabContext> */}
           </Grid>
         </Grid>
 

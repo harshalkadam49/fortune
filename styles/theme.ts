@@ -12,24 +12,24 @@ export const theme = createTheme({
   },
   spacing: 4,
   typography: {
-    fontFamily: "Roboto",
+    fontFamily: "Open Sans",
     fontSize: 1,
     htmlFontSize: 16,
     h1: {
       fontSize: 16,
-      fontWeight: 400,
+      fontWeight: 600,
     },
     h2: {
       fontSize: 14,
-      fontWeight: 400,
+      fontWeight: 500,
     },
     h3: {
       fontSize: 10,
-      fontWeight: 400,
+      fontWeight: 500,
     },
     subtitle1: {
       fontSize: 12,
-      fontWeight: 400,
+      fontWeight: 500,
     },
   },
   components: {
@@ -66,11 +66,7 @@ export const theme = createTheme({
         disableRipple: true,
       },
     },
-    MuiTextField: {
-      styleOverrides: {
-        root: {},
-      },
-    },
+
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
@@ -89,5 +85,15 @@ export const theme = createTheme({
         },
       },
     },
+    MuiInputBase:{
+      styleOverrides: {
+        root: {
+          color: "#fff",
+          fontSize: "1.2rem",
+          borderRadius: "0.8rem",
+          background: "#000",
+        },
+      },
+    }
   },
 });

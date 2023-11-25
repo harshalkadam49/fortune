@@ -2,7 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Open Sans", "sans-serif";
   color: white;
   background: black;
   user-select: none;
@@ -97,7 +97,7 @@ a {
 }
 
 .adsBanner .swiper-wrapper {
-  height: 13rem;
+  height: 5.5rem;
 }
 
 .adsBanner .swiper-pagination-bullet-active {

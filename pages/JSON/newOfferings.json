@@ -5,7 +5,16 @@
     "desc": "Assessing risks to safeguard success in a concise, strategic overview.",
     "link": "/postLogin/riskProfile",
     "isActive": true,
-    "icon":"riskmeter.png",
+    "icon":"riskmeter",
     "CTA":"Explore Now"
+  },
+  {
+    "id": 2,
+    "title": "My Invsetment",
+    "desc": "Pursuing prosperity through strategic investments.",
+    "link": "/postLogin/myInvestments",
+    "isActive": true,
+    "icon":"wallet",
+    "CTA":"Check Now"
   }
 ]
