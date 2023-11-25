@@ -44,6 +44,8 @@ import Tax_saving from "../../public/postLogin/tax_saving.png";
 import High_returns from "../../public/postLogin/high_returns.png";
 import { getPopularFundsapi } from "@/apifunctions/GET/getPopularFunds";
 import { getEquityGainers } from "@/apifunctions/GET/getEquityGainers";
+import { getNewOfferingsapi } from "@/apifunctions/GET/getNewOfferings";
+import Riskmeter from "../../public/postLogin/riskProfile/riskmeter.png";
 
 export default function Home() {
   const router = useRouter();
@@ -95,6 +97,7 @@ export default function Home() {
     },
   ]);
   const [popularFunds, setPopularFunds] = useState([]);
+  const [offeringArray, setOfferingArray] = useState([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setType(newValue);
@@ -185,11 +188,18 @@ export default function Home() {
       },
     });
   };
+
+  const onGetNewOfferings = () => {
+    getNewOfferingsapi("/api/auth/newOfferings", "GET").then((res: any) => {
+      setOfferingArray(res);
+    });
+  };
   useEffect(() => {
     onGetIndianIndicesMaster();
     onGetIndianSectorsMaster();
     onGetPopularFunds();
     onGetEquityGainers();
+    onGetNewOfferings();
 
     if (router.isReady) {
       var id: any = router.query.viewedFrom;
@@ -207,87 +217,50 @@ export default function Home() {
         <PostLoginSimmer />
       ) : (
         <Box pt="5rem" pb="50%">
-          <Swiper
-            pagination={true}
-            modules={[Pagination]}
-            className="adsBanner"
-          >
-            <SwiperSlide>
-              <Box
-                sx={{
-                  background: "#34343459",
-                  height: "11rem",
-                  textAlign: "center",
-                  mx: "1rem",
-                  borderRadius: "0.5rem",
-                }}
-              >
-                <Image
-                  src={DummyImgSlider}
-                  height={170}
-                  width={320}
-                  alt="DummyImgSlider"
-                />
-              </Box>
-            </SwiperSlide>
+          <Box px="1rem">
+            <Typography variant="h1" pb="1.5rem">
+              New Offerings
+            </Typography>
+            <Swiper pagination={true} modules={[Pagination]}>
+              {offeringArray.map((item: any, index: any) => (
+                <SwiperSlide>
+                  <Box
+                    onClick={() => router.push(item.link)}
+                    key={index}
+                    sx={{
+                      background: "#34343459",
+                      borderRadius: "0.5rem",
+                      p: "0.2rem 0.5rem",
+                      cursor:"pointer"
+                    }}
+                  >
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <Image
+                        src={Riskmeter}
+                        height={30}
+                        width={30}
+                        alt="Riskmeter"
+                      />
 
-            <SwiperSlide>
-              <Box
-                sx={{
-                  background: "#34343459",
-                  height: "11rem",
-                  textAlign: "center",
-                  mx: "1rem",
-                  borderRadius: "0.5rem",
-                }}
-              >
-                <Image
-                  src={DummyImgSlider}
-                  height={170}
-                  width={320}
-                  alt="DummyImgSlider"
-                />
-              </Box>
-            </SwiperSlide>
+                      <Typography fontSize="0.8rem" sx={{}}>
+                        {item.desc}
+                      </Typography>
 
-            <SwiperSlide>
-              <Box
-                sx={{
-                  background: "#34343459",
-                  height: "11rem",
-                  textAlign: "center",
-                  mx: "1rem",
-                  borderRadius: "0.5rem",
-                }}
-              >
-                <Image
-                  src={DummyImgSlider}
-                  height={170}
-                  width={320}
-                  alt="DummyImgSlider"
-                />
-              </Box>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <Box
-                sx={{
-                  background: "#34343459",
-                  height: "11rem",
-                  textAlign: "center",
-                  mx: "1rem",
-                  borderRadius: "0.5rem",
-                }}
-              >
-                <Image
-                  src={DummyImgSlider}
-                  height={170}
-                  width={320}
-                  alt="DummyImgSlider"
-                />
-              </Box>
-            </SwiperSlide>
-          </Swiper>
+                      <Button
+                        variant="text"
+                        sx={{
+                          fontSize: "0.7rem",
+                          color: "#fff",
+                        }}
+                      >
+                        {item.CTA}
+                      </Button>
+                    </Stack>
+                  </Box>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </Box>
 
           <Box sx={{ width: "100%", pt: "1.313rem" }}>
             <TabContext value={type}>

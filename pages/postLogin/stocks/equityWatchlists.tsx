@@ -102,7 +102,7 @@ export default function EquityCart() {
     );
   };
 
-  const handleOpen = (id: any) => {
+  const handleOpen = (id: any) => { 
     setActiveID(id);
     setOpen(true);
   };

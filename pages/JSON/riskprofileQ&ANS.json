@@ -1,0 +1,199 @@
+[
+  {
+    "questionID": 1,
+    "question": "What percentage of your monthly income can you save ?",
+    "answer": "Less Than 5%",
+    "answerID": 11,
+    "score": 5,
+    "isSelected": false
+  },
+  {
+    "questionID": 1,
+    "question": "What percentage of your monthly income can you save ?",
+    "answer": "5 To 10%",
+    "answerID": 12,
+    "score": 10,
+    "isSelected": false
+  },
+  {
+    "questionID": 1,
+    "question": "What percentage of your monthly income can you save ?",
+    "answer": "10 To 20%",
+    "answerID": 13,
+    "score": 15,
+    "isSelected": false
+  },
+  {
+    "questionID": 1,
+    "question": "What percentage of your monthly income can you save ?",
+    "answer": "More Than 20%",
+    "answerID": 14,
+    "score": 20,
+    "isSelected": false
+  },
+
+  {
+    "questionID": 2,
+    "question": "What is your age group ?",
+    "answer": "20 To 35",
+    "answerID": 21,
+    "score": 20,
+    "isSelected": false
+  },
+  {
+    "questionID": 2,
+    "question": "What is your age group ?",
+    "answer": "35 To 50",
+    "answerID": 22,
+    "score": 15,
+    "isSelected": false
+  },
+  {
+    "questionID": 2,
+    "question": "What is your age group ?",
+    "answer": "50 To 60",
+    "answerID": 23,
+    "score": 10,
+    "isSelected": false
+  },
+  {
+    "questionID": 2,
+    "question": "What is your age group ?",
+    "answer": "Above 60",
+    "answerID": 24,
+    "score": 5,
+    "isSelected": false
+  },
+
+  {
+    "questionID": 3,
+    "question": "What would be your ideal time horizon for mutual fund investment ?",
+    "answer": " Less Than 1 Year",
+    "answerID": 31,
+    "score": 5,
+    "isSelected": false
+  },
+  {
+    "questionID": 3,
+    "question": "What would be your ideal time horizon for mutual fund investment ?",
+    "answer": " 1 To 3 Years",
+    "answerID": 32,
+    "score": 10,
+    "isSelected": false
+  },
+  {
+    "questionID": 3,
+    "question": "What would be your ideal time horizon for mutual fund investment ?",
+    "answer": " 3 To 5 Years",
+    "answerID": 33,
+    "score": 15,
+    "isSelected": false
+  },
+  {
+    "questionID": 3,
+    "question": "What would be your ideal time horizon for mutual fund investment ?",
+    "answer": " More Than 5 Years",
+    "answerID": 34,
+    "score": 20,
+    "isSelected": false
+  },
+
+  {
+    "questionID": 4,
+    "question": "In which of the following options have you made highest investment till date ?",
+    "answer": "Liquid Funds FD, PPF,",
+    "answerID": 41,
+    "score": 5,
+    "isSelected": false
+  },
+  {
+    "questionID": 4,
+    "question": "In which of the following options have you made highest investment till date ?",
+    "answer": "Debt Mutual Funds, Bonds",
+    "answerID": 42,
+    "score": 10,
+    "isSelected": false
+  },
+  {
+    "questionID": 4,
+    "question": "In which of the following options have you made highest investment till date ?",
+    "answer": "Shares, Equity Oriented Funds",
+    "answerID": 43,
+    "score": 15,
+    "isSelected": false
+  },
+  {
+    "questionID": 4,
+    "question": "In which of the following options have you made highest investment till date ?",
+    "answer": "Alternate Assets",
+    "answerID": 44,
+    "score": 20,
+    "isSelected": false
+  },
+
+  {
+    "questionID": 5,
+    "question": "If your investment make 10% losses next year will you ?",
+    "answer": "Sell Your Investments And Put The Proceeds In Fixed Deposits",
+    "answerID": 51,
+    "score": 5,
+    "isSelected": false
+  },
+  {
+    "questionID": 5,
+    "question": "If your investment make 10% losses next year will you ?",
+    "answer": "Sell Some Investments And Continue To Hold The Rest",
+    "answerID": 52,
+    "score": 10,
+    "isSelected": false
+  },
+  {
+    "questionID": 5,
+    "question": "If your investment make 10% losses next year will you ?",
+    "answer": "Do Nothing",
+    "answerID": 53,
+    "score": 15,
+    "isSelected": false
+  },
+  {
+    "questionID": 5,
+    "question": "If your investment make 10% losses next year will you ?",
+    "answer": "Take Advantage Of The Correction And Invest Some More Money",
+    "answerID": 54,
+    "score": 20,
+    "isSelected": false
+  },
+
+  {
+    "questionID": 6,
+    "question": "What factor is most important for you while choosing an investment ?",
+    "answer": "Highest Potential Return",
+    "answerID": 61,
+    "score": 20,
+    "isSelected": false
+  },
+  {
+    "questionID": 6,
+    "question": "What factor is most important for you while choosing an investment ?",
+    "answer": "Regular Income And Marginal Capital Appreciation",
+    "answerID": 62,
+    "score": 15,
+    "isSelected": false
+  },
+  {
+    "questionID": 6,
+    "question": "What factor is most important for you while choosing an investment ?",
+    "answer": "Regular Income",
+    "answerID": 63,
+    "score": 10,
+    "isSelected": false
+  },
+  {
+    "questionID": 6,
+    "question": "What factor is most important for you while choosing an investment ?",
+    "answer": "Preservation Of Capital",
+    "answerID": 64,
+    "score": 5,
+    "isSelected": false
+  }
+]

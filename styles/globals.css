@@ -5,6 +5,11 @@ body {
   font-family: "Open Sans", sans-serif;
   color: white;
   background: black;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 a {
@@ -19,10 +24,20 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
   }
   body {
     color: white;
     background: black;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
   }
 }
 
@@ -130,7 +145,17 @@ a {
   top: 0 !important;
 }
 
-
-.MFHoldingAnalysis span.apexcharts-legend-text{
+.MFHoldingAnalysis span.apexcharts-legend-text {
   color: #fff !important;
 }
+
+.riskprofile .swiper {
+  margin: 0px auto;
+}
+
+
+.riskprofile .swiper-slide{
+  background-color: #000;
+  border-radius: 0.5rem;
+}
+

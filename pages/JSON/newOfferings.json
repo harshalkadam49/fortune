@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "title": "Risk Profile",
+    "desc": "Assessing risks to safeguard success in a concise, strategic overview.",
+    "link": "/postLogin/riskProfile",
+    "isActive": true,
+    "icon":"riskmeter.png",
+    "CTA":"Explore Now"
+  }
+]

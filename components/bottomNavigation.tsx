@@ -1,6 +1,6 @@
 import { BottomNavigation, Box } from "@mui/material";
 
-export default function BottomStay({children}: any) {
+export default function BottomStay({ children }: any) {
   return (
     <>
       <BottomNavigation
@@ -11,11 +11,16 @@ export default function BottomStay({children}: any) {
           right: "0",
           background: "#000",
           height: "7rem",
-          width: "100%",
-          border:"2px solid #000"
+          width: { md: "23%", xs: "95%" },
+          border: "2px solid #000",
+          mx:"auto"
         }}
       >
-        <Box sx={{ width: "100%", px: "1rem", pt: "5%",border:"2px solid #000" }}>{children}</Box>
+        <Box
+          sx={{ width: "100%", px: "1rem", pt: "5%", border: "2px solid #000" }}
+        >
+          {children}
+        </Box>
       </BottomNavigation>
     </>
   );
