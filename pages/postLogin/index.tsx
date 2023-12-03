@@ -288,6 +288,7 @@ export default function Home() {
                     }
                     value="1"
                     sx={{
+                      textTransform:"capitalize",
                       width: "50%",
                       "&.Mui-selected": {
                         background: "#76FFC6",
@@ -305,6 +306,7 @@ export default function Home() {
                     }
                     value="2"
                     sx={{
+                      textTransform:"capitalize",
                       width: "50%",
                       "&.Mui-selected": {
                         background: "#76FFC6",

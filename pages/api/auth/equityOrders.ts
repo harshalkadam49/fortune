@@ -6,14 +6,19 @@ async function handler(req: any, res: any) {
     const client = await connectToDataBase();
     const {
       userID,
-      timestamp,
+      entryTimeStamp,
       stockname,
       price,
       quantity,
       type,
+      searchID,
+      symbol,
+      logoUrl
     } = data;
 
-    if (!stockname || !price || !quantity || !type) {
+    console.log(data);
+
+    if (!data) {
       res.status(422).json({
         message: "invalid input entries",
         errorState: true,
@@ -22,20 +27,50 @@ async function handler(req: any, res: any) {
     } else {
       const db = client.db();
 
-      const result = await db.collection("EquityOrders").insertOne({
+      const orderDetails = await db.collection("EquityOrders").insertOne({
         userID: userID,
         stockname: stockname,
-        timestamp: new Date(),
+        entryTimeStamp: entryTimeStamp,
         price: price,
         quantity: quantity,
         type: type,
+        searchID: searchID,
+        symbol:symbol,
+        logoUrl:logoUrl
       });
 
-      res.status(200).json({
-        data: result,
-        message: "succesfull",
-        errorState: false,
-      });
+      // add entry into investment table
+      if (orderDetails) {
+        const investmentDetails = await db
+          .collection("UserEquityInvestements")
+          .insertOne({
+            userID: userID,
+            searchID: searchID,
+            orderID: orderDetails.insertedId,
+            entryTimeStamp: entryTimeStamp,
+            investedValue: price * quantity,
+            isActiveInvestment: true,
+            lastOrderPlacedOn: entryTimeStamp,
+            LTP: price,
+            quantity: quantity,
+            orderStatus: "Succefull",
+            logoUrl:logoUrl,
+            symbol:symbol
+          });
+
+        res.status(200).json({
+          data: investmentDetails,
+          message: "succesfull",
+          errorState: false,
+        });
+      } else {
+        res.status(200).json({
+          data: "",
+          message: "order cannot be placed",
+          errorState: true,
+        });
+      }
+
       client.close();
     }
   }

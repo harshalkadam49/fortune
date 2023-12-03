@@ -156,7 +156,7 @@ export default function VerticalLinearStepper() {
                               spacing={2}
                               onClick={() => handleNext(ansersItem, array)}
                               sx={{
-                                cursor:"pointer"
+                                cursor: "pointer",
                               }}
                             >
                               {ansersItem.isSelected ? (

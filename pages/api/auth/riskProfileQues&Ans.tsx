@@ -6,7 +6,7 @@ async function handler(req: any, res: any) {
 
     const db = client.db();
     const collection = db.collection("RiskprofileQuestionsAnswers");
-    const data: any = await collection.find({}).toArray();
+    const data: any = await collection.find({}).sort({ questionID: 1 }).toArray();
 
     let answersArray = [];
     for (let i = 0; i < data.length; i++) {

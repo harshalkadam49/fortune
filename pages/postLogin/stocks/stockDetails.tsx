@@ -156,24 +156,26 @@ export default function StockDetails() {
   };
 
   const onGetHighestRattings = (data: any) => {
-    let array: any = [
-      { type: "Buy", value: data.buyPercent },
-      { type: "Sell", value: data.sellPercent },
-      { type: "Hold", value: data.holdPercent },
-    ];
+    if (data) {
+      let array: any = [
+        { type: "Buy", value: data.buyPercent },
+        { type: "Sell", value: data.sellPercent },
+        { type: "Hold", value: data.holdPercent },
+      ];
 
-    setExpertRatingArray(array);
-    let maxObject = array.reduce(function (max: any, obj: any) {
-      return obj["value"] > max["value"] ? obj : max;
-    });
+      setExpertRatingArray(array);
+      let maxObject = array.reduce(function (max: any, obj: any) {
+        return obj["value"] > max["value"] ? obj : max;
+      });
 
-    setExpertRatingFinal(maxObject);
-    if (maxObject.type == "Buy") {
-      setRatingColor("#76FFC6");
-    } else if (maxObject.type == "Sell") {
-      setRatingColor("#D04539");
-    } else {
-      setRatingColor("#FFF7EB");
+      setExpertRatingFinal(maxObject);
+      if (maxObject.type == "Buy") {
+        setRatingColor("#76FFC6");
+      } else if (maxObject.type == "Sell") {
+        setRatingColor("#D04539");
+      } else {
+        setRatingColor("#FFF7EB");
+      }
     }
   };
 
@@ -578,56 +580,63 @@ export default function StockDetails() {
 
                 {/* expertRating */}
 
-                <Box
-                  className="maxWidth"
-                  sx={{
-                    borderBottom: "2px solid #76FFC6",
-                  }}
-                >
-                  <Typography variant="h2" pt="2rem" pb="0.3rem">
-                    Expert Rating
-                  </Typography>
-                </Box>
+                {expertRatingFinal && (
+                  <>
+                    <Box
+                      className="maxWidth"
+                      sx={{
+                        borderBottom: "2px solid #76FFC6",
+                      }}
+                    >
+                      <Typography variant="h2" pt="2rem" pb="0.3rem">
+                        Expert Rating
+                      </Typography>
+                    </Box>
 
-                <Grid container alignItems="center" pt={2}>
-                  <Grid item xs={4}>
-                    {expertRatingFinal && (
-                      <Avatar
-                        sx={{
-                          height: "5rem",
-                          width: "5rem",
+                    <Grid container alignItems="center" pt={2}>
+                      <Grid item xs={4}>
+                        <Avatar
+                          sx={{
+                            height: "5rem",
+                            width: "5rem",
 
-                          background: ratingColor,
-                        }}
-                      >
-                        <Typography fontSize="1.6rem" color="#000">
-                          {expertRatingFinal && expertRatingFinal.value}
-                        </Typography>
-                      </Avatar>
-                    )}
-                  </Grid>
-                  <Grid item xs={8}>
-                    {expertRatingArray &&
-                      expertRatingArray.map((item: any, index: any) => (
-                        <Grid container alignItems="center" spacing={2} py={2}>
-                          <Grid item xs={2}>
-                            <Typography variant="h2">{item.type}</Typography>
+                            background: ratingColor,
+                          }}
+                        >
+                          <Typography fontSize="1.6rem" color="#000">
+                            {expertRatingFinal.value}
+                          </Typography>
+                        </Avatar>
+                      </Grid>
+                      <Grid item xs={8}>
+                        {expertRatingArray.map((item: any, index: any) => (
+                          <Grid
+                            container
+                            alignItems="center"
+                            spacing={2}
+                            py={2}
+                          >
+                            <Grid item xs={2}>
+                              <Typography variant="h2">{item.type}</Typography>
+                            </Grid>
+                            <Grid item xs={7.5}>
+                              <BorderLinearProgress
+                                variant="determinate"
+                                value={item.value}
+                              />
+                            </Grid>
+                            <Grid item xs={2.5}>
+                              <Typography variant="h2" color="#8A8A8A">
+                                {item.value}%
+                              </Typography>
+                            </Grid>
                           </Grid>
-                          <Grid item xs={7.5}>
-                            <BorderLinearProgress
-                              variant="determinate"
-                              value={item.value}
-                            />
-                          </Grid>
-                          <Grid item xs={2.5}>
-                            <Typography variant="h2" color="#8A8A8A">
-                              {item.value}%
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      ))}
-                  </Grid>
-                </Grid>
+                        ))}
+                      </Grid>
+                    </Grid>
+                  </>
+                )}
+
                 {/* expertRating */}
               </Box>
             )}
@@ -666,7 +675,7 @@ export default function StockDetails() {
                   Buy
                 </Button>
 
-                <Button
+                {/* <Button
                   onClick={() =>
                     onRedirectToOrders(stockDetails.searchId, "Sell")
                   }
@@ -678,7 +687,7 @@ export default function StockDetails() {
                   }}
                 >
                   Sell
-                </Button>
+                </Button> */}
               </Stack>
             </Box>
           </>

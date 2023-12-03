@@ -49,6 +49,7 @@ async function handler(req: any, res: any) {
       close: livePriceData.close,
       ltp: livePriceData.ltp,
       volume: livePriceData.volume,
+      symbol: livePriceData.symbol,
     };
 
     res.status(200).json({

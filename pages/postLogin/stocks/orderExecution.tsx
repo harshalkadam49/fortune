@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 
 export default function OrderExecution() {
   const router = useRouter();
-  const [CompanyName, setCompanyName] = useState<any>("");
+  const [searchID, setSearchID] = useState<any>("");
   const [stockDetails, setStockDetails] = useState<any>([]);
   const [quantity, setQuantity] = useState<any>(0);
   const [error, setError] = useState<any>("");
@@ -35,16 +35,22 @@ export default function OrderExecution() {
       setError(" ");
       let model = {
         stockname: stockDetails.displayName,
+        logoUrl: stockDetails.logoUrl,
         price: livePriceData.ltp,
-        quantity: quantity,
+        quantity: parseInt(quantity),
         type: orderType,
         userID: userData._id,
+        searchID: searchID,
+        entryTimeStamp: new Date(),
+        symbol: livePriceData.symbol,
       };
+
+      console.log(model);
       setIsLoading(true);
       postEquityOrdersapi(model, "/api/auth/equityOrders", "POST").then(
         (res) => {
           if (!res.errorState) {
-            router.push("/postLogin/stocks/equityOrders");
+            router.replace("/postLogin/stocks/equityOrders");
             setIsLoading(false);
           }
         }
@@ -95,7 +101,7 @@ export default function OrderExecution() {
   useEffect(() => {
     if (router.isReady) {
       onGetStockDetails(router.query.searchId);
-      setCompanyName(router.query.searchId);
+      setSearchID(router.query.searchId);
       setOrderType(router.query.orderType);
     }
 
@@ -247,7 +253,7 @@ export default function OrderExecution() {
                       fullWidth={true}
                       sx={{
                         background: "#76FFC6",
-                        color: "#fff",
+                        color: "#000",
                       }}
                     >
                       Buy
