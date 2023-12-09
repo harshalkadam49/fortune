@@ -159,3 +159,19 @@ a {
   border-radius: 0.5rem;
 }
 
+.apexcharts-toolbar svg {
+  display: none;
+}
+
+.apexcharts-legend-marker {
+  border-radius: 0px !important;
+  margin-right: 5rem !important;
+}
+
+tspan {
+  display: none;
+}
+
+.apexcharts-grid {
+  display: none;
+}

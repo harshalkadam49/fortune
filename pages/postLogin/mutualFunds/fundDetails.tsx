@@ -44,6 +44,7 @@ import { postRemoveToCartListMFapi } from "@/apifunctions/POST/postRemoveToCartL
 import { postAddToCartListMF } from "@/apifunctions/POST/postAddToCartListMF";
 import { getSavedSchemesapi } from "@/apifunctions/GET/getSavedSchemes";
 import StockDetailsSimmer from "@/components/simmers/stockDetailsSimmer";
+import PriceChart from "@/components/chart";
 
 export default function FundDetails() {
   const router = useRouter();
@@ -336,9 +337,7 @@ export default function FundDetails() {
           </Stack>
 
           {/* chart */}
-          <Typography variant="h2" textAlign="center" py="5rem">
-            Chart to be added here
-          </Typography>
+          <PriceChart />
           {/* chart */}
 
           <Grid container spacing={4}>
@@ -454,17 +453,17 @@ export default function FundDetails() {
                               key={index}
                               py="0.5rem"
                               justifyContent="space-between"
-                              onClick={() =>
-                                onRedirectToDetails(item.stock_search_id)
-                              }
+                              // onClick={() =>
+                              //   onRedirectToDetails(item.stock_search_id)
+                              // }
                             >
                               <Stack direction="row" alignItems="center">
                                 <Typography variant="h2" color="#fff">
                                   {item.company_name}
                                 </Typography>
-                                <KeyboardArrowRightIcon
+                                {/* <KeyboardArrowRightIcon
                                   sx={{ fontSize: "1.2rem", color: "#fff" }}
-                                />
+                                /> */}
                               </Stack>
                               <Typography variant="h2" color="#fff">
                                 {getTwoDecimalValues(item.corpus_per)}%

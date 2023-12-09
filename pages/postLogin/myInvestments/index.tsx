@@ -39,15 +39,6 @@ export default function Home() {
   const [totalReturnsPer, setTotalReturnsPer] = useState<any>(0);
   const [investedSchemeArray, setInvestedSchemeArray] = useState<any>([]);
 
-  const RiskProfileIntroAnimation = {
-    loop: true,
-    autoplay: true,
-    animationData: MyInvestementAnmation,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-
   const handleChangeInvestmentType = (event: SelectChangeEvent) => {
     setInvestmentType(event.target.value as string);
   };
@@ -183,7 +174,7 @@ export default function Home() {
 
   return (
     <LayoutWithBackheader showHeader={true} pageTitle="My Investments">
-      {/* <Box px="1rem" pt="5rem" pb="50%">
+      <Box px="1rem" pt="5rem" pb="50%">
         <Paper
           sx={{
             background: "#34343459",
@@ -242,7 +233,7 @@ export default function Home() {
                   fontSize="0.9rem"
                   color={totalReturnsPer >= 0 ? "#76FFC6" : "#EE4D37"}
                 >
-                  {totalReturns} ({totalReturnsPer}%)
+                  {totalReturns} ({totalReturnsPer.toFixed(2)}%)
                 </Typography>
               </Stack>
             </Grid>
@@ -353,15 +344,7 @@ export default function Home() {
             </Typography>
           </Grid>
 
-          <Grid item xs={12}>
-            <Chart
-              options={data.options}
-              series={data.series}
-              type="radialBar"
-              width="400"
-            />
-            Chart
-          </Grid>
+          <Grid item xs={12}></Grid>
         </Grid>
 
         <Typography variant="h1" pt="2rem">
@@ -510,17 +493,6 @@ export default function Home() {
               <Divider flexItem sx={{ background: "#ccc" }} />
             </>
           ))}
-      </Box> */}
-
-      <Box px="1rem" pt="8rem" pb="50%">
-        <Lottie options={RiskProfileIntroAnimation} height={250} width={250} />
-
-        <Typography variant="h1" fontSize="1.5rem" textAlign="center" pt="2rem">
-          Comming Soon..!!
-        </Typography>
-        <Typography variant="h1" textAlign="center" pt="1rem" color="#ccc">
-          Here you will be able to keep track of all your investments
-        </Typography>
       </Box>
     </LayoutWithBackheader>
   );

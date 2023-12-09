@@ -37,14 +37,23 @@ async function handler(req: any, res: any) {
       }).toArray();
 
       let investedSchemeWithLiveData = [...allEquityInvestments];
+      let test: any = [];
 
       for (let i = 0; i < allEquityInvestments.length; i++) {
-        // symbole mismatched issue
-        if (
-          allEquityInvestments[i].symbol == investedSchemeLiveData[i].symbol
-        ) {
-          investedSchemeWithLiveData.push(investedSchemeLiveData[i]);
-        }
+        const symbolToUpdate = allEquityInvestments[i].symbol;
+        const priceToUpdateObject: any = await EquityLivePrices.findOne({
+          symbol: symbolToUpdate,
+        });
+
+        const priceToUpdate = priceToUpdateObject.ltp;
+
+        const updatedDocument = await UserEquityInvestements.findOneAndUpdate(
+          { symbol: symbolToUpdate },
+          { $set: { LTP: priceToUpdate } },
+          { returnDocument: "after" }
+        );
+
+        test.push({updatedDocument})
       }
 
       var sumCurrentvalue = 0;
@@ -65,7 +74,7 @@ async function handler(req: any, res: any) {
         totalReturns: totalReturns,
         totalReturnsPer: totalReturnsPer,
         investedSchemeWithLiveData: investedSchemeWithLiveData,
-        // investedSchemeLiveData: investedSchemeLiveData,
+        allEquityInvestments: allEquityInvestments,
       };
 
       res.status(200).json({

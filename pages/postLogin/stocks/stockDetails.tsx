@@ -47,6 +47,7 @@ import dynamic from "next/dynamic";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { red } from "@mui/material/colors";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PriceChart from "@/components/chart";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 5,
@@ -340,11 +341,9 @@ export default function StockDetails() {
                 </Stack>
 
                 {/* chart */}
-                <Typography variant="h2" textAlign="center" py="5rem">
-                  Chart to be added here
-                </Typography>
+                <PriceChart />
                 {/* chart */}
-
+                
                 {stockDetails.priceData && (
                   <Box py="2rem">
                     <Stack

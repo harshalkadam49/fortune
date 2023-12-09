@@ -52,6 +52,7 @@ async function handler(req: any, res: any) {
             isActiveInvestment: true,
             lastOrderPlacedOn: entryTimeStamp,
             LTP: price,
+            perchasePrice: price,
             quantity: quantity,
             orderStatus: "Succefull",
             logoUrl:logoUrl,

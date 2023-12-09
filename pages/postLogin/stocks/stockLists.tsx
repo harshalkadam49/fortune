@@ -74,7 +74,7 @@ export default function StocksLists() {
         <StockListsSimmer />
       ) : (
         <Box px="1rem" pt="5rem" pb="50%">
-          {/* <Box>
+          <Box>
             <TextField
               autoComplete="off"
               variant="outlined"
@@ -95,7 +95,7 @@ export default function StocksLists() {
               }}
               onChange={(e: any) => onSearch(e.target.value)}
             />
-          </Box> */}
+          </Box>
 
           {filteredEquityLists.map((item: any, index: any) => (
             <>
