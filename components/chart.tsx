@@ -61,44 +61,44 @@ export default function PriceChart() {
     options: {
       chart: {
         type: "line",
-        grid: {
+      },
+      grid: {
+        show: false,
+      },
+      legend: {
+        show: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
+      toolbar: {
+        show: false,
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      xaxis: {
+        axisTicks: {
           show: false,
         },
-        legend: {
+        axisBorder: {
           show: false,
         },
-        tooltip: {
-          enabled: false,
-        },
-        toolbar: {
-          show: false,
-        },
-        dataLabels: {
-          enabled: false,
-        },
-        xaxis: {
-          axisTicks: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-        },
-        stroke: {
-          show: true,
-          curve: "smooth",
-          lineCap: "butt",
-          colors: "#76FFC6",
-          width: 2,
-          dashArray: 0,
-        },
+      },
+      stroke: {
+        show: true,
+        curve: "smooth",
+        lineCap: "butt",
+        colors: "#76FFC6",
+        width: 2,
+        dashArray: 0,
       },
     },
   };
 
   const chart = useMemo(
     () => (
-      <Box sx={{ ml: "-10%" }}>
+      <Box sx={{ ml: "-13%" }}>
         <ApexCharts options={state.options} series={state.series} type="line" />
       </Box>
     ),
