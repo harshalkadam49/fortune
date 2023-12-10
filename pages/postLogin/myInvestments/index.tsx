@@ -32,7 +32,7 @@ export default function Home() {
   const [investmentType, setInvestmentType] = useState("Stocks");
   const [type, setType] = useState("1");
   const [data, setData] = useState<any>();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [currentvalue, setCurrentvalue] = useState<any>(0);
   const [investedValue, setInvestedValue] = useState<any>(0);
   const [totalReturns, setTotalReturns] = useState<any>(0);
@@ -240,7 +240,7 @@ export default function Home() {
           </Grid>
         </Paper>
 
-        <Grid container alignItems="center" pt="1rem">
+        {/* <Grid container alignItems="center" pt="1rem">
           <Grid item xs={7}>
             <FormControl sx={{ width: "80%" }} variant="standard">
               <Select
@@ -335,8 +335,8 @@ export default function Home() {
               </TabList>
             </TabContext>
           </Grid>
-        </Grid>
-
+        </Grid> */}
+        {/* 
         <Grid container pt="2rem">
           <Grid item xs={12}>
             <Typography variant="h1" pb="2rem">
@@ -345,7 +345,7 @@ export default function Home() {
           </Grid>
 
           <Grid item xs={12}></Grid>
-        </Grid>
+        </Grid> */}
 
         <Typography variant="h1" pt="2rem">
           Stocks you invested in:
@@ -355,7 +355,8 @@ export default function Home() {
           investedSchemeArray.map((item: any, index: any) => (
             <>
               <Card
-                onClick={handleExpandClick}
+                key={index}
+                // onClick={handleExpandClick}
                 sx={{ background: "#000", my: "1rem" }}
               >
                 <CardHeader
@@ -363,9 +364,38 @@ export default function Home() {
                     p: "0rem",
                   }}
                   title={
-                    <Typography variant="h1" color="#fff">
-                      Tata Motors
-                    </Typography>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      pr={3}
+                    >
+                      <Typography variant="h1" color="#fff">
+                        {item.symbol}
+                      </Typography>
+
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        <Typography fontSize="0.9rem" variant="h1" color="#ccc">
+                          ₹
+                        </Typography>
+                        <Typography
+                          fontSize="0.9rem"
+                          color={(
+                            ((item.LTP * item.quantity - item.investedValue) /
+                              item.investedValue) *
+                            100
+                          ) >= 0 ? "#76FFC6" : "#EE4D37"}
+                        >
+                          {item.LTP * item.quantity - item.investedValue} (
+                          {(
+                            ((item.LTP * item.quantity - item.investedValue) /
+                              item.investedValue) *
+                            100
+                          ).toFixed(2)}
+                          %)
+                        </Typography>
+                      </Stack>
+                    </Stack>
                   }
                   avatar={
                     <Avatar
@@ -387,11 +417,13 @@ export default function Home() {
                     </Avatar>
                   }
                   action={
-                    <IconButton aria-label="settings">
-                      <ExpandMoreIcon
-                        sx={{ color: "#fff", fontSize: "1.5rem" }}
-                      />
-                    </IconButton>
+                    // <IconButton aria-label="settings">
+                    //   <ExpandMoreIcon
+                    //     sx={{ color: "#fff", fontSize: "1.5rem" }}
+                    //   />
+                    // </IconButton>
+
+                    <></>
                   }
                 />
 

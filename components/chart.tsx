@@ -1,10 +1,43 @@
 import { Box } from "@mui/material";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import React from "react";
+import Chart from "react-apexcharts";
 
 export default function PriceChart() {
-  const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
+  const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: true });
+
   const state = {
+    options: {
+      chart: {
+        id: "basic-bar",
+      },
+      
+      grid: {
+        show: false,
+      },
+      legend: {
+        show: false,
+      },
+      toolbar: {
+        show: false,
+      },
+      xaxis: {
+        axisTicks: {
+          show: false,
+        },
+        axisBorder: {
+          show: false,
+        },
+      },
+      tooltip: {
+        enabled: false,
+      },
+      colors: ["#76FFC6", "#76FFC6"],
+      stroke: {
+        width: 2,
+      },
+    },
+
     series: [
       {
         data: [
@@ -58,47 +91,11 @@ export default function PriceChart() {
         ],
       },
     ],
-    options: {
-      chart: {
-        type: "line",
-      },
-      grid: {
-        show: false,
-      },
-      legend: {
-        show: false,
-      },
-      tooltip: {
-        enabled: false,
-      },
-      toolbar: {
-        show: false,
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      xaxis: {
-        axisTicks: {
-          show: false,
-        },
-        axisBorder: {
-          show: false,
-        },
-      },
-      stroke: {
-        show: true,
-        curve: "smooth",
-        lineCap: "butt",
-        colors: "#76FFC6",
-        width: 2,
-        dashArray: 0,
-      },
-    },
   };
 
-  const chart = useMemo(
+  const chart = React.useMemo(
     () => (
-      <Box sx={{ ml: "-13%" }}>
+      <Box sx={{ ml: "-15%" }}>
         <ApexCharts options={state.options} series={state.series} type="line" />
       </Box>
     ),

@@ -52,8 +52,6 @@ async function handler(req: any, res: any) {
           { $set: { LTP: priceToUpdate } },
           { returnDocument: "after" }
         );
-
-        test.push({updatedDocument})
       }
 
       var sumCurrentvalue = 0;
