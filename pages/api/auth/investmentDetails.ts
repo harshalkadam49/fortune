@@ -54,6 +54,27 @@ async function handler(req: any, res: any) {
         );
       }
 
+      let avg: any = [];
+      // check if investment exists and give avg
+      for (let i = 0; i < allEquityInvestments.length; i++) {
+        avg.push({
+          key: allEquityInvestments[i].symbol,
+          value: allEquityInvestments[i].perchasePrice,
+        });
+      }
+
+      const sums: any = {};
+
+      allEquityInvestments.forEach((entry: any) => {
+        const key = entry.symbol
+        const value = entry.perchasePrice
+        if (!sums[key]) {
+          sums[key] = value;
+        } else {
+          sums[key] += value/sums[key];
+        }
+      });
+
       var sumCurrentvalue = 0;
       sumCurrentvalue =
         sumCurrentvalue +
@@ -73,6 +94,7 @@ async function handler(req: any, res: any) {
         totalReturnsPer: totalReturnsPer,
         investedSchemeWithLiveData: investedSchemeWithLiveData,
         allEquityInvestments: allEquityInvestments,
+        sums: sums,
       };
 
       res.status(200).json({

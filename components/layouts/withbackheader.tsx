@@ -5,6 +5,7 @@ import {
   IconButton,
   Stack,
   Toolbar,
+  Typography,
 } from "@mui/material";
 import { Router, useRouter } from "next/router";
 import { useState } from "react";
@@ -89,7 +90,10 @@ export default function LayoutWithBackheader(props: any) {
                         sx={{ fontSize: "1.2rem", color: "#fff" }}
                       />
                     </IconButton>
-                    {pageTitle}
+
+                    <Typography variant="h1" textTransform="capitalize">
+                      {pageTitle}
+                    </Typography>
                   </Stack>
 
                   <Box onClick={redirectToHome}>

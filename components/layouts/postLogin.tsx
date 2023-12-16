@@ -32,6 +32,12 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { getUserDataapi } from "@/apifunctions/GET/getUserData";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import EquityOrdersIcon from "../../public/postLogin/equityOrders.png";
+import WatchlistIcon from "../../public/postLogin/watchlist.png";
+import WalletIcon from "../../public/postLogin/wallet.png";
+import RiskmeterIcon from "../../public/postLogin/riskmeter.png";
+import NewsIcons from "../../public/postLogin/news.png";
+import Image from "next/image";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -52,13 +58,39 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
   const [menuList, setMenuList] = React.useState<any>([
     {
       title: "Orders",
-      icon: <ListIcon sx={{ fontSize: "1.5rem", color: "#fff" }} />,
+      icon: (
+        <Image
+          src={EquityOrdersIcon}
+          height={22}
+          width={25}
+          alt="EquityOrdersIcon"
+        />
+      ),
       redirectTo: "/postLogin/stocks/equityOrders",
     },
     {
       title: "Watchlist",
-      icon: <BookmarkIcon sx={{ fontSize: "1.5rem", color: "#fff" }} />,
+      icon: (
+        <Image src={WatchlistIcon} height={22} width={25} alt="WatchlistIcon" />
+      ),
       redirectTo: "/postLogin/stocks/equityWatchlists",
+    },
+    {
+      title: "My Investments",
+      icon: <Image src={WalletIcon} height={22} width={25} alt="WalletIcon" />,
+      redirectTo: "/postLogin/myInvestments",
+    },
+    {
+      title: "My Riskprofile",
+      icon: (
+        <Image src={RiskmeterIcon} height={22} width={25} alt="RiskmeterIcon" />
+      ),
+      redirectTo: "/postLogin/riskProfile/myRiskProfile",
+    },
+    {
+      title: "News",
+      icon: <Image src={NewsIcons} height={22} width={25} alt="NewsIcons" />,
+      redirectTo: "/postLogin/newsLetters",
     },
   ]);
 
@@ -152,7 +184,11 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                   onClick={toggleDrawer(anchor, true)}
                   sx={{ fontSize: "1.3rem" }}
                 />
-                <Typography sx={{ fontSize: "1.2rem" }} color="inherit" component="div">
+                <Typography
+                  sx={{ fontSize: "1.2rem" }}
+                  color="inherit"
+                  component="div"
+                >
                   Fortune
                 </Typography>
               </Stack>
@@ -191,10 +227,11 @@ export default function SwipeableTemporaryDrawer({ children, props }: any) {
                     "aria-labelledby": "basic-button",
                   }}
                 >
-                  <MenuItem onClick={OnLogout}
-                  sx={{
-                    minHeight:"10px"
-                  }}
+                  <MenuItem
+                    onClick={OnLogout}
+                    sx={{
+                      minHeight: "10px",
+                    }}
                   >
                     <Typography variant="h2">Logout</Typography>
                   </MenuItem>

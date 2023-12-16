@@ -16,5 +16,14 @@
     "isActive": true,
     "icon":"wallet",
     "CTA":"Check Now"
+  },
+  {
+    "id": 2,
+    "title": "Stocks In News",
+    "desc": "Latest stock news covering market trends, analysis, and financial updates",
+    "link": "/postLogin/newsLetters",
+    "isActive": true,
+    "icon":"news",
+    "CTA":"Check Now"
   }
 ]

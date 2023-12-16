@@ -239,24 +239,20 @@ export default function Home() {
                     }}
                   >
                     <Grid container alignItems="center">
-                      <Grid item xs={1.5}>
+                      <Grid item xs={2}>
                         <Image
                           src={`/postLogin/riskProfile/${item.icon}.png`}
-                          height={30}
-                          width={30}
+                          height={45}
+                          width={45}
                           alt="Riskmeter"
                         />
                       </Grid>
                       <Grid item xs={9}>
-                        <Typography fontSize="0.7rem" sx={{}}>
+                        <Typography fontSize="0.9rem" sx={{}}>
                           {item.desc}
                         </Typography>
                       </Grid>
-                      <Grid item>
-                        <ArrowRightAltIcon
-                          sx={{ color: "#85FFCC", fontSize: "2rem" }}
-                        />
-                      </Grid>
+
                     </Grid>
                   </Box>
                 </SwiperSlide>

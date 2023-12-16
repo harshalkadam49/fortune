@@ -27,12 +27,14 @@ import CircleIcon from "@mui/icons-material/Circle";
 import { getInvestmentDetailsapi } from "@/apifunctions/GET/getInvestmentDetails";
 import Lottie from "react-lottie";
 import MyInvestementAnmation from "../../../public/postLogin/myInvestments/myInvestments.json";
+import Loader from "@/components/loader";
 
 export default function Home() {
   const [investmentType, setInvestmentType] = useState("Stocks");
   const [type, setType] = useState("1");
   const [data, setData] = useState<any>();
   const [expanded, setExpanded] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentvalue, setCurrentvalue] = useState<any>(0);
   const [investedValue, setInvestedValue] = useState<any>(0);
   const [totalReturns, setTotalReturns] = useState<any>(0);
@@ -152,6 +154,7 @@ export default function Home() {
   };
 
   const onGetUserInvesmentsDetails = () => {
+    setIsLoading(true);
     getInvestmentDetailsapi(
       `/api/auth/investmentDetails?userID=64f308547c716331857608eb`,
       "GET"
@@ -161,6 +164,7 @@ export default function Home() {
       setTotalReturns(res.data.totalReturns);
       setTotalReturnsPer(res.data.totalReturnsPer);
       setInvestedSchemeArray(res.data.investedSchemeWithLiveData);
+      setIsLoading(false);
     });
   };
 
@@ -174,73 +178,76 @@ export default function Home() {
 
   return (
     <LayoutWithBackheader showHeader={true} pageTitle="My Investments">
-      <Box px="1rem" pt="5rem" pb="50%">
-        <Paper
-          sx={{
-            background: "#34343459",
-            borderRadius: "0.5rem",
-            p: "1rem",
-          }}
-        >
-          <Grid container alignItems="center">
-            <Grid item xs={4}>
-              <Typography fontSize="0.8rem" fontWeight="500" color="#fff">
-                Current Value
-              </Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography fontSize="0.8rem" fontWeight="500" color="#fff">
-                Invested Value
-              </Typography>
+      {isLoading ? (
+        <Loader isLoading={true} />
+      ) : (
+        <Box px="1rem" pt="5rem" pb="50%">
+          <Paper
+            sx={{
+              background: "#34343459",
+              borderRadius: "0.5rem",
+              p: "1rem",
+            }}
+          >
+            <Grid container alignItems="center">
+              <Grid item xs={4}>
+                <Typography fontSize="0.8rem" fontWeight="500" color="#fff">
+                  Current Value
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography fontSize="0.8rem" fontWeight="500" color="#fff">
+                  Invested Value
+                </Typography>
+              </Grid>
+
+              <Grid item xs={4}>
+                <Typography fontSize="0.8rem" fontWeight="500" color="#fff">
+                  Total Returns
+                </Typography>
+              </Grid>
             </Grid>
 
-            <Grid item xs={4}>
-              <Typography fontSize="0.8rem" fontWeight="500" color="#fff">
-                Total Returns
-              </Typography>
-            </Grid>
-          </Grid>
+            <Grid container alignItems="center" pt="0.3rem">
+              <Grid item xs={4}>
+                <Stack direction="row" alignItems="baseline" spacing={2}>
+                  <Typography variant="h1" color="#ccc">
+                    ₹
+                  </Typography>
+                  <Typography fontSize="0.9rem" color="#fff">
+                    {currentvalue}
+                  </Typography>
+                </Stack>
+              </Grid>
 
-          <Grid container alignItems="center" pt="0.3rem">
-            <Grid item xs={4}>
-              <Stack direction="row" alignItems="baseline" spacing={2}>
-                <Typography variant="h1" color="#ccc">
-                  ₹
-                </Typography>
-                <Typography fontSize="0.9rem" color="#fff">
-                  {currentvalue}
-                </Typography>
-              </Stack>
-            </Grid>
+              <Grid item xs={4}>
+                <Stack direction="row" alignItems="baseline" spacing={2}>
+                  <Typography variant="h1" color="#ccc">
+                    ₹
+                  </Typography>
+                  <Typography fontSize="0.9rem" color="#fff">
+                    {investedValue}
+                  </Typography>
+                </Stack>
+              </Grid>
 
-            <Grid item xs={4}>
-              <Stack direction="row" alignItems="baseline" spacing={2}>
-                <Typography variant="h1" color="#ccc">
-                  ₹
-                </Typography>
-                <Typography fontSize="0.9rem" color="#fff">
-                  {investedValue}
-                </Typography>
-              </Stack>
+              <Grid item xs={4}>
+                <Stack direction="row" alignItems="baseline" spacing={2}>
+                  <Typography variant="h1" color="#ccc">
+                    ₹
+                  </Typography>
+                  <Typography
+                    fontSize="0.9rem"
+                    color={totalReturnsPer >= 0 ? "#76FFC6" : "#EE4D37"}
+                  >
+                    {totalReturns} ({totalReturnsPer.toFixed(2)}%)
+                  </Typography>
+                </Stack>
+              </Grid>
             </Grid>
+          </Paper>
 
-            <Grid item xs={4}>
-              <Stack direction="row" alignItems="baseline" spacing={2}>
-                <Typography variant="h1" color="#ccc">
-                  ₹
-                </Typography>
-                <Typography
-                  fontSize="0.9rem"
-                  color={totalReturnsPer >= 0 ? "#76FFC6" : "#EE4D37"}
-                >
-                  {totalReturns} ({totalReturnsPer.toFixed(2)}%)
-                </Typography>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Paper>
-
-        {/* <Grid container alignItems="center" pt="1rem">
+          {/* <Grid container alignItems="center" pt="1rem">
           <Grid item xs={7}>
             <FormControl sx={{ width: "80%" }} variant="standard">
               <Select
@@ -336,7 +343,7 @@ export default function Home() {
             </TabContext>
           </Grid>
         </Grid> */}
-        {/* 
+          {/* 
         <Grid container pt="2rem">
           <Grid item xs={12}>
             <Typography variant="h1" pb="2rem">
@@ -347,185 +354,193 @@ export default function Home() {
           <Grid item xs={12}></Grid>
         </Grid> */}
 
-        <Typography variant="h1" pt="2rem">
-          Stocks you invested in:
-        </Typography>
+          <Typography variant="h1" pt="2rem">
+            Stocks you invested in:
+          </Typography>
 
-        {investedSchemeArray &&
-          investedSchemeArray.map((item: any, index: any) => (
-            <>
-              <Card
-                key={index}
-                // onClick={handleExpandClick}
-                sx={{ background: "#000", my: "1rem" }}
-              >
-                <CardHeader
-                  sx={{
-                    p: "0rem",
-                  }}
-                  title={
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      pr={3}
-                    >
-                      <Typography variant="h1" color="#fff">
-                        {item.symbol}
-                      </Typography>
-
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        <Typography fontSize="0.9rem" variant="h1" color="#ccc">
-                          ₹
-                        </Typography>
-                        <Typography
-                          fontSize="0.9rem"
-                          color={(
-                            ((item.LTP * item.quantity - item.investedValue) /
-                              item.investedValue) *
-                            100
-                          ) >= 0 ? "#76FFC6" : "#EE4D37"}
-                        >
-                          {item.LTP * item.quantity - item.investedValue} (
-                          {(
-                            ((item.LTP * item.quantity - item.investedValue) /
-                              item.investedValue) *
-                            100
-                          ).toFixed(2)}
-                          %)
-                        </Typography>
-                      </Stack>
-                    </Stack>
-                  }
-                  avatar={
-                    <Avatar
-                      sx={{
-                        background: item.logoUrl ? "#fff" : "#76FFC6",
-                        height: "2.5rem",
-                        width: "2.5rem",
-                        color: "#1a1a1a",
-                        fontSize: "1rem",
-                      }}
-                    >
-                      {item.logoUrl ? (
-                        <img src={item.logoUrl} height="100%" width="100%" />
-                      ) : (
-                        <Typography variant="h1" color="#1a1a1a">
+          {investedSchemeArray &&
+            investedSchemeArray.map((item: any, index: any) => (
+              <>
+                <Card
+                  key={index}
+                  // onClick={handleExpandClick}
+                  sx={{ background: "#000", my: "1rem" }}
+                >
+                  <CardHeader
+                    sx={{
+                      p: "0rem",
+                    }}
+                    title={
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        pr={3}
+                      >
+                        <Typography variant="h1" color="#fff">
                           {item.symbol}
                         </Typography>
-                      )}
-                    </Avatar>
-                  }
-                  action={
-                    // <IconButton aria-label="settings">
-                    //   <ExpandMoreIcon
-                    //     sx={{ color: "#fff", fontSize: "1.5rem" }}
-                    //   />
-                    // </IconButton>
 
-                    <></>
-                  }
-                />
-
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                  <CardContent>
-                    <Grid container alignItems="center">
-                      <Grid item xs={3.5}>
-                        <Typography
-                          fontSize="0.8rem"
-                          fontWeight="500"
-                          color="#fff"
-                        >
-                          Current Value
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={3.5}>
-                        <Typography
-                          fontSize="0.8rem"
-                          fontWeight="500"
-                          color="#fff"
-                        >
-                          Invested Value
-                        </Typography>
-                      </Grid>
-
-                      <Grid item xs={1.5}>
-                        <Typography
-                          fontSize="0.8rem"
-                          fontWeight="500"
-                          color="#fff"
-                        >
-                          Qty
-                        </Typography>
-                      </Grid>
-
-                      <Grid item xs={3}>
-                        <Typography
-                          fontSize="0.8rem"
-                          fontWeight="500"
-                          color="#fff"
-                        >
-                          LTP
-                        </Typography>
-                      </Grid>
-                    </Grid>
-
-                    <Grid container alignItems="center">
-                      <Grid item xs={3.5}>
-                        <Stack
-                          direction="row"
-                          alignItems="baseline"
-                          spacing={2}
-                        >
-                          <Typography fontSize="0.9rem" color="#fff">
-                            {item.quantity * item.LTP}
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <Typography
+                            fontSize="0.9rem"
+                            variant="h1"
+                            color="#ccc"
+                          >
+                            ₹
+                          </Typography>
+                          <Typography
+                            fontSize="0.9rem"
+                            color={
+                              ((item.LTP * item.quantity - item.investedValue) /
+                                item.investedValue) *
+                                100 >=
+                              0
+                                ? "#76FFC6"
+                                : "#EE4D37"
+                            }
+                          >
+                            {item.LTP * item.quantity - item.investedValue} (
+                            {(
+                              ((item.LTP * item.quantity - item.investedValue) /
+                                item.investedValue) *
+                              100
+                            ).toFixed(2)}
+                            %)
                           </Typography>
                         </Stack>
+                      </Stack>
+                    }
+                    avatar={
+                      <Avatar
+                        sx={{
+                          background: item.logoUrl ? "#fff" : "#76FFC6",
+                          height: "2.5rem",
+                          width: "2.5rem",
+                          color: "#1a1a1a",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        {item.logoUrl ? (
+                          <img src={item.logoUrl} height="100%" width="100%" />
+                        ) : (
+                          <Typography variant="h1" color="#1a1a1a">
+                            {item.symbol}
+                          </Typography>
+                        )}
+                      </Avatar>
+                    }
+                    action={
+                      // <IconButton aria-label="settings">
+                      //   <ExpandMoreIcon
+                      //     sx={{ color: "#fff", fontSize: "1.5rem" }}
+                      //   />
+                      // </IconButton>
+
+                      <></>
+                    }
+                  />
+
+                  <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CardContent>
+                      <Grid container alignItems="center">
+                        <Grid item xs={3.5}>
+                          <Typography
+                            fontSize="0.8rem"
+                            fontWeight="500"
+                            color="#fff"
+                          >
+                            Current Value
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={3.5}>
+                          <Typography
+                            fontSize="0.8rem"
+                            fontWeight="500"
+                            color="#fff"
+                          >
+                            Invested Value
+                          </Typography>
+                        </Grid>
+
+                        <Grid item xs={1.5}>
+                          <Typography
+                            fontSize="0.8rem"
+                            fontWeight="500"
+                            color="#fff"
+                          >
+                            Qty
+                          </Typography>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                          <Typography
+                            fontSize="0.8rem"
+                            fontWeight="500"
+                            color="#fff"
+                          >
+                            LTP
+                          </Typography>
+                        </Grid>
                       </Grid>
 
-                      <Grid item xs={3.5}>
-                        <Stack
-                          direction="row"
-                          alignItems="baseline"
-                          spacing={2}
-                        >
-                          <Typography fontSize="0.9rem" color="#fff">
-                            {item.investedValue}
-                          </Typography>
-                        </Stack>
-                      </Grid>
+                      <Grid container alignItems="center">
+                        <Grid item xs={3.5}>
+                          <Stack
+                            direction="row"
+                            alignItems="baseline"
+                            spacing={2}
+                          >
+                            <Typography fontSize="0.9rem" color="#fff">
+                              {item.quantity * item.LTP}
+                            </Typography>
+                          </Stack>
+                        </Grid>
 
-                      <Grid item xs={1.5}>
-                        <Stack
-                          direction="row"
-                          alignItems="baseline"
-                          spacing={2}
-                        >
-                          <Typography fontSize="0.9rem" color="#fff">
-                            {item.quantity}
-                          </Typography>
-                        </Stack>
-                      </Grid>
+                        <Grid item xs={3.5}>
+                          <Stack
+                            direction="row"
+                            alignItems="baseline"
+                            spacing={2}
+                          >
+                            <Typography fontSize="0.9rem" color="#fff">
+                              {item.investedValue}
+                            </Typography>
+                          </Stack>
+                        </Grid>
 
-                      <Grid item xs={3}>
-                        <Stack
-                          direction="row"
-                          alignItems="baseline"
-                          spacing={2}
-                        >
-                          <Typography fontSize="0.9rem" color="#fff">
-                            {item.LTP}
-                          </Typography>
-                        </Stack>
+                        <Grid item xs={1.5}>
+                          <Stack
+                            direction="row"
+                            alignItems="baseline"
+                            spacing={2}
+                          >
+                            <Typography fontSize="0.9rem" color="#fff">
+                              {item.quantity}
+                            </Typography>
+                          </Stack>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                          <Stack
+                            direction="row"
+                            alignItems="baseline"
+                            spacing={2}
+                          >
+                            <Typography fontSize="0.9rem" color="#fff">
+                              {item.LTP}
+                            </Typography>
+                          </Stack>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </CardContent>
-                </Collapse>
-              </Card>
-              <Divider flexItem sx={{ background: "#ccc" }} />
-            </>
-          ))}
-      </Box>
+                    </CardContent>
+                  </Collapse>
+                </Card>
+                <Divider flexItem sx={{ background: "#ccc" }} />
+              </>
+            ))}
+        </Box>
+      )}
     </LayoutWithBackheader>
   );
 }
