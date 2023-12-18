@@ -54,26 +54,40 @@ async function handler(req: any, res: any) {
         );
       }
 
-      let avg: any = [];
-      // check if investment exists and give avg
-      for (let i = 0; i < allEquityInvestments.length; i++) {
-        avg.push({
-          key: allEquityInvestments[i].symbol,
-          value: allEquityInvestments[i].perchasePrice,
-        });
-      }
+      // avg of prices
+      const summaryMap: any = {};
+      investedSchemeWithLiveData.forEach((entry: any) => {
+        const { searchID, perchasePrice, quantity, ...rest }: any = entry;
 
-      const sums: any = {};
-
-      allEquityInvestments.forEach((entry: any) => {
-        const key = entry.symbol
-        const value = entry.perchasePrice
-        if (!sums[key]) {
-          sums[key] = value;
-        } else {
-          sums[key] += value/sums[key];
+        if (!summaryMap[searchID]) {
+          summaryMap[searchID] = {
+            sumQuantity: 0,
+            totalPerchasePrice: 0,
+            count: 0,
+            details: [],
+          };
         }
+
+        summaryMap[searchID].sumQuantity += quantity;
+        summaryMap[searchID].totalPerchasePrice += perchasePrice;
+        summaryMap[searchID].count += 1;
+        summaryMap[searchID].details.push({ ...rest });
       });
+
+      const investedSchemeWithAvgprices = Object.keys(summaryMap).map((key) => {
+        const { sumQuantity, totalPerchasePrice, count, details } =
+          summaryMap[key];
+        const averagePerchasePrice = totalPerchasePrice / count;
+
+        return {
+          searchID: key,
+          sumQuantity,
+          averagePerchasePrice,
+          details,
+        };
+      });
+
+      // avg of prices
 
       var sumCurrentvalue = 0;
       sumCurrentvalue =
@@ -93,8 +107,8 @@ async function handler(req: any, res: any) {
         totalReturns: totalReturns,
         totalReturnsPer: totalReturnsPer,
         investedSchemeWithLiveData: investedSchemeWithLiveData,
-        allEquityInvestments: allEquityInvestments,
-        sums: sums,
+        // allEquityInvestments: allEquityInvestments,
+        investedSchemeWithAvgprices: investedSchemeWithAvgprices,
       };
 
       res.status(200).json({
